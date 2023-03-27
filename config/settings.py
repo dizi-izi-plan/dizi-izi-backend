@@ -76,10 +76,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'nevermore',
-        'USER': 'slave',
-        'PASSWORD': 'v8kfOqyGzlpNtlu75RPvW9iYgSvwhUwx',
-        'HOST': 'dpg-cget9n1mbg568r447hl0-a.frankfurt-postgres.render.com',
+        'NAME': 'db',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
         'PORT': '5432',
         # postgres://slave:v8kfOqyGzlpNtlu75RPvW9iYgSvwhUwx@dpg-cget9n1mbg568r447hl0-a/nevermore
     }
