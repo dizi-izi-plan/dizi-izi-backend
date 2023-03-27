@@ -1,4 +1,17 @@
-from exception import LackSpace
+"""Algorithm."""
+
+import math
+from typing import NamedTuple
+
+from exception import LackSpace, IncorrectFigure
+
+
+class Figure(NamedTuple):
+    """Figure module."""
+    side_a: float
+    side_b: float
+    side_c: float
+    side_d: float
 
 
 class FurnitureArrangement():
@@ -28,15 +41,24 @@ class FurnitureArrangement():
 
 class DataVerificationAndImplementation(FurnitureArrangement):
 
-    def area_calculation(self):
-        return None
-
-    # Aункция определения площади всей мебели в целом, каждой мебели отдельно
-    # и площади самой комнаты. (перемножение длины и ширины)
+    def area_calculation(self, figure: Figure) -> float:
+        "Метод вычисления площади фигуры."
+        if figure.side_a == figure.side_c and figure.side_b == figure.side_d:
+            area = figure.side_a * figure.side_b
+            return area
+        elif figure.side_b != figure.side_d and figure.side_a == figure.side_c: # Eсли условие выполняется, то фигура является равнобедренной трапецией
+            trapezoid_height = math.sqrt(pow(figure.side_a, 2) \
+            - (pow((pow((figure.side_d - figure.side_b), 2) \
+            + pow(figure.side_a, 2) - pow(figure.side_c, 2)) / (2 \
+            * (figure.side_d - figure.side_b)), 2)))
+            area = ((figure.side_d + figure.side_b) / 2) * trapezoid_height
+            return area
+        else: 
+            raise IncorrectFigure("Неверно заданы размеры помещения!")
 
     def area_monitoring(self, area_room: int, area_furniture: int) -> bool:
-        "Функция котнроля допустимой общей площади мебели в помещении"
-        if (area_furniture/ area_room) > 0.75:
+        "Метод котнроля допустимой общей площади мебели в помещении."
+        if (area_furniture / area_room) > 0.75:
             raise LackSpace("Общая площадь мебели превышает площадь помещения!")
         return True
 
