@@ -1,0 +1,2 @@
+class LackSpace(Exception):
+    pass

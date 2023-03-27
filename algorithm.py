@@ -1,13 +1,16 @@
+from exception import LackSpace
+
+
 class FurnitureArrangement():
 
-    def room_coordinates():
+    def room_coordinates(self):
         return None
 
     # Функция создании координаты относительно длины и ширины комнаты
     # (их можно использовать как максимум и минимум, которые могут принимать
     # координаты мебели).
 
-    def determining_the_furthest_point():
+    def determining_the_furthest_point(self):
         return None
 
     # Функция определения самой отдаленной точки в комнате по заданным точкам.
@@ -25,22 +28,19 @@ class FurnitureArrangement():
 
 class DataVerificationAndImplementation(FurnitureArrangement):
 
-    def area_calculation():
+    def area_calculation(self):
         return None
 
     # Aункция определения площади всей мебели в целом, каждой мебели отдельно
     # и площади самой комнаты. (перемножение длины и ширины)
 
-    def area_monitoring():
-        return None
+    def area_monitoring(self, area_room: int, area_furniture: int) -> bool:
+        "Функция котнроля допустимой общей площади мебели в помещении"
+        if (area_furniture/ area_room) > 0.75:
+            raise LackSpace("Общая площадь мебели превышает площадь помещения!")
+        return True
 
-    # Функция определения общей площади всей мебели. Если общая площадь больше,
-    # чем 75% (посмотрим на тестах сколько именно нужно будет, но пока так)
-    # площади комнаты, то возвращается ошибка о невозможности планировки.
-    # Эта функция нужна на случай, если такое количество мебели невозможно
-    # разместить в данной комнате по причине нехватки места.
-
-    def algorithm_activation():
+    def algorithm_activation(self):
         return None
 
     # Функция определения общей площади всей мебели. Если общая площадь больше,
