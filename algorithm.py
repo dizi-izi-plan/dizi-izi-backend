@@ -46,13 +46,13 @@ class DataVerificationAndImplementation(FurnitureArrangement):
         if figure.side_a == figure.side_c and figure.side_b == figure.side_d:
             area = figure.side_a * figure.side_b
             return area
-        elif figure.side_b != figure.side_d and figure.side_a == figure.side_c: # Eсли условие выполняется, то фигура является равнобедренной трапецией
-            trapezoid_height = math.sqrt(pow(figure.side_a, 2) \
-            - (pow((pow((figure.side_d - figure.side_b), 2) \
-            + pow(figure.side_a, 2) - pow(figure.side_c, 2)) / (2 \
-            * (figure.side_d - figure.side_b)), 2)))
-            area = ((figure.side_d + figure.side_b) / 2) * trapezoid_height
-            return area
+       # elif figure.side_b != figure.side_d and figure.side_a == figure.side_c: # Eсли условие выполняется, то фигура является равнобедренной трапецией
+       #    trapezoid_height = math.sqrt(pow(figure.side_a, 2) \
+       #     - (pow((pow((figure.side_d - figure.side_b), 2) \
+       #     + pow(figure.side_a, 2) - pow(figure.side_c, 2)) / (2 \
+       #     * (figure.side_d - figure.side_b)), 2)))
+       #     area = ((figure.side_d + figure.side_b) / 2) * trapezoid_height
+       #     return area
         else: 
             raise IncorrectFigure("Неверно заданы размеры помещения!")
 
