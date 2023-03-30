@@ -22,8 +22,51 @@ class FurnitureArrangement():
     def placing_in_coordinates(self):
         return None
 
-    def corner_markings(self):
-        return None
+    def corner_markings(self, length_and_width: dict, center: dict, wall_number: int) -> dict:
+        corners_coordinates = {"north_west": {"x": 0, "y": 0}, "north_east": {"x": 0, "y": 0},
+                               "south_west": {"x": 0, "y": 0}, "south_east": {"x": 0, "y": 0}}
+
+        if wall_number == 1:
+            corners_coordinates["north_east"]["x"] = center["x"]
+            corners_coordinates["north_east"]["y"] = center["y"] + (length_and_width["width"] // 2)
+            corners_coordinates["north_west"]["x"] = center["x"]
+            corners_coordinates["north_west"]["y"] = center["y"] - (length_and_width["width"] // 2)
+            corners_coordinates["south_east"]["x"] = center["x"] + length_and_width["length"]
+            corners_coordinates["south_east"]["y"] = center["y"] + (length_and_width["width"] // 2)
+            corners_coordinates["south_west"]["x"] = center["x"] + length_and_width["length"]
+            corners_coordinates["south_west"]["y"] = center["y"] - (length_and_width["width"] // 2)
+
+        elif wall_number == 2:
+            corners_coordinates["north_east"]["x"] = center["x"] + (length_and_width["width"] // 2)
+            corners_coordinates["north_east"]["y"] = center["y"]
+            corners_coordinates["north_west"]["x"] = center["x"] - (length_and_width["width"] // 2)
+            corners_coordinates["north_west"]["y"] = center["y"]
+            corners_coordinates["south_east"]["x"] = center["x"] + (length_and_width["width"] // 2)
+            corners_coordinates["south_east"]["y"] = center["y"] - length_and_width["length"]
+            corners_coordinates["south_west"]["x"] = center["x"] - (length_and_width["width"] // 2)
+            corners_coordinates["south_west"]["y"] = center["y"] - length_and_width["length"]
+
+        elif wall_number == 3:
+            corners_coordinates["north_east"]["x"] = center["x"]
+            corners_coordinates["north_east"]["y"] = center["y"] - (length_and_width["width"] // 2)
+            corners_coordinates["north_west"]["x"] = center["x"]
+            corners_coordinates["north_west"]["y"] = center["y"] + (length_and_width["width"] // 2)
+            corners_coordinates["south_east"]["x"] = center["x"] - length_and_width["length"]
+            corners_coordinates["south_east"]["y"] = center["y"] - (length_and_width["width"] // 2)
+            corners_coordinates["south_west"]["x"] = center["x"] - length_and_width["length"]
+            corners_coordinates["south_west"]["y"] = center["y"] + (length_and_width["width"] // 2)
+
+        elif wall_number == 4:
+            corners_coordinates["north_east"]["x"] = center["x"] - (length_and_width["width"] // 2)
+            corners_coordinates["north_east"]["y"] = center["y"]
+            corners_coordinates["north_west"]["x"] = center["x"] + (length_and_width["width"] // 2)
+            corners_coordinates["north_west"]["y"] = center["y"]
+            corners_coordinates["south_east"]["x"] = center["x"] - (length_and_width["width"] // 2)
+            corners_coordinates["south_east"]["y"] = center["y"] + length_and_width["length"]
+            corners_coordinates["south_west"]["x"] = center["x"] + (length_and_width["width"] // 2)
+            corners_coordinates["south_west"]["y"] = center["y"] + length_and_width["length"]
+
+        return corners_coordinates
 
     def room_coordinates(self):
         return None
