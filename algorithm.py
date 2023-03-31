@@ -72,10 +72,3 @@ class DataVerificationAndImplementation(FurnitureArrangement):
     # площади комнаты, то возвращается ошибка о невозможности планировки. Эта
     # функция нужна на случай, если такое количество мебели невозможно разместить
     # в данной комнате по причине нехватки места.
-
-
-
-fig = Figure(5, 10, 5, 10)
-fur = FurnitureArrangement()
-
-print(fur.room_coordinates(fig))
