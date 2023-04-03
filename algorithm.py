@@ -16,6 +16,15 @@ class Figure(NamedTuple):
 
 class FurnitureArrangement():
 
+    def room_coordinates(self, figure: Figure) -> tuple:
+        "Метод создания координат комнаты."
+        room_coordinates = (
+            {"west_wall": {"x_1": 0, "y_1": 0, "x_2": 0, "y_2": figure.side_a}},
+            {"north_wall": {"x_1": 0, "y_1": figure.side_a, "x_2": figure.side_b, "y_2": figure.side_a}},
+            {"east_wall": {"x_1": figure.side_b, "y_1": figure.side_c, "x_2": figure.side_b, "y_2": 0}},
+            {"south_wall": {"x_1": figure.side_d, "y_1": 0, "x_2": 0, "y_2": 0}})
+        return room_coordinates
+
     coordinates = {}  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
     free_space = [] # хранение расстояний между мебелью через запятую (в виде координат)
 
