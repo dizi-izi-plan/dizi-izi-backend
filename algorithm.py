@@ -81,19 +81,39 @@ class FurnitureArrangement():
         # разбиты по сторонам света: north_west, north-east, south-west, south-east.
         length = {}
         counter = 1
+
+
+
+        def longest_distance_corner(first_left, first_right, second_left, second_right):
+            first_distance = abs(first_left - second_left)
+            second_distance = abs(first_left - second_right)
+            third_distance = abs(first_right - second_left)
+            fourth_distance = abs(first_right - second_right)
+            result = [first_distance, second_distance, third_distance,fourth_distance]
+            return max(result)
+
+        def x_and_y(first_object, second_object, x_or_y):
+            result = longest_distance_corner(
+                first_object["south_west"][f"{x_or_y}"],
+                first_object["south_east"][f"{x_or_y}"],
+                second_object[counter]["south_east"][f"{x_or_y}"],
+                second_object[counter]["south_east"][f"{x_or_y}"])
+
+            return result
+
         for item in objects:
             if counter == len(objects):
                 counter = 0
-                distance_x = (item["south_west"]["x"] - objects[counter]["south_east"]["x"])
-                distance_y = (item["south_west"]["y"] - objects[counter]["south_east"]["y"])
-                round_hypotenuse = round(math.hypot(distance_x, distance_y))
+                distance_x = x_and_y(item, objects, ["x"])
+                distance_y = x_and_y(item, objects, ["y"])
+                round_hypotenuse = math.hypot(distance_x, distance_y)
                 length[round_hypotenuse] = {"North_east": item["north_east"]},\
                                            {"North_west": objects[counter]["north_west"]}
             # Расстояние высчитываем через функцию поиска гипотенузы "hypot" по двум катетам.
             else:
                 distance_x = (item["south_east"]["x"] - objects[counter]["south_west"]["x"])
                 distance_y = (item["south_east"]["y"] - objects[counter]["south_west"]["y"])
-                round_hypotenuse = round(math.hypot(distance_x, distance_y))
+                round_hypotenuse = math.hypot(distance_x, distance_y)
                 length[round_hypotenuse] = {"North_west": item["north_west"]},\
                                            {"North_east": objects[counter]["north_east"]}
             # расстояния могут быть одинаковые, но нам по сути неважно какой из вариантов брать, а значит мы
