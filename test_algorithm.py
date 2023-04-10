@@ -10,21 +10,27 @@ class TestFurnitureArrangement(unittest.TestCase):
     def test_double_free_space_algorithm(self):
         self.assertEqual(self.calculator.free_space_algorithm(
             [{"south_east": {"x": 6, "y": 4}, "south_west": {"x": 8, "y": 4},
-              "north_east": {"x": 6, "y": 2}, "north_west": {"x": 8, "y": 2}},
+              "north_east": {"x": 6, "y": 2}, "north_west": {"x": 8, "y": 2},
+              "wall_info": {"wall_number": 4, "wall_length": 6}},
              {"south_east": {"x": 2, "y": 4}, "south_west": {"x": 4, "y": 4},
-              "north_east": {"x": 2, "y": 2}, "north_west": {"x": 4, "y": 2}}]),
-            ({'left_corner': {'x': 2, 'y': 2}}, {'right_corner': {'x': 8, 'y': 2}}))
+              "north_east": {"x": 2, "y": 2}, "north_west": {"x": 4, "y": 2},
+              "wall_info": {"wall_number": 4, "wall_length": 6}}]),
+            ({'left_corner': {'x': 2, 'y': 2}, "wall_info": {"wall_number": 4, "wall_length": 6}},
+             {'right_corner': {'x': 8, 'y': 2}, "wall_info": {"wall_number": 4, "wall_length": 6}}))
 
     def test_triple_free_space_algorithm(self):
         self.assertEqual(self.calculator.free_space_algorithm(
             [{"south_east": {"x": 6, "y": 4}, "south_west": {"x": 8, "y": 4},
-              "north_east": {"x": 6, "y": 2}, "north_west": {"x": 8, "y": 2}},
+              "north_east": {"x": 6, "y": 2}, "north_west": {"x": 8, "y": 2},
+              "wall_info": {"wall_number": 2, "wall_length": 6}},
              {"south_east": {"x": 2, "y": 4}, "south_west": {"x": 4, "y": 4},
-              "north_east": {"x": 2, "y": 2}, "north_west": {"x": 4, "y": 2}},
+              "north_east": {"x": 2, "y": 2}, "north_west": {"x": 4, "y": 2},
+              "wall_info": {"wall_number": 2, "wall_length": 6}},
              {"south_east": {"x": 7, "y": 6}, "south_west": {"x": 5, "y": 6},
-              "north_east": {"x": 7, "y": 8}, "north_west": {"x": 5, "y": 8}}
-             ]),
-            ({'left_corner': {'x': 2, 'y': 2}}, {'right_corner': {'x': 5, 'y': 8}}))
+              "north_east": {"x": 7, "y": 8}, "north_west": {"x": 5, "y": 8},
+              "wall_info": {"wall_number": 4, "wall_length": 6}}]),
+            ({'left_corner': {'x': 2, 'y': 2}, "wall_info": {"wall_number": 2, "wall_length": 6}},
+             {'right_corner': {'x': 5, 'y': 8}, "wall_info": {"wall_number": 4, "wall_length": 6}}))
 
     def test_corner_markings_first_wall(self):
         self.assertEqual(self.calculator.corner_markings({"length": 4, "width": 6}, {"x": 3, "y": 4}, 1),
