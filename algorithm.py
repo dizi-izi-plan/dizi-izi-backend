@@ -100,27 +100,22 @@ class FurnitureArrangement():
                 second_object[counter]["south_east"][f"{x_or_y}"])
             return result
 
+        def core_and_output(first_object, second_object):
+            x_distance = x_or_y_distance(first_object, second_object, "x")
+            y_distance = x_or_y_distance(first_object, second_object, "y")
+            hypotenuse = math.hypot(x_distance, y_distance)
+            # Расстояние высчитываем через функцию поиска гипотенузы "hypot" по двум катетам.
+            length[hypotenuse] = {"left_corner": first_object["north_east"],
+                                  "wall_info": first_object["wall_info"]}, \
+                                 {"right_corner": second_object[counter]["north_west"],
+                                  "wall_info": second_object[counter]["wall_info"]}
+            # расстояния могут быть одинаковые, но нам по сути неважно какой из вариантов брать, а значит мы
+            # можем просто перезаписать ключ словаря
+
         for item in objects:
             if counter == len(objects):
                 counter = 0
-                distance_x = x_or_y_distance(item, objects, "x")
-                distance_y = x_or_y_distance(item, objects, "y")
-                hypotenuse = math.hypot(distance_x, distance_y)
-                length[hypotenuse] = {"left_corner": item["north_east"],
-                                      "wall_info": item["wall_info"]},\
-                                     {"right_corner": objects[counter]["north_west"],
-                                      "wall_info": objects[counter]["wall_info"]}
-            # Расстояние высчитываем через функцию поиска гипотенузы "hypot" по двум катетам.
-            else:
-                distance_x = x_or_y_distance(item, objects, "x")
-                distance_y = x_or_y_distance(item, objects, "y")
-                hypotenuse = math.hypot(distance_x, distance_y)
-                length[hypotenuse] = {"left_corner": item["north_east"],
-                                      "wall_info": item["wall_info"]},\
-                                     {"right_corner": objects[counter]["north_west"],
-                                      "wall_info": objects[counter]["wall_info"]}
-            # расстояния могут быть одинаковые, но нам по сути неважно какой из вариантов брать, а значит мы
-            # можем просто перезаписать ключ словаря
+            core_and_output(item, objects)
             counter += 1
         return length[max(length)]
 
