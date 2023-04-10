@@ -76,10 +76,7 @@ class FurnitureArrangement():
             corners_coordinates["south_west"]["y"] = center["y"] + length_and_width["length"]
 
         return corners_coordinates
-
-    def room_coordinates(self):
-        return None
-
+    
     def middle_of_the_distance_on_the_wall(self):
         return None
 
