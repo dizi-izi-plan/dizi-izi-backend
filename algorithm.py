@@ -82,44 +82,51 @@ class FurnitureArrangement():
         length = {}
         counter = 1
 
-
-
         def longest_distance_corner(first_left, first_right, second_left, second_right):
             first_distance = abs(first_left - second_left)
             second_distance = abs(first_left - second_right)
             third_distance = abs(first_right - second_left)
             fourth_distance = abs(first_right - second_right)
-            result = [first_distance, second_distance, third_distance,fourth_distance]
-            return max(result)
 
-        def x_and_y(first_object, second_object, x_or_y):
+            minimal_distance = min([first_distance, second_distance, third_distance, fourth_distance])
+
+            print("Min distance: ", minimal_distance)
+            return minimal_distance
+
+        def x_or_y_distance(first_object, second_object, x_or_y):
             result = longest_distance_corner(
                 first_object["south_west"][f"{x_or_y}"],
                 first_object["south_east"][f"{x_or_y}"],
-                second_object[counter]["south_east"][f"{x_or_y}"],
+                second_object[counter]["south_west"][f"{x_or_y}"],
                 second_object[counter]["south_east"][f"{x_or_y}"])
-
+            # print(result)
             return result
 
         for item in objects:
             if counter == len(objects):
                 counter = 0
-                distance_x = x_and_y(item, objects, ["x"])
-                distance_y = x_and_y(item, objects, ["y"])
-                round_hypotenuse = math.hypot(distance_x, distance_y)
-                length[round_hypotenuse] = {"North_east": item["north_east"]},\
-                                           {"North_west": objects[counter]["north_west"]}
+                distance_x = x_or_y_distance(item, objects, "x")
+                distance_y = x_or_y_distance(item, objects, "y")
+                print("x: ", distance_x, "y: ", distance_y)
+                hypotenuse = math.hypot(distance_x, distance_y)
+                print("length: ", hypotenuse)
+                length[hypotenuse] = {"left_corner": item["north_east"]},\
+                                           {"right_corner": objects[counter]["north_west"]}
+                print("length: ", length[hypotenuse])
             # Расстояние высчитываем через функцию поиска гипотенузы "hypot" по двум катетам.
             else:
-                distance_x = (item["south_east"]["x"] - objects[counter]["south_west"]["x"])
-                distance_y = (item["south_east"]["y"] - objects[counter]["south_west"]["y"])
-                round_hypotenuse = math.hypot(distance_x, distance_y)
-                length[round_hypotenuse] = {"North_west": item["north_west"]},\
-                                           {"North_east": objects[counter]["north_east"]}
+                distance_x = x_or_y_distance(item, objects, "x")
+                distance_y = x_or_y_distance(item, objects, "y")
+                print("x: ", distance_x, "y: ", distance_y)
+                hypotenuse = math.hypot(distance_x, distance_y)
+                print("length: ", hypotenuse)
+                length[hypotenuse] = {"left_corner": item["north_east"]},\
+                                           {"right_corner": objects[counter]["north_west"]}
             # расстояния могут быть одинаковые, но нам по сути неважно какой из вариантов брать, а значит мы
             # можем просто перезаписать ключ словаря
+                print(length[hypotenuse])
             counter += 1
-
+        # print(length[max(length)])
         return length[max(length)]
 
     def alternative_free_space_algorithm(self):
