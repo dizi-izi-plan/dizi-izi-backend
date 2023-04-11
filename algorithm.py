@@ -16,7 +16,7 @@ class Figure(NamedTuple):
 
 class FurnitureArrangement():
 
-    coordinates = {}  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
+    coordinates = []  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
     free_space = [] # хранение расстояний между мебелью через запятую (в виде координат)
 
     def placing_in_coordinates(self):
@@ -68,8 +68,14 @@ class FurnitureArrangement():
 
         return corners_coordinates
 
-    def room_coordinates(self):
-        return None
+    def room_coordinates(self, figure: Figure) -> tuple:
+        "Метод создания координат комнаты."
+        room_coordinates = (
+            {"west_wall": {"x_1": 0, "y_1": 0, "x_2": 0, "y_2": figure.side_a}},
+            {"north_wall": {"x_1": 0, "y_1": figure.side_a, "x_2": figure.side_b, "y_2": figure.side_c}},
+            {"east_wall": {"x_1": figure.side_b, "y_1": figure.side_c, "x_2": figure.side_d, "y_2": 0}},
+            {"south_wall": {"x_1": figure.side_d, "y_1": 0, "x_2": 0, "y_2": 0}})
+        return room_coordinates
 
     def middle_of_the_distance_on_the_wall(self):
         return None
@@ -119,12 +125,12 @@ class FurnitureArrangement():
             counter += 1
         return length[max(length)]
 
+
+    # Доделать по алгоритму. Вариант с единственным объектом в комнате. Вариант с примыкающими со стороны
+    # к объекту стенами. Модернизировать алгоритм на высчитывание расстояния по стене, а не по диагоналям
+
     def alternative_free_space_algorithm(self):
         return None
-
-    def longest_distance(self):
-        return None
-
 
 
 class DataVerificationAndImplementation(FurnitureArrangement):
@@ -144,14 +150,33 @@ class DataVerificationAndImplementation(FurnitureArrangement):
         else: 
             raise IncorrectFigure("Неверно заданы размеры помещения!")
 
-    def area_monitoring(self, area_room: int, area_furniture: int) -> bool:
+    def area_monitoring(self, area: dict) -> bool:
         "Метод контроля допустимой общей площади мебели в помещении."
-        if (area_furniture / area_room) > 0.75:
+        if (area["area_furniture"] / area["area_room"]) > 0.75:
             raise LackSpace("Общая площадь мебели превышает площадь помещения!")
         return True
 
-    def algorithm_activation(self):
-        return None
+    def algorithm_activation(self, furniture: tuple, room_size: dict, random_switcher: bool):
+        furniture_check = self.area_monitoring(db_operations(furniture))
+        #надо дописать функции с возратом данных из бд и переделать входящие данные для area_monitoring
 
-    def activation(self):
-        return None
+        if furniture_check is False:
+            raise_area_error(False)
+        # прописать функцию ошибки с выводом во фронт
+
+
+
+        def activation_core(algorithm_type):
+            counter = 1
+            while counter != len(furniture):
+                result_free_space = algorithm_type(db_operations(furniture))
+                self.middle_of_the_distance_on_the_wall(result_free_space)
+                draw_objects(self.coordinates)
+                counter += 1
+
+        if random_switcher is True:
+            # условные переменные вызова (пока что)
+            activation_core(self.random_free_space_algorithm(db_operations(furniture)))
+
+        elif random_switcher is False:
+            activation_core(self.free_space_algorithm(db_operations(furniture)))
