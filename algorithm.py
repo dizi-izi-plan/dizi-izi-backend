@@ -28,8 +28,35 @@ class FurnitureArrangement():
     coordinates = {}  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
     free_space = [] # хранение расстояний между мебелью через запятую (в виде координат)
 
-    def placing_in_coordinates(self):
-        return None
+    def placing_in_coordinates(x: float, y: float, figure: Figure, coordinates: dict) -> bool:
+        """Функция проверки возможности резервирования места для мебели в комнате.
+
+        Args:
+            x (float): координата x для мебели
+            y (float): координата y для мебели
+            figure (Figure): объект мебели (четырехугольник)
+            coordinates (dict): словарь с координатами других объектов в комнате
+
+        Returns:
+            bool: True, если место зарезервировано, иначе False
+        """
+        # Проверяем пересечение с другими объектами в комнате
+        for obj in coordinates.values():
+            if x < obj['corners']['north_east']['x'] and y < obj['corners']['north_east']['y'] \
+                    and x > obj['corners']['south_west']['x'] and y > obj['corners']['south_west']['y']:
+                return False
+        # Проверяем, что мебель не выходит за пределы комнаты
+        if x < 0 or y < 0 or x + figure.side_b > figure.side_c or y + figure.side_a > figure.side_d:
+            return False
+        # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
+        corners = {
+            "north_west": {"x": x, "y": y},
+            "north_east": {"x": x, "y": y + figure.side_a},
+            "south_west": {"x": x + figure.side_b, "y": y},
+            "south_east": {"x": x + figure.side_b, "y": y + figure.side_a}
+        }
+        coordinates[f"Furniture_{len(coordinates)+1}"] = {"corners": corners}
+        return True
 
     def corner_markings(self, length_and_width: dict, center: dict, wall_number: int) -> dict:
         corners_coordinates = {"north_west": {"x": 0, "y": 0}, "north_east": {"x": 0, "y": 0},
