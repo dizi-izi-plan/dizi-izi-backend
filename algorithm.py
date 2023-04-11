@@ -28,6 +28,7 @@ class FurnitureArrangement():
     coordinates = {}  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
     free_space = [] # хранение расстояний между мебелью через запятую (в виде координат)
 
+
     def placing_in_coordinates(x: float, y: float, figure: Figure, coordinates: dict) -> bool:
         """Функция проверки возможности резервирования места для мебели в комнате.
 
@@ -55,7 +56,9 @@ class FurnitureArrangement():
             "south_west": {"x": x + figure.side_b, "y": y},
             "south_east": {"x": x + figure.side_b, "y": y + figure.side_a}
         }
-        coordinates[f"Furniture_{len(coordinates)+1}"] = {"corners": corners}
+
+        coordinates[f"Furniture_{len(coordinates) + 1}"] = {"corners": corners}
+
         return True
 
     def corner_markings(self, length_and_width: dict, center: dict, wall_number: int) -> dict:
@@ -103,44 +106,70 @@ class FurnitureArrangement():
             corners_coordinates["south_west"]["y"] = center["y"] + length_and_width["length"]
 
         return corners_coordinates
-    
+
+
+    def room_coordinates(self, figure: Figure) -> tuple:
+        "Метод создания координат комнаты."
+        room_coordinates = (
+            {"west_wall": {"x_1": 0, "y_1": 0, "x_2": 0, "y_2": figure.side_a}},
+            {"north_wall": {"x_1": 0, "y_1": figure.side_a, "x_2": figure.side_b, "y_2": figure.side_c}},
+            {"east_wall": {"x_1": figure.side_b, "y_1": figure.side_c, "x_2": figure.side_d, "y_2": 0}},
+            {"south_wall": {"x_1": figure.side_d, "y_1": 0, "x_2": 0, "y_2": 0}})
+        return room_coordinates
+
+
     def middle_of_the_distance_on_the_wall(self):
         return None
 
-    def free_space_algorithm(self, objects: list) -> tuple:
+    def free_space_algorithm(self, objects: list, walls_length: dict) -> tuple:
         # На вход подается список с координатами углов объектов. Координаты между друг другом минусим, находим
         # по ближайшим неприлегающим углам расстояние по модулю в виде гипотенузы (вычитание по иксу -- это
         # один катет, вычитание по игрику -- другой). И записыванием самое большое расстояние в переменную. Углы
-        # разбиты по сторонам света: north_west, north-east, south-west, south-east.
+        # разбиты по сторонам света: north_west, north-east, south-west, south-east. Отдельно так же идет
+        # значение и длина стены "walls_length": {"first_wall": 1, "second_wall": 2, "third_wall": 1, "fourth_wall": 2}
         length = {}
         counter = 1
+
+        def longest_distance_corner(first_left, first_right, second_left, second_right):
+            first_distance = abs(first_left - second_left)
+            second_distance = abs(first_left - second_right)
+            third_distance = abs(first_right - second_left)
+            fourth_distance = abs(first_right - second_right)
+
+            minimal_distance = min([first_distance, second_distance, third_distance, fourth_distance])
+            return minimal_distance
+
+        def x_or_y_distance(first_object, second_object, x_or_y):
+            result = longest_distance_corner(
+                first_object["south_west"][f"{x_or_y}"],
+                first_object["south_east"][f"{x_or_y}"],
+                second_object[counter]["south_west"][f"{x_or_y}"],
+                second_object[counter]["south_east"][f"{x_or_y}"])
+            return result
+
+        def core_and_output(first_object, second_object):
+            x_distance = x_or_y_distance(first_object, second_object, "x")
+            y_distance = x_or_y_distance(first_object, second_object, "y")
+            hypotenuse = math.hypot(x_distance, y_distance)
+            # Расстояние высчитываем через функцию поиска гипотенузы "hypot" по двум катетам.
+            length[hypotenuse] = {"left_corner": first_object["north_east"],
+                                  "right_corner": second_object[counter]["north_west"]}, walls_length
+
+            # расстояния могут быть одинаковые, но нам по сути неважно какой из вариантов брать, а значит мы
+            # можем просто перезаписать ключ словаря
+
         for item in objects:
             if counter == len(objects):
                 counter = 0
-                distance_x = (item["south_west"]["x"] - objects[counter]["south_east"]["x"])
-                distance_y = (item["south_west"]["y"] - objects[counter]["south_east"]["y"])
-                round_hypotenuse = round(math.hypot(distance_x, distance_y))
-                length[round_hypotenuse] = {"North_east": item["north_east"]},\
-                                           {"North_west": objects[counter]["north_west"]}
-            # Расстояние высчитываем через функцию поиска гипотенузы "hypot" по двум катетам.
-            else:
-                distance_x = (item["south_east"]["x"] - objects[counter]["south_west"]["x"])
-                distance_y = (item["south_east"]["y"] - objects[counter]["south_west"]["y"])
-                round_hypotenuse = round(math.hypot(distance_x, distance_y))
-                length[round_hypotenuse] = {"North_west": item["north_west"]},\
-                                           {"North_east": objects[counter]["north_east"]}
-            # расстояния могут быть одинаковые, но нам по сути неважно какой из вариантов брать, а значит мы
-            # можем просто перезаписать ключ словаря
+            core_and_output(item, objects)
             counter += 1
-
         return length[max(length)]
+
+    # Доделать по алгоритму. Вариант с единственным объектом в комнате. Вариант с примыкающими со стороны
+    # к объекту стенами. Модернизировать алгоритм на высчитывание расстояния по стене, а не по диагоналям
 
     def alternative_free_space_algorithm(self):
         return None
-
-    def longest_distance(self):
-        return None
-
 
 
 class DataVerificationAndImplementation(FurnitureArrangement):
@@ -157,17 +186,35 @@ class DataVerificationAndImplementation(FurnitureArrangement):
         #     * (figure.side_d - figure.side_b)), 2)))
         #     area = ((figure.side_d + figure.side_b) / 2) * trapezoid_height
         #     return area
-        else: 
+        else:
             raise IncorrectFigure("Неверно заданы размеры помещения!")
 
-    def area_monitoring(self, area_room: int, area_furniture: int) -> bool:
+    def area_monitoring(self, area: dict) -> bool:
         "Метод контроля допустимой общей площади мебели в помещении."
-        if (area_furniture / area_room) > 0.75:
+        if (area["area_furniture"] / area["area_room"]) > 0.75:
             raise LackSpace("Общая площадь мебели превышает площадь помещения!")
         return True
 
-    def algorithm_activation(self):
-        return None
+    def algorithm_activation(self, furniture: tuple, room_size: dict, random_switcher: bool):
+        furniture_check = self.area_monitoring(db_operations(furniture))
+        # надо дописать функции с возратом данных из бд и переделать входящие данные для area_monitoring
 
-    def activation(self):
-        return None
+        if furniture_check is False:
+            raise_area_error(False)
+
+        # прописать функцию ошибки с выводом во фронт
+
+        def activation_core(algorithm_type):
+            counter = 1
+            while counter != len(furniture):
+                result_free_space = algorithm_type(db_operations(furniture))
+                self.middle_of_the_distance_on_the_wall(result_free_space)
+                draw_objects(self.coordinates)
+                counter += 1
+
+        if random_switcher is True:
+            # условные переменные вызова (пока что)
+            activation_core(self.random_free_space_algorithm(db_operations(furniture)))
+
+        elif random_switcher is False:
+            activation_core(self.free_space_algorithm(db_operations(furniture)))
