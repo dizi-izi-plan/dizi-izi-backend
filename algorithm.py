@@ -15,8 +15,19 @@ class Figure(NamedTuple):
 
 
 class FurnitureArrangement():
-    coordinates = []  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
-    free_space = []  # хранение расстояний между мебелью через запятую (в виде координат)
+
+    def room_coordinates(self, figure: Figure) -> tuple:
+        "Метод создания координат комнаты."
+        room_coordinates = (
+            {"west_wall": {"x_1": 0, "y_1": 0, "x_2": 0, "y_2": figure.side_a}},
+            {"north_wall": {"x_1": 0, "y_1": figure.side_a, "x_2": figure.side_b, "y_2": figure.side_a}},
+            {"east_wall": {"x_1": figure.side_b, "y_1": figure.side_c, "x_2": figure.side_b, "y_2": 0}},
+            {"south_wall": {"x_1": figure.side_d, "y_1": 0, "x_2": 0, "y_2": 0}})
+        return room_coordinates
+
+    coordinates = {}  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
+    free_space = [] # хранение расстояний между мебелью через запятую (в виде координат)
+
 
     def placing_in_coordinates(x: float, y: float, figure: Figure, coordinates: dict) -> bool:
         """Функция проверки возможности резервирования места для мебели в комнате.
@@ -45,7 +56,9 @@ class FurnitureArrangement():
             "south_west": {"x": x + figure.side_b, "y": y},
             "south_east": {"x": x + figure.side_b, "y": y + figure.side_a}
         }
+
         coordinates[f"Furniture_{len(coordinates) + 1}"] = {"corners": corners}
+
         return True
 
     def corner_markings(self, length_and_width: dict, center: dict, wall_number: int) -> dict:
@@ -94,6 +107,7 @@ class FurnitureArrangement():
 
         return corners_coordinates
 
+
     def room_coordinates(self, figure: Figure) -> tuple:
         "Метод создания координат комнаты."
         room_coordinates = (
@@ -102,6 +116,7 @@ class FurnitureArrangement():
             {"east_wall": {"x_1": figure.side_b, "y_1": figure.side_c, "x_2": figure.side_d, "y_2": 0}},
             {"south_wall": {"x_1": figure.side_d, "y_1": 0, "x_2": 0, "y_2": 0}})
         return room_coordinates
+
 
     def middle_of_the_distance_on_the_wall(self):
         return None
