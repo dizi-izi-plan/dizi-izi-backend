@@ -94,9 +94,9 @@ class TestFurnitureArrangement(unittest.TestCase):
         self.assertEqual(self.calculator.middle_of_the_distance_on_the_wall(
             ({'North_east': {'x': 0, 'y': 4}}, {'North_west': {'x': 8, 'y': 0}}),
             {'wall_1': 4, 'wall_2': 10, 'wall_3': 4, 'wall_4': 10}), {'x': 8, 'y': 4})
-        # self.assertEqual(self.calculator.middle_of_the_distance_on_the_wall(
-        #     ({'North_east': {'x': 2, 'y': 0}}, {'North_west': {'x': 0, 'y': 4}}),
-        #     {'wall_1': 4, 'wall_2': 10, 'wall_3': 4, 'wall_4': 10}), {'x': 0, 'y': 1})
+        self.assertEqual(self.calculator.middle_of_the_distance_on_the_wall(
+            ({'North_east': {'x': 2, 'y': 0}}, {'North_west': {'x': 0, 'y': 4}}),
+            {'wall_1': 4, 'wall_2': 10, 'wall_3': 4, 'wall_4': 10}), {'x': 0, 'y': 1})
         self.assertEqual(self.calculator.middle_of_the_distance_on_the_wall(
             ({'North_east': {'x': 2, 'y': 0}}, {'North_west': {'x': 4, 'y': 0}}),
             {'wall_1': 4, 'wall_2': 10, 'wall_3': 4, 'wall_4': 10}), {'x': 7, 'y': 4})
