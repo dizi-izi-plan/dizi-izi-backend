@@ -15,12 +15,38 @@ class Figure(NamedTuple):
 
 
 class FurnitureArrangement():
-
     coordinates = []  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
-    free_space = [] # хранение расстояний между мебелью через запятую (в виде координат)
+    free_space = []  # хранение расстояний между мебелью через запятую (в виде координат)
 
-    def placing_in_coordinates(self):
-        return None
+    def placing_in_coordinates(x: float, y: float, figure: Figure, coordinates: dict) -> bool:
+        """Функция проверки возможности резервирования места для мебели в комнате.
+
+        Args:
+            x (float): координата x для мебели
+            y (float): координата y для мебели
+            figure (Figure): объект мебели (четырехугольник)
+            coordinates (dict): словарь с координатами других объектов в комнате
+
+        Returns:
+            bool: True, если место зарезервировано, иначе False
+        """
+        # Проверяем пересечение с другими объектами в комнате
+        for obj in coordinates.values():
+            if x < obj['corners']['north_east']['x'] and y < obj['corners']['north_east']['y'] \
+                    and x > obj['corners']['south_west']['x'] and y > obj['corners']['south_west']['y']:
+                return False
+        # Проверяем, что мебель не выходит за пределы комнаты
+        if x < 0 or y < 0 or x + figure.side_b > figure.side_c or y + figure.side_a > figure.side_d:
+            return False
+        # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
+        corners = {
+            "north_west": {"x": x, "y": y},
+            "north_east": {"x": x, "y": y + figure.side_a},
+            "south_west": {"x": x + figure.side_b, "y": y},
+            "south_east": {"x": x + figure.side_b, "y": y + figure.side_a}
+        }
+        coordinates[f"Furniture_{len(coordinates) + 1}"] = {"corners": corners}
+        return True
 
     def corner_markings(self, length_and_width: dict, center: dict, wall_number: int) -> dict:
         corners_coordinates = {"north_west": {"x": 0, "y": 0}, "north_east": {"x": 0, "y": 0},
@@ -80,12 +106,12 @@ class FurnitureArrangement():
     def middle_of_the_distance_on_the_wall(self):
         return None
 
-    def free_space_algorithm(self, objects: list) -> tuple:
+    def free_space_algorithm(self, objects: list, walls_length: dict) -> tuple:
         # На вход подается список с координатами углов объектов. Координаты между друг другом минусим, находим
         # по ближайшим неприлегающим углам расстояние по модулю в виде гипотенузы (вычитание по иксу -- это
         # один катет, вычитание по игрику -- другой). И записыванием самое большое расстояние в переменную. Углы
-        # разбиты по сторонам света: north_west, north-east, south-west, south-east. В каждом объекте так же находится
-        # значение и длина стены "wall_info": {"wall_number": 1, "wall_length": 4}
+        # разбиты по сторонам света: north_west, north-east, south-west, south-east. Отдельно так же идет
+        # значение и длина стены "walls_length": {"first_wall": 1, "second_wall": 2, "third_wall": 1, "fourth_wall": 2}
         length = {}
         counter = 1
 
@@ -112,9 +138,8 @@ class FurnitureArrangement():
             hypotenuse = math.hypot(x_distance, y_distance)
             # Расстояние высчитываем через функцию поиска гипотенузы "hypot" по двум катетам.
             length[hypotenuse] = {"left_corner": first_object["north_east"],
-                                  "wall_info": first_object["wall_info"]}, \
-                                 {"right_corner": second_object[counter]["north_west"],
-                                  "wall_info": second_object[counter]["wall_info"]}
+                                  "right_corner": second_object[counter]["north_west"]}, walls_length
+
             # расстояния могут быть одинаковые, но нам по сути неважно какой из вариантов брать, а значит мы
             # можем просто перезаписать ключ словаря
 
@@ -124,7 +149,6 @@ class FurnitureArrangement():
             core_and_output(item, objects)
             counter += 1
         return length[max(length)]
-
 
     # Доделать по алгоритму. Вариант с единственным объектом в комнате. Вариант с примыкающими со стороны
     # к объекту стенами. Модернизировать алгоритм на высчитывание расстояния по стене, а не по диагоналям
@@ -147,7 +171,7 @@ class DataVerificationAndImplementation(FurnitureArrangement):
         #     * (figure.side_d - figure.side_b)), 2)))
         #     area = ((figure.side_d + figure.side_b) / 2) * trapezoid_height
         #     return area
-        else: 
+        else:
             raise IncorrectFigure("Неверно заданы размеры помещения!")
 
     def area_monitoring(self, area: dict) -> bool:
@@ -158,13 +182,12 @@ class DataVerificationAndImplementation(FurnitureArrangement):
 
     def algorithm_activation(self, furniture: tuple, room_size: dict, random_switcher: bool):
         furniture_check = self.area_monitoring(db_operations(furniture))
-        #надо дописать функции с возратом данных из бд и переделать входящие данные для area_monitoring
+        # надо дописать функции с возратом данных из бд и переделать входящие данные для area_monitoring
 
         if furniture_check is False:
             raise_area_error(False)
+
         # прописать функцию ошибки с выводом во фронт
-
-
 
         def activation_core(algorithm_type):
             counter = 1
