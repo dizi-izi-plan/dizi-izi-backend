@@ -117,16 +117,14 @@ class FurnitureArrangement():
             {"south_wall": {"x_1": figure.side_d, "y_1": 0, "x_2": 0, "y_2": 0}})
         return room_coordinates
 
-
-    def middle_of_the_distance_on_the_wall(self, free_space: tuple, walls: dict) -> dict:
+    def middle_of_the_distance_on_the_wall(self, free_space: dict, walls: dict) -> dict:
         """
         Функция для нахождения средней точки в оставшемся пустом пространстве комнаты.
         Получает на вход координаты точек и длины стен.
         Возвращает координаты средней точки.
         """
-        # Распаковка исходных данных
-        coord_1_dict, coord_2_dict = free_space
-        coord_1, coord_2 = coord_1_dict.popitem()[1], coord_2_dict.popitem()[1]
+        coord_1 = free_space['left_corner']
+        coord_2 = free_space['right_corner']
         walls_length = tuple(walls.values())
         room_perimeter = sum(walls_length)
 

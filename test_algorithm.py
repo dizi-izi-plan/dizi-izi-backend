@@ -51,16 +51,16 @@ class TestFurnitureArrangement(unittest.TestCase):
     
     def test_middle_of_the_distance_on_the_wall(self):
         self.assertEqual(self.calculator.middle_of_the_distance_on_the_wall(
-            ({'left_corner': {'x': 0, 'y': 4}}, {'right_corner': {'x': 10, 'y': 4}}),
+            {'left_corner': {'x': 0, 'y': 4}, 'right_corner': {'x': 10, 'y': 4}},
             {"first_wall": 4, "second_wall": 10, "third_wall": 4, "fourth_wall": 10}), {'x': 5, 'y': 4})
         self.assertEqual(self.calculator.middle_of_the_distance_on_the_wall(
-            ({'left_corner': {'x': 0, 'y': 4}}, {'right_corner': {'x': 8, 'y': 0}}),
+            {'left_corner': {'x': 0, 'y': 4}, 'right_corner': {'x': 8, 'y': 0}},
             {"first_wall": 4, "second_wall": 10, "third_wall": 4, "fourth_wall": 10}), {'x': 8, 'y': 4})
         self.assertEqual(self.calculator.middle_of_the_distance_on_the_wall(
-            ({'left_corner': {'x': 2, 'y': 0}}, {'right_corner': {'x': 0, 'y': 4}}),
+            {'left_corner': {'x': 2, 'y': 0}, 'right_corner': {'x': 0, 'y': 4}},
             {"first_wall": 4, "second_wall": 10, "third_wall": 4, "fourth_wall": 10}), {'x': 0, 'y': 1})
         self.assertEqual(self.calculator.middle_of_the_distance_on_the_wall(
-            ({'left_corner': {'x': 2, 'y': 0}}, {'right_corner': {'x': 4, 'y': 0}}),
+            {'left_corner': {'x': 2, 'y': 0}, 'right_corner': {'x': 4, 'y': 0}},
             {"first_wall": 4, "second_wall": 10, "third_wall": 4, "fourth_wall": 10}), {'x': 7, 'y': 4})
 
     def test_corner_markings_first_wall(self):
