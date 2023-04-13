@@ -6,6 +6,7 @@ class TestFurnitureArrangement(unittest.TestCase):
 
     def setUp(self):
         self.calculator = FurnitureArrangement()
+
         
     def test_placing_in_coordinates(self):
         room_width = 5.0
@@ -24,6 +25,7 @@ class TestFurnitureArrangement(unittest.TestCase):
             "south_east": {"x": 1.0, "y": 1.0}
         }}
     }
+
 
     def test_double_free_space_algorithm(self):
         self.assertEqual(self.calculator.free_space_algorithm(
