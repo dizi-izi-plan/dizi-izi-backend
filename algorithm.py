@@ -117,57 +117,47 @@ class FurnitureArrangement():
             {"south_wall": {"x_1": figure.side_d, "y_1": 0, "x_2": 0, "y_2": 0}})
         return room_coordinates
 
-
-    def middle_of_the_distance_on_the_wall(self, free_space: tuple, walls: dict) -> dict:
-        # Распаковка исходных данных
-        coord_1_dict, coord_2_dict = free_space
-        coord_1, coord_2 = coord_1_dict.popitem()[1], coord_2_dict.popitem()[1]
+    def middle_of_the_distance_on_the_wall(self, free_space: dict, walls: dict) -> dict:
+        """
+        Функция для нахождения средней точки в оставшемся пустом пространстве комнаты.
+        Получает на вход координаты точек и длины стен.
+        Возвращает координаты средней точки.
+        """
+        coord_1 = free_space['left_corner']
+        coord_2 = free_space['right_corner']
         walls_length = tuple(walls.values())
-        # Определяем периметр помещения
         room_perimeter = sum(walls_length)
-        # Представляем стены помещения в виде одной длиной стены и размещаем на ней первую точку.
-        if coord_1['x'] == 0:
-            point_1 = coord_1['y']
-        elif coord_1['y'] == walls_length[0]:
-            point_1 = walls_length[0] + coord_1['x']
-        elif coord_1['x'] == walls_length[1]:
-            point_1 = sum(walls_length[:3]) - coord_1['y']
-        else:
-            point_1 = room_perimeter - coord_1['x']
-        # Размещаем вторую точку.
-        if coord_2['x'] == 0:
-            point_2 = coord_2['y']
-        elif coord_2['y'] == walls_length[0]:
-            point_2 = walls_length[0] + coord_2['x']
-        elif coord_2['x'] == walls_length[1]:
-            point_2 = sum(walls_length[:3]) - coord_2['y']
-        else:
-            point_2 = room_perimeter - coord_2['x']
-        # Определяем среднюю точку между двумя исходными.
-        middle_point = (point_2 - point_1) / 2
-        # Отдельно учитываем случай, когда между исходными координатами расположена точка (0, 0).
-        if point_2 < point_1:
-            point_2 = point_2 + room_perimeter
-            middle_point = (point_2 + point_1) / 2
-        # Переводим полученную точку в двумерное пространство нашей комнаты.
-        if 0 <= middle_point <= walls_length[0]:
-            middle_coord = {'x': 0, 'y': middle_point}
-        elif walls_length[0] < middle_point <= sum(walls_length[:2]):
-            middle_coord = {'x': middle_point - walls_length[0], 'y': walls_length[0]}
-        elif sum(walls_length[:2]) < middle_point <= sum(walls_length[:3]):
-            middle_coord = {'x': walls_length[1], 'y': sum(walls_length[:3]) - middle_point}
-        elif sum(walls_length[:3]) < middle_point <= room_perimeter:
-            middle_coord = {'x': room_perimeter - middle_point, 'y': 0}
-        # Учитываем случаи, когда между исходными координатами расположена точка (0, 0).
-        elif room_perimeter < middle_point <= room_perimeter + walls_length[0]:
-            middle_coord = {'x': 0, 'y': room_perimeter - middle_point}
-        elif room_perimeter + walls_length[0] < middle_point <= room_perimeter + sum(walls_length[:2]):
-            middle_coord = {'x': middle_point - walls_length[0] - room_perimeter, 'y': walls_length[0]}
-        elif room_perimeter + sum(walls_length[:2]) < middle_point <= room_perimeter + sum(walls_length[:3]):
-            middle_coord = {'x': walls_length[1], 'y': room_perimeter + sum(walls_length[:3]) - middle_point}
-        else:
-            middle_coord = {'x': 2 * room_perimeter - middle_point, 'y': 0}
-        return middle_coord
+
+        def convert_coords_to_line(coords: dict, length_of_walls: tuple) -> float|int:
+            """Функция преобразует координаты в точку на прямой."""
+            nonlocal room_perimeter
+            if coords['x'] == 0:
+                return coords['y']
+            elif coords['y'] == length_of_walls[0]:
+                return length_of_walls[0] + coords['x']
+            elif coords['x'] == length_of_walls[1]:
+                return sum(length_of_walls[:3]) - coords['y']
+            return sum(length_of_walls) - coords['x']
+
+        def convert_line_to_coords(point: float|int, length_of_walls: tuple) -> dict:
+            """Функция преобразует точку на прямой в координаты"""
+            nonlocal room_perimeter
+            if 0 <= point <= walls_length[0]:
+                return {'x': 0, 'y': point}
+            elif walls_length[0] < point <= sum(length_of_walls[:2]):
+                return {'x': point - length_of_walls[0], 'y': length_of_walls[0]}
+            elif sum(length_of_walls[:2]) < point <= sum(length_of_walls[:3]):
+                return {'x': length_of_walls[1], 'y': sum(length_of_walls[:3]) - point}
+            elif sum(length_of_walls[:3]) < point <= room_perimeter:
+                return {'x': room_perimeter - point, 'y': 0}
+            raise Exception('Ошибка данных, нет возможности разместить среднюю точку на одной из стен комнаты.')
+
+        point_1 = convert_coords_to_line(coord_1, walls_length)
+        point_2 = convert_coords_to_line(coord_2, walls_length)
+        middle_point = (point_2 + point_1) / 2 if point_1 < point_2 else (point_2 + point_1 + room_perimeter) / 2
+        if middle_point > room_perimeter:
+            middle_point = middle_point - room_perimeter
+        return convert_line_to_coords(middle_point, walls_length)
 
     def free_space_algorithm(self, objects: list, walls_length: dict) -> tuple:
         # На вход подается список с координатами углов объектов. Координаты между друг другом минусим, находим
