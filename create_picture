@@ -2,11 +2,12 @@
 from PIL import Image, ImageDraw
 from typing import Tuple, Dict
 
-def creare_rectangles(data: Tuple[Dict[str, Dict[str, int]]]):
+def creare_rectangles(data: Tuple[Dict[str, Dict[str, int]]], size_of_room: Tuple[int, float]):
     "Cоздание картинки с визуализированными прямоугольниками по координатам"
 
     # создаем холст с размером size (ширина, высота) и цветом фона color (код RGB)
-    canvas = Image.new("RGB", size = (1000, 1000), color = (0, 0, 0))
+    size_of_room
+    canvas = Image.new("RGB", size = size_of_room, color = (0, 0, 0))
 
 
     # созаем объект кисть для холста
@@ -29,8 +30,9 @@ def creare_rectangles(data: Tuple[Dict[str, Dict[str, int]]]):
     return
 
 # тестовый запуск
+size_of_room = (1000, 1000)
 store = ({'north_west': {'x':100, 'y':50}, 'south_east': {'x':250,'y': 200}},
          {'north_west': {'x':100, 'y':250}, 'south_east': {'x':250,'y': 500}},
         {'north_west': {'x':100, 'y':700}, 'south_east': {'x':250,'y': 950}})
 
-sample = creare_rectangles(store)
+sample = creare_rectangles(store, size_of_room)
