@@ -123,71 +123,70 @@ class FurnitureArrangement():
             bool: True, если место зарезервировано, иначе False
         """
 
-        counter = 0
-        breaker = 0
-        counter_border = 2
-
-        displacement_start = 0
-        middle_point["displacement_value"] = 7
-        middle_point["shift_method"] = "plus"
-
-        while counter < counter_border:
-            for item in objects:
+        # counter = 0
+        # breaker = 0
+        # counter_border = 2
+        #
+        # displacement_start = 0
+        # middle_point["displacement_value"] = 7
+        # middle_point["shift_method"] = "plus"
+        #
+        # while counter < counter_border:
+        #     for item in objects:
                 # Проверяем пересечение с другими объектами в комнате
-                if  item["north_west"]["x"] < figure["north_east"]["x"] <= item["north_east"]["x"] and \
-                    item["north_east"]["y"] < figure["north_east"]["y"] <= item["north_east"]["y"]:
-
-
-                elif item["north_west"]["x"] <= figure["north_west"]["x"] < item["north_east"]["x"] and \
-                     item["north_west"]["y"] <= figure["north_west"]["y"] < item["north_east"]["y"]:
-
-
-                elif item["south_west"]["x"] > figure["south_east"]["x"] >= item["south_east"]["x"] and \
-                     item["south_west"]["y"] <= figure["south_east"]["y"] < item["north_east"]["y"]:
-
-
-                elif item["south_west"]["x"] >= figure["south_west"]["x"] > item["south_east"]["x"] and \
-                     item["south_west"]["y"] <= figure["south_west"]["y"] < item["north_east"]["y"]:
-
-
-                else:
-                    breaker += 1
+                # if  item["north_west"]["x"] < figure["north_east"]["x"] <= item["north_east"]["x"] and \
+                #     item["north_east"]["y"] < figure["north_east"]["y"] <= item["north_east"]["y"]:
+                #
+                #
+                # elif item["north_west"]["x"] <= figure["north_west"]["x"] < item["north_east"]["x"] and \
+                #      item["north_west"]["y"] <= figure["north_west"]["y"] < item["north_east"]["y"]:
+                #
+                #
+                # elif item["south_west"]["x"] > figure["south_east"]["x"] >= item["south_east"]["x"] and \
+                #      item["south_west"]["y"] <= figure["south_east"]["y"] < item["north_east"]["y"]:
+                #
+                #
+                # elif item["south_west"]["x"] >= figure["south_west"]["x"] > item["south_east"]["x"] and \
+                #      item["south_west"]["y"] <= figure["south_west"]["y"] < item["north_east"]["y"]:
+                #
+                #
+                # else:
+                #     breaker += 1
 
 
                 # Проверяем, что мебель не выходит за пределы комнаты
-                if figure["north_east"]["x"] > walls["second_wall"] \
-                or figure["south_east"]["x"] > walls["second_wall"]:
+                # if figure["north_east"]["x"] > walls["second_wall"] \
+                # or figure["south_east"]["x"] > walls["second_wall"]:
+                #
+                #
+                # elif figure["north_east"]["y"] > walls["first_wall"] \
+                #   or figure["south_east"]["y"] > walls["first_wall"]:
+                #
+                #
+                # elif figure["north_east"]["x"] < 0 or figure["north_west"]["x"] < 0 or \
+                #
+                #
+                # else:
+                #     breaker += 1
 
-
-                elif figure["north_east"]["y"] > walls["first_wall"] \
-                  or figure["south_east"]["y"] > walls["first_wall"]:
-
-
-                elif figure["north_east"]["x"] < 0 or figure["north_west"]["x"] < 0 or \
-                     figure["north_east"]["y"] < 0 or figure["south_west"]["y"] < 0:
-
-
-                else:
-                    breaker += 1
-
-                if breaker == 2:
-                    break
-
-                breaker = 0
-                counter += 1
-                if counter %2 != 0:
-                    middle_point["shift_method"] = "minus"
-                elif counter % 2 == 0:
-                    middle_point["shift_method"] = "plus"
-                displacement_start += middle_point["displacement_value"]
-
-
-            if counter < counter_border:
-                # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
-                self.coordinates.append(figure)
-                return True
-
-            return False
+            #     if breaker == 2:
+            #         break
+            #
+            #     breaker = 0
+            #     counter += 1
+            #     if counter %2 != 0:
+            #         middle_point["shift_method"] = "minus"
+            #     elif counter % 2 == 0:
+            #         middle_point["shift_method"] = "plus"
+            #     displacement_start += middle_point["displacement_value"]
+            #
+            #
+            # if counter < counter_border:
+            #     # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
+            #     self.coordinates.append(figure)
+            #     return True
+            #
+            # return False
 
 
     def corner_markings(self, length_and_width: dict, center: dict, wall_number: int) -> dict:
@@ -236,53 +235,53 @@ class FurnitureArrangement():
 
         return corners_coordinates
 
-class DataVerificationAndImplementation(FurnitureArrangement):
+# class DataVerificationAndImplementation(FurnitureArrangement):
+#
+#     def area_calculation(self, figure: Figure) -> float:
+#         "Метод вычисления площади фигуры."
+#         if figure.side_a == figure.side_c and figure.side_b == figure.side_d:
+#             area = figure.side_a * figure.side_b
+#             return area
+#
+#         else:
+#             raise IncorrectFigure("Неверно заданы размеры помещения!")
+#
+#     def area_monitoring(self, area: dict) -> bool:
+#         "Метод контроля допустимой общей площади мебели в помещении."
+#         if (area["area_furniture"] / area["area_room"]) > 0.75:
+#             raise LackSpace("Общая площадь мебели превышает площадь помещения!")
+#         return True
+#
+#     def algorithm_activation(self, furniture: tuple, room_size: dict, random_switcher: bool):
+#         furniture_check = self.area_monitoring(db_operations(furniture))
+#         # надо дописать функции с возратом данных из бд и переделать входящие данные для area_monitoring
+#
+#         if furniture_check is False:
+#             raise_area_error(False)
+#
+#         # прописать функцию ошибки с выводом во фронт
+#
+#         def activation_core(algorithm_type):
+#             counter = 1
+#             while counter != len(furniture):
+#                 result_free_space = algorithm_type(db_operations(furniture))
+#                 self.middle_of_the_distance_on_the_wall(result_free_space)
+#                 draw_objects(self.coordinates)
+#                 counter += 1
+#
+#         if random_switcher is True:
+#             # условные переменные вызова (пока что)
+#             activation_core(self.random_free_space_algorithm(db_operations(furniture)))
+#
+#         elif random_switcher is False:
+#             activation_core(self.free_space_algorithm(db_operations(furniture)))
+#
 
-    def area_calculation(self, figure: Figure) -> float:
-        "Метод вычисления площади фигуры."
-        if figure.side_a == figure.side_c and figure.side_b == figure.side_d:
-            area = figure.side_a * figure.side_b
-            return area
-
-        else:
-            raise IncorrectFigure("Неверно заданы размеры помещения!")
-
-    def area_monitoring(self, area: dict) -> bool:
-        "Метод контроля допустимой общей площади мебели в помещении."
-        if (area["area_furniture"] / area["area_room"]) > 0.75:
-            raise LackSpace("Общая площадь мебели превышает площадь помещения!")
-        return True
-
-    def algorithm_activation(self, furniture: tuple, room_size: dict, random_switcher: bool):
-        furniture_check = self.area_monitoring(db_operations(furniture))
-        # надо дописать функции с возратом данных из бд и переделать входящие данные для area_monitoring
-
-        if furniture_check is False:
-            raise_area_error(False)
-
-        # прописать функцию ошибки с выводом во фронт
-
-        def activation_core(algorithm_type):
-            counter = 1
-            while counter != len(furniture):
-                result_free_space = algorithm_type(db_operations(furniture))
-                self.middle_of_the_distance_on_the_wall(result_free_space)
-                draw_objects(self.coordinates)
-                counter += 1
-
-        if random_switcher is True:
-            # условные переменные вызова (пока что)
-            activation_core(self.random_free_space_algorithm(db_operations(furniture)))
-
-        elif random_switcher is False:
-            activation_core(self.free_space_algorithm(db_operations(furniture)))
-
-
-    def room_coordinates(self, figure: dict) -> tuple:
-        "Метод создания координат комнаты."
-        room_coordinates = (
-            {"west_wall": {"x_1": 0, "y_1": 0, "x_2": 0, "y_2": figure.side_a}},
-            {"north_wall": {"x_1": 0, "y_1": figure.side_a, "x_2": figure.side_b, "y_2": figure.side_a}},
-            {"east_wall": {"x_1": figure.side_b, "y_1": figure.side_c, "x_2": figure.side_b, "y_2": 0}},
-            {"south_wall": {"x_1": figure.side_d, "y_1": 0, "x_2": 0, "y_2": 0}})
-        return room_coordinates
+    # def room_coordinates(self, figure: dict) -> tuple:
+    #     "Метод создания координат комнаты."
+    #     room_coordinates = (
+    #         {"west_wall": {"x_1": 0, "y_1": 0, "x_2": 0, "y_2": figure.side_a}},
+    #         {"north_wall": {"x_1": 0, "y_1": figure.side_a, "x_2": figure.side_b, "y_2": figure.side_a}},
+    #         {"east_wall": {"x_1": figure.side_b, "y_1": figure.side_c, "x_2": figure.side_b, "y_2": 0}},
+    #         {"south_wall": {"x_1": figure.side_d, "y_1": 0, "x_2": 0, "y_2": 0}})
+    #     return room_coordinates
