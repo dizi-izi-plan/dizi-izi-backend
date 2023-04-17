@@ -236,6 +236,7 @@ class FurnitureArrangement():
 
         return corners_coordinates
 
+
 class DataVerificationAndImplementation(FurnitureArrangement):
 
     def area_calculation(self, figure: Figure) -> float:
