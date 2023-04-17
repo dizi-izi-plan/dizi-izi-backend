@@ -7,24 +7,6 @@ class TestFurnitureArrangement(unittest.TestCase):
     def setUp(self):
         self.calculator = FurnitureArrangement()
 
-        
-    def test_placing_in_coordinates(self):
-        room_width = 5.0
-        room_height = 5.0
-        
-        furniture_width = 1.0
-        furniture_height = 1.0
-        
-        figure = Figure(side_b=furniture_width, side_a=furniture_height, side_c=room_width, side_d=room_height)
-        
-        initial_coordinates = {
-        "Furniture_1": {"corners": {
-            "north_west": {"x": 0.0, "y": 0.0},
-            "north_east": {"x": 0.0, "y": 1.0},
-            "south_west": {"x": 1.0, "y": 0.0},
-            "south_east": {"x": 1.0, "y": 1.0}
-        }}
-    }
 
 
     def test_double_free_space_algorithm(self):
