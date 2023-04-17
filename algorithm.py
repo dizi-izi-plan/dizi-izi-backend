@@ -105,19 +105,39 @@ class FurnitureArrangement():
             middle_point = middle_point - room_perimeter
         return convert_line_to_coords(middle_point, walls_length)
 
-    def placing_in_coordinates(x: float, y: float, figure: dict, coordinates: dict) -> bool:
+    def placing_in_coordinates(self, figure: dict, room_coordinates: dict, objects: dict) -> bool:
         """Функция проверки возможности резервирования места для мебели в комнате.
 
         Args:
-            x (float): координата x для мебели
-            y (float): координата y для мебели
-            figure (Figure): объект мебели (четырехугольник)
-            coordinates (dict): словарь с координатами других объектов в комнате
+            figure (dict): координаты для мебели
+            figure_length (dict): объект мебели (четырехугольник)
+            objects (dict): словарь с координатами других объектов в комнате
 
         Returns:
             bool: True, если место зарезервировано, иначе False
         """
         # Проверяем пересечение с другими объектами в комнате
+        counter = 0
+        switcher = True
+        breaker = 0
+
+        while counter < 2:
+            for item in objects:
+                if  item["north_west"]["x"] < figure["north_east"]["x"] <= item["north_east"]["x"] and\
+                    item["north_east"]["y"] < figure["north_east"]["y"] <= item["north_east"]["y"]:
+
+                elif item["north_west"]["x"] <= figure["north_west"]["x"] < item["north_east"]["x"] and\
+                     item["north_west"]["y"] <= figure["north_west"]["y"] < item["north_east"]["y"]:
+
+                elif item["south_west"]["x"] > figure["south_east"]["x"] >= item["south_east"]["x"] and \
+                     item["south_west"]["y"] <= figure["south_east"]["y"] < item["north_east"]["y"]:
+
+                elif item["south_west"]["x"] >= figure["south_west"]["x"] > item["south_east"]["x"]  and \
+                     item["south_west"]["y"] <= figure["south_west"]["y"] < item["north_east"]["y"]:
+
+                else:
+                    breaker += 1
+
 
         # Проверяем, что мебель не выходит за пределы комнаты
         if x < 0 or y < 0 or x + figure.side_b > figure.side_c or y + figure.side_a > figure.side_d:
@@ -130,7 +150,7 @@ class FurnitureArrangement():
             "south_east": {"x": x + figure.side_b, "y": y + figure.side_a}
         }
 
-        coordinates[f"Furniture_{len(coordinates) + 1}"] = {"corners": corners}
+        objects[f"Furniture_{len(objects) + 1}"] = {"corners": corners}
 
         return True
 
