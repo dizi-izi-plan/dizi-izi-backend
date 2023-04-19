@@ -152,24 +152,27 @@ class FurnitureArrangement:
                 return 3
 
         def displacement():
-            nonlocal figure, middle_point, internal_counter
+            nonlocal figure, middle_point, internal_counter, external_counter, external_counter_border
             middle_point["middle_point"] = self.middle_of_the_distance_on_the_wall(middle_point, walls)
             wall = wall_definition(middle_point["middle_point"])
             figure = self.corner_markings(length_and_width, middle_point["middle_point"], wall)
             internal_counter = 0
+            external_counter += 1
+
 
         # Задаем переменные, чтобы определить случаи для выхода из цикла
         internal_counter = 0
         external_counter = 0
-        external_counter_border = 3
+        external_counter_border = 2000
         breaker = 1
 
+
         displacement_start = 0
-        middle_point["displacement_value"] = 7
+        middle_point["displacement_value"] = 1
         middle_point["shift_method"] = "plus"
 
         while external_counter < external_counter_border:
-            while internal_counter != len(objects):
+            while internal_counter < len(objects):
                 # Проверяем пересечение с другими объектами в комнате
                 if objects[internal_counter]["north_west"]["x"] <= figure["north_east"]["x"] <= objects[internal_counter]["north_east"]["x"] and \
                    objects[internal_counter]["south_east"]["y"] <= figure["north_east"]["y"] <= objects[internal_counter]["north_east"]["y"]:
@@ -189,9 +192,13 @@ class FurnitureArrangement:
 
                 else:
                     breaker += 1
+
+                if external_counter >= external_counter_border:
+                    return False
                 internal_counter += 1
 
-                # Проверяем, что мебель не выходит за пределы комнаты
+
+            # Проверяем, что мебель не выходит за пределы комнаты
             if figure["north_east"]["x"] > walls["second_wall"] \
             or figure["south_east"]["x"] > walls["second_wall"]:
                 displacement()
@@ -206,18 +213,18 @@ class FurnitureArrangement:
             else:
                 breaker += 1
 
-            if breaker == len(objects) + 1:
+            if breaker >= len(objects) + 1:
                 break
 
             breaker = 1
-            external_counter += 1
+
             if external_counter % 2 != 0:
                 middle_point["shift_method"] = "minus"
             elif external_counter % 2 == 0:
                 middle_point["shift_method"] = "plus"
             displacement_start += middle_point["displacement_value"]
 
-            if external_counter == external_counter_border:
+            if external_counter >= external_counter_border:
                 return False
 
         # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
@@ -312,10 +319,10 @@ class FurnitureArrangement:
     #         activation_core(self.free_space_algorithm(db_operations(furniture)))
     #
 
-    def algorithm_activation(self, furniture: list, room_size: dict):
+    def algorithm_activation(self, doors_windows: list, furniture: list, room_size: dict):
 
         for item in furniture:
-            result_free_space = self.free_space_algorithm(item)
+            result_free_space = self.free_space_algorithm(doors_windows)
             result_middle_distance = self.middle_of_the_distance_on_the_wall(result_free_space, room_size)
             result_of_placing = self.placing_in_coordinates(result_middle_distance, item, room_size, self.coordinates)
 

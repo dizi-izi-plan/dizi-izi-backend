@@ -90,19 +90,57 @@ class TestFurnitureArrangement(unittest.TestCase):
                                                                   "south_east": {"x": 2, "y": 0.5}}]
                                                                 ), True)
 
-        # self.assertEqual(self.calculator.placing_in_coordinates({"middle_point": {"x": 1.5, "y": 3}},
-        #                                                         {"north_west": {"x": 1, "y": 3},
-        #                                                          "north_east": {"x": 2, "y": 3},
-        #                                                          "south_west": {"x": 1, "y": 2},
-        #                                                          "south_east": {"x": 2, "y": 2}},
-        #                                                         {"first_wall": 3, "second_wall": 3,
-        #                                                          "third_wall": 3, "fourth_wall": 3},
-        #                                                         [{"north_west": {"x": 1, "y": 3},
-        #                                                           "north_east": {"x": 3, "y": 3},
-        #                                                           "south_west": {"x": 1, "y": 2},
-        #                                                           "south_east": {"x": 3, "y": 2}},
-        #                                                          {"north_west": {"x": 0, "y": 2.5},
-        #                                                           "north_east": {"x": 3, "y": 2.5},
-        #                                                           "south_west": {"x": 0, "y": 0},
-        #                                                           "south_east": {"x": 3, "y": 0}}]
-        #                                                         ), False)
+        self.assertEqual(self.calculator.placing_in_coordinates({"middle_point": {"x": 1.5, "y": 3}},
+                                                                {"north_west": {"x": 1, "y": 3},
+                                                                 "north_east": {"x": 2, "y": 3},
+                                                                 "south_west": {"x": 1, "y": 2},
+                                                                 "south_east": {"x": 2, "y": 2}},
+                                                                {"first_wall": 3, "second_wall": 3,
+                                                                 "third_wall": 3, "fourth_wall": 3},
+                                                                [{"north_west": {"x": 1, "y": 3},
+                                                                  "north_east": {"x": 3, "y": 3},
+                                                                  "south_west": {"x": 1, "y": 2},
+                                                                  "south_east": {"x": 3, "y": 2}},
+                                                                 {"north_west": {"x": 0, "y": 2.5},
+                                                                  "north_east": {"x": 3, "y": 2.5},
+                                                                  "south_west": {"x": 0, "y": 0},
+                                                                  "south_east": {"x": 3, "y": 0}}]
+                                                                ), False)
+
+        self.assertEqual(self.calculator.placing_in_coordinates({"middle_point": {"x": 0, "y": 0.5}},
+                                                                {"north_west": {"x": 0, "y": 0},
+                                                                 "north_east": {"x": 0, "y": 1},
+                                                                 "south_west": {"x": 0.5, "y": 0},
+                                                                 "south_east": {"x": 0.5, "y": 1}},
+                                                                {"first_wall": 3, "second_wall": 3,
+                                                                 "third_wall": 3, "fourth_wall": 3},
+                                                                [{"north_west": {"x": 0, "y": 1.5},
+                                                                  "north_east": {"x": 0, "y": 2},
+                                                                  "south_west": {"x": 0.5, "y": 1.5},
+                                                                  "south_east": {"x": 0.5, "y": 2}},
+                                                                 {"north_west": {"x": 0.5, "y": 3},
+                                                                  "north_east": {"x": 3, "y": 3},
+                                                                  "south_west": {"x": 0.5, "y": 1.5},
+                                                                  "south_east": {"x": 3, "y": 1.5}}]
+                                                                ), True)
+
+        self.assertEqual(self.calculator.placing_in_coordinates({"middle_point": {"x": 1.5, "y": 0}},
+                                                                {"north_west": {"x": 1, "y": 3},
+                                                                 "north_east": {"x": 2, "y": 3},
+                                                                 "south_west": {"x": 1, "y": 0},
+                                                                 "south_east": {"x": 2, "y": 0}},
+                                                                {"first_wall": 3, "second_wall": 3,
+                                                                 "third_wall": 3, "fourth_wall": 3},
+                                                                [{"north_west": {"x": 0, "y": 0},
+                                                                  "north_east": {"x": 0, "y": 1},
+                                                                  "south_west": {"x": 0.5, "y": 0},
+                                                                  "south_east": {"x": 0.5, "y": 1}},
+                                                                 {"north_west": {"x": 0, "y": 1.5},
+                                                                  "north_east": {"x": 0, "y": 2},
+                                                                  "south_west": {"x": 0.5, "y": 1.5},
+                                                                  "south_east": {"x": 0.5, "y": 2}},
+                                                                 {"north_west": {"x": 0.5, "y": 3},
+                                                                  "north_east": {"x": 3, "y": 3},
+                                                                  "south_west": {"x": 0.5, "y": 1.5},
+                                                                  "south_east": {"x": 3, "y": 1.5}}]
+                                                                ), True)
