@@ -190,50 +190,33 @@ class FurnitureArrangement():
 
 
     def corner_markings(self, length_and_width: dict, center: dict, wall_number: int) -> dict:
+        """Функция для определения угловых маркеров мебели."""
+        # Распаковка исходных данных в кортеж
+        x, y, l, w = tuple({**center, **length_and_width}.values())
+        # Составление кортежа со всеми вариантами угловых маркеров и словаря с набором маркеров для каждой стены
+        options = (x, y, x - l, x + l, x - w / 2, x + w / 2, y - l, y + l, y - w / 2, y + w / 2)
+        coord_for_walls = {
+            1: (options[0], options[9], options[0], options[8], options[3], options[9], options[3], options[8]),
+            2: (options[5], options[1], options[4], options[1], options[5], options[6], options[4], options[6]),
+            3: (options[0], options[8], options[0], options[9], options[2], options[8], options[2], options[9]),
+            4: (options[4], options[1], options[5], options[1], options[4], options[7], options[5], options[7])
+        }
+
         corners_coordinates = {"north_west": {"x": 0, "y": 0}, "north_east": {"x": 0, "y": 0},
                                "south_west": {"x": 0, "y": 0}, "south_east": {"x": 0, "y": 0}}
-
-        if wall_number == 1:
-            corners_coordinates["north_east"]["x"] = center["x"]
-            corners_coordinates["north_east"]["y"] = center["y"] + (length_and_width["width"] // 2)
-            corners_coordinates["north_west"]["x"] = center["x"]
-            corners_coordinates["north_west"]["y"] = center["y"] - (length_and_width["width"] // 2)
-            corners_coordinates["south_east"]["x"] = center["x"] + length_and_width["length"]
-            corners_coordinates["south_east"]["y"] = center["y"] + (length_and_width["width"] // 2)
-            corners_coordinates["south_west"]["x"] = center["x"] + length_and_width["length"]
-            corners_coordinates["south_west"]["y"] = center["y"] - (length_and_width["width"] // 2)
-
-        elif wall_number == 2:
-            corners_coordinates["north_east"]["x"] = center["x"] + (length_and_width["width"] // 2)
-            corners_coordinates["north_east"]["y"] = center["y"]
-            corners_coordinates["north_west"]["x"] = center["x"] - (length_and_width["width"] // 2)
-            corners_coordinates["north_west"]["y"] = center["y"]
-            corners_coordinates["south_east"]["x"] = center["x"] + (length_and_width["width"] // 2)
-            corners_coordinates["south_east"]["y"] = center["y"] - length_and_width["length"]
-            corners_coordinates["south_west"]["x"] = center["x"] - (length_and_width["width"] // 2)
-            corners_coordinates["south_west"]["y"] = center["y"] - length_and_width["length"]
-
-        elif wall_number == 3:
-            corners_coordinates["north_east"]["x"] = center["x"]
-            corners_coordinates["north_east"]["y"] = center["y"] - (length_and_width["width"] // 2)
-            corners_coordinates["north_west"]["x"] = center["x"]
-            corners_coordinates["north_west"]["y"] = center["y"] + (length_and_width["width"] // 2)
-            corners_coordinates["south_east"]["x"] = center["x"] - length_and_width["length"]
-            corners_coordinates["south_east"]["y"] = center["y"] - (length_and_width["width"] // 2)
-            corners_coordinates["south_west"]["x"] = center["x"] - length_and_width["length"]
-            corners_coordinates["south_west"]["y"] = center["y"] + (length_and_width["width"] // 2)
-
-        elif wall_number == 4:
-            corners_coordinates["north_east"]["x"] = center["x"] - (length_and_width["width"] // 2)
-            corners_coordinates["north_east"]["y"] = center["y"]
-            corners_coordinates["north_west"]["x"] = center["x"] + (length_and_width["width"] // 2)
-            corners_coordinates["north_west"]["y"] = center["y"]
-            corners_coordinates["south_east"]["x"] = center["x"] - (length_and_width["width"] // 2)
-            corners_coordinates["south_east"]["y"] = center["y"] + length_and_width["length"]
-            corners_coordinates["south_west"]["x"] = center["x"] + (length_and_width["width"] // 2)
-            corners_coordinates["south_west"]["y"] = center["y"] + length_and_width["length"]
-
+        if wall_number in coord_for_walls:
+            corners_coordinates["north_east"]["x"] = coord_for_walls[wall_number][0]
+            corners_coordinates["north_east"]["y"] = coord_for_walls[wall_number][1]
+            corners_coordinates["north_west"]["x"] = coord_for_walls[wall_number][2]
+            corners_coordinates["north_west"]["y"] = coord_for_walls[wall_number][3]
+            corners_coordinates["south_east"]["x"] = coord_for_walls[wall_number][4]
+            corners_coordinates["south_east"]["y"] = coord_for_walls[wall_number][5]
+            corners_coordinates["south_west"]["x"] = coord_for_walls[wall_number][6]
+            corners_coordinates["south_west"]["y"] = coord_for_walls[wall_number][7]
+        else:
+            raise Exception('Номер стены указан неверно.')
         return corners_coordinates
+
 
 # class DataVerificationAndImplementation(FurnitureArrangement):
 #
