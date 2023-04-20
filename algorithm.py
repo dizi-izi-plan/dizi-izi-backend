@@ -130,6 +130,9 @@ class FurnitureArrangement:
         Returns:
             bool: True, если место зарезервировано, иначе False
         """
+
+        objects = self.coordinates
+
         # Определяем ширину и высоту объекта, чтобы передать ее в дальнейшем в corner_markings
         length_and_width = {"length": abs(figure["north_west"]["y"] - figure["south_west"]["y"]),
                             "width": abs(figure["north_west"]["x"] - figure["north_east"]["x"])}
@@ -319,11 +322,31 @@ class FurnitureArrangement:
     #         activation_core(self.free_space_algorithm(db_operations(furniture)))
     #
 
-    def algorithm_activation(self, doors_windows: list, furniture: list, room_size: dict):
+    def algorithm_activation(self, doors_and_windows: list, furniture: list, room_size: dict):
+        # Определения координат комнаты для работы определения принадлежности координат к конкретной стене
+        room_coordinates = {"south_west": {"x": 0, "y": 0},
+                            "north_west": {"x": 0, "y": room_size["first_wall"]},
+                            "north_east": {"x": room_size["second_wall"], "y": room_size["first_wall"]},
+                            "south_east": {"x": room_size["second_wall"], "y": 0}}
+
+        # Функция определения стены по координатам для отправки ее в дальнейшем в corner_markings
+        def wall_definition(dot: dict):
+            if dot["y"] == 0:
+                return 4
+            elif dot["x"] == 0:
+                return 1
+            elif dot["y"] == room_coordinates["north_east"]["y"]:
+                return 2
+            elif dot["x"] == room_coordinates["north_east"]["x"]:
+                return 3
+        for item in doors_and_windows:
+            self.coordinates.append(item)
 
         for item in furniture:
-            result_free_space = self.free_space_algorithm(doors_windows)
+            result_free_space = self.free_space_algorithm(self.coordinates)
             result_middle_distance = self.middle_of_the_distance_on_the_wall(result_free_space, room_size)
-            result_of_placing = self.placing_in_coordinates(result_middle_distance, item, room_size, self.coordinates)
+            result_wall_definition = wall_definition(result_middle_distance)
+            result_corner_markings = self.corner_markings(item, result_middle_distance, result_wall_definition)
+            self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size, self.coordinates)
 
-        create_picture.create_rectangles(self.coordinates)
+        print(self.coordinates)
