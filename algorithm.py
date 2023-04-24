@@ -117,7 +117,7 @@ class FurnitureArrangement:
 
             return convert_line_to_coordinates(shifted_point, walls_length)
 
-    def placing_in_coordinates(self, middle_point: dict, figure: dict, walls: dict, objects: list) -> bool:
+    def placing_in_coordinates(self, middle_point: dict, figure: dict, walls: dict) -> bool:
         """Функция проверки возможности резервирования места для мебели в комнате.
 
         Args:
@@ -347,6 +347,7 @@ class FurnitureArrangement:
             result_middle_distance = self.middle_of_the_distance_on_the_wall(result_free_space, room_size)
             result_wall_definition = wall_definition(result_middle_distance)
             result_corner_markings = self.corner_markings(item, result_middle_distance, result_wall_definition)
-            self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size, self.coordinates)
+            self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size)
 
-        print(self.coordinates)
+        create_picture.create_rectangles(self.coordinates)
+        # print(self.coordinates)
