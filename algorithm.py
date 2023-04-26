@@ -167,6 +167,7 @@ class FurnitureArrangement:
 
         # Задаем переменные, чтобы определить случаи для выхода из цикла
         internal_counter = 0
+        corners_counter = 0
         external_counter = 0
         external_counter_border = 2000
         breaker = 1
@@ -176,24 +177,22 @@ class FurnitureArrangement:
         middle_point["displacement_value"] = 1
         middle_point["shift_method"] = "plus"
 
+        corners_figure_x = (figure["north_west"]["x"], figure["north_east"]["x"], figure["south_east"]["x"], figure["south_west"]["x"])
+        corners_figure_y = (figure["north_west"]["y"], figure["north_east"]["y"], figure["south_east"]["y"], figure["south_west"]["y"])
+
         while external_counter < external_counter_border:
             while internal_counter < len(objects):
-                # Проверяем пересечение с другими объектами в комнате
-                if objects[internal_counter]["north_west"]["x"] <= figure["north_east"]["x"] <= objects[internal_counter]["north_east"]["x"] and \
-                   objects[internal_counter]["south_east"]["y"] <= figure["north_east"]["y"] <= objects[internal_counter]["north_east"]["y"]:
-                    displacement()
+                while corners_counter < 4:
+                    # Проверяем пересечение с другими объектами в комнате
+                    if objects[internal_counter]["north_west"]["x"] <= corners_figure_x[corners_counter] <= objects[internal_counter]["north_east"]["x"] and \
+                       objects[internal_counter]["south_east"]["y"] <= corners_figure_y[corners_counter] <= objects[internal_counter]["north_east"]["y"]:
+                        displacement()
 
-                elif objects[internal_counter]["north_west"]["x"] <= figure["north_west"]["x"] <= objects[internal_counter]["north_east"]["x"] and \
-                     objects[internal_counter]["south_west"]["y"] <= figure["north_west"]["y"] <= objects[internal_counter]["north_west"]["y"]:
-                    displacement()
+                    elif objects[internal_counter]["north_west"]["x"] >= corners_figure_x[corners_counter] >= objects[internal_counter]["north_east"]["x"] and \
+                         objects[internal_counter]["south_east"]["y"] >= corners_figure_y[corners_counter] >= objects[internal_counter]["north_east"]["y"]:
+                        displacement()
 
-                elif objects[internal_counter]["south_east"]["x"] >= figure["south_east"]["x"] >= objects[internal_counter]["south_west"]["x"] and \
-                     objects[internal_counter]["south_east"]["y"] <= figure["south_east"]["y"] <= objects[internal_counter]["north_east"]["y"]:
-                    displacement()
-
-                elif objects[internal_counter]["south_east"]["x"] >= figure["south_west"]["x"] >= objects[internal_counter]["south_west"]["x"] and \
-                     objects[internal_counter]["south_west"]["y"] <= figure["south_west"]["y"] <= objects[internal_counter]["north_west"]["y"]:
-                    displacement()
+                    corners_counter += 1
 
                 else:
                     breaker += 1
