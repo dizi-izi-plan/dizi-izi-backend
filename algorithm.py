@@ -99,8 +99,8 @@ class FurnitureArrangement:
                 middle_point = middle_point - room_perimeter
             return convert_line_to_coordinates(middle_point, walls_length)
 
-        elif "middle_point" in free_space:
-            point = convert_coordinates_to_line(free_space["middle_point"], walls_length)
+        elif "x" in free_space:
+            point = convert_coordinates_to_line({"x": free_space["x"], "y": free_space["y"]}, walls_length)
             if free_space["shift_method"] == "plus":
                 shifted_point = point + free_space["displacement_value"]
             elif free_space["shift_method"] == "minus":
@@ -134,8 +134,10 @@ class FurnitureArrangement:
         objects = self.coordinates
 
         # Определяем ширину и высоту объекта, чтобы передать ее в дальнейшем в corner_markings
-        length_and_width = {"length": abs(figure["north_west"]["y"] - figure["south_west"]["y"]),
-                            "width": abs(figure["north_west"]["x"] - figure["north_east"]["x"])}
+        length_and_width = {"length": abs(figure["north_west"]["y"] - figure["south_west"]["y"])
+                                    + abs(figure["north_west"]["y"] - figure["north_east"]["y"]),
+                             "width": abs(figure["north_west"]["x"] - figure["south_west"]["x"])
+                                    + abs(figure["north_west"]["x"] - figure["north_east"]["x"])}
 
         # Определения координат комнаты для работы определения принадлежности координат к конкретной стене
         room_coordinates = {"south_west": {"x": 0, "y": 0},
@@ -156,9 +158,9 @@ class FurnitureArrangement:
 
         def displacement():
             nonlocal figure, middle_point, internal_counter, external_counter, external_counter_border
-            middle_point["middle_point"] = self.middle_of_the_distance_on_the_wall(middle_point, walls)
-            wall = wall_definition(middle_point["middle_point"])
-            figure = self.corner_markings(length_and_width, middle_point["middle_point"], wall)
+            middle_point["x"], middle_point["y"] = self.middle_of_the_distance_on_the_wall(middle_point, walls).values()
+            wall = wall_definition(middle_point)
+            figure = self.corner_markings(length_and_width, middle_point, wall)
             internal_counter = 0
             external_counter += 1
 
@@ -350,4 +352,4 @@ class FurnitureArrangement:
             self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size)
 
         create_picture.create_rectangles(self.coordinates)
-        # print(self.coordinates)
+        print(self.coordinates)
