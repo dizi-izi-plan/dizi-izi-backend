@@ -125,13 +125,11 @@ class FurnitureArrangement:
             figure (dict): координаты для мебели. {"north_west": {"x": 0, "y": 0},
                    "north_east": {"x": 0, "y": 0}, "south_west": {"x": 0, "y": 0}, "south_east": {"x": 0, "y": 0}}
             walls (dict): стены комнаты начиная от левой {"first_wall": 0, "second_wall": 0, "third_wall": 0, "fourth_wall":0}
-            objects (tuple): кортеж словарей с координатами других объектов в комнате
 
         Returns:
             bool: True, если место зарезервировано, иначе False
         """
 
-        objects = self.coordinates
 
         # Определяем ширину и высоту объекта, чтобы передать ее в дальнейшем в corner_markings
         length_and_width = {"length": abs(figure["north_west"]["y"] - figure["south_west"]["y"])
@@ -157,49 +155,60 @@ class FurnitureArrangement:
                 return 3
 
         def displacement():
-            nonlocal figure, middle_point, internal_counter, external_counter, external_counter_border
+            nonlocal figure, middle_point, objects_counter, cycle_counter, cycle_border
             middle_point["x"], middle_point["y"] = self.middle_of_the_distance_on_the_wall(middle_point, walls).values()
             wall = wall_definition(middle_point)
             figure = self.corner_markings(length_and_width, middle_point, wall)
-            internal_counter = 0
-            external_counter += 1
+            objects_counter = 0
+            cycle_counter += 1
 
 
         # Задаем переменные, чтобы определить случаи для выхода из цикла
-        internal_counter = 0
-        corners_counter = 0
-        external_counter = 0
-        external_counter_border = 2000
-        breaker = 1
+        objects_counter = 0
+        cycle_counter = 0
+        cycle_border = 2000
+        breaker = 1  # Переменная, выводящая из общего цикла при не пересечении объектов
 
-
+        # Задаем данные для дальнейшей их отправки в функцию переноса объекта
         displacement_start = 0
         middle_point["displacement_value"] = 1
         middle_point["shift_method"] = "plus"
 
-        corners_figure_x = (figure["north_west"]["x"], figure["north_east"]["x"], figure["south_east"]["x"], figure["south_west"]["x"])
-        corners_figure_y = (figure["north_west"]["y"], figure["north_east"]["y"], figure["south_east"]["y"], figure["south_west"]["y"])
 
-        while external_counter < external_counter_border:
-            while internal_counter < len(objects):
-                while corners_counter < 4:
+        while cycle_counter < cycle_border:
+            while objects_counter < len(self.coordinates):
+                figure_2 = self.coordinates[objects_counter]
+                for item in figure.values():
                     # Проверяем пересечение с другими объектами в комнате
-                    if objects[internal_counter]["north_west"]["x"] <= corners_figure_x[corners_counter] <= objects[internal_counter]["north_east"]["x"] and \
-                       objects[internal_counter]["south_east"]["y"] <= corners_figure_y[corners_counter] <= objects[internal_counter]["north_east"]["y"]:
+                    if figure_2["north_west"]["x"] <= item["x"] <= figure_2["north_east"]["x"] and \
+                       figure_2["south_east"]["y"] <= item["y"] <= figure_2["north_east"]["y"]:
                         displacement()
 
-                    elif objects[internal_counter]["north_west"]["x"] >= corners_figure_x[corners_counter] >= objects[internal_counter]["north_east"]["x"] and \
-                         objects[internal_counter]["south_east"]["y"] >= corners_figure_y[corners_counter] >= objects[internal_counter]["north_east"]["y"]:
+                    elif figure_2["north_west"]["x"] >= item["x"] >= figure_2["north_east"]["x"] and \
+                         figure_2["south_east"]["y"] >= item["y"] >= figure_2["north_east"]["y"]:
                         displacement()
 
-                    corners_counter += 1
+                for item in figure_2.values():
+                    # Проверяем объекты на поглощение друг друга
+                    if figure["north_west"]["x"] <= item["x"] <= figure["north_east"]["x"] and \
+                       figure["south_east"]["y"] <= item["y"] <= figure["north_east"]["y"]:
+                        displacement()
+
+                    elif figure["north_west"]["x"] >= item["x"] >= figure["north_east"]["x"] and \
+                         figure["south_east"]["y"] >= item["y"] >= figure["north_east"]["y"]:
+                        displacement()
+
+                # Проверка на пересечение ребер
+                if figure["south_east"]["y"] > figure_2["south_east"]["y"] > figure_2["south_west"]["y"] > figure["south_west"]["y"] and \
+                   figure_2["north_east"]["x"] > figure["south_east"]["x"] > figure["south_west"]["x"] > figure_2["south_west"]["x"]
+
 
                 else:
                     breaker += 1
 
-                if external_counter >= external_counter_border:
+                if cycle_counter >= cycle_border:
                     return False
-                internal_counter += 1
+                objects_counter += 1
 
 
             # Проверяем, что мебель не выходит за пределы комнаты
@@ -217,18 +226,18 @@ class FurnitureArrangement:
             else:
                 breaker += 1
 
-            if breaker >= len(objects) + 1:
+            if breaker >= len(self.coordinates) + 1:
                 break
 
             breaker = 1
 
-            if external_counter % 2 != 0:
+            if cycle_counter % 2 != 0:
                 middle_point["shift_method"] = "minus"
-            elif external_counter % 2 == 0:
+            elif cycle_counter % 2 == 0:
                 middle_point["shift_method"] = "plus"
             displacement_start += middle_point["displacement_value"]
 
-            if external_counter >= external_counter_border:
+            if cycle_counter >= cycle_border:
                 return False
 
         # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
@@ -239,45 +248,53 @@ class FurnitureArrangement:
         corners_coordinates = {"north_west": {"x": 0, "y": 0}, "north_east": {"x": 0, "y": 0},
                                "south_west": {"x": 0, "y": 0}, "south_east": {"x": 0, "y": 0}}
 
+        north_east = corners_coordinates["north_east"]
+        north_west = corners_coordinates["north_west"]
+        south_east = corners_coordinates["south_east"]
+        south_west = corners_coordinates["south_west"]
+
+        length = length_and_width["length"]
+        width = length_and_width["width"]
+
         if wall_number == 1:
-            corners_coordinates["north_east"]["x"] = center["x"]
-            corners_coordinates["north_east"]["y"] = center["y"] + (length_and_width["width"] / 2)
-            corners_coordinates["north_west"]["x"] = center["x"]
-            corners_coordinates["north_west"]["y"] = center["y"] - (length_and_width["width"] / 2)
-            corners_coordinates["south_east"]["x"] = center["x"] + length_and_width["length"]
-            corners_coordinates["south_east"]["y"] = center["y"] + (length_and_width["width"] / 2)
-            corners_coordinates["south_west"]["x"] = center["x"] + length_and_width["length"]
-            corners_coordinates["south_west"]["y"] = center["y"] - (length_and_width["width"] / 2)
+            north_east["x"] = center["x"]
+            north_east["y"] = center["y"] + (width / 2)
+            north_west["x"] = center["x"]
+            north_west["y"] = center["y"] - (width / 2)
+            south_east["x"] = center["x"] + length
+            south_east["y"] = center["y"] + (width / 2)
+            south_west["x"] = center["x"] + length
+            south_west["y"] = center["y"] - (width / 2)
 
         elif wall_number == 2:
-            corners_coordinates["north_east"]["x"] = center["x"] + (length_and_width["width"] / 2)
-            corners_coordinates["north_east"]["y"] = center["y"]
-            corners_coordinates["north_west"]["x"] = center["x"] - (length_and_width["width"] / 2)
-            corners_coordinates["north_west"]["y"] = center["y"]
-            corners_coordinates["south_east"]["x"] = center["x"] + (length_and_width["width"] / 2)
-            corners_coordinates["south_east"]["y"] = center["y"] - length_and_width["length"]
-            corners_coordinates["south_west"]["x"] = center["x"] - (length_and_width["width"] / 2)
-            corners_coordinates["south_west"]["y"] = center["y"] - length_and_width["length"]
+            north_east["x"] = center["x"] + (width / 2)
+            north_east["y"] = center["y"]
+            north_west["x"] = center["x"] - (width / 2)
+            north_west["y"] = center["y"]
+            south_east["x"] = center["x"] + (width / 2)
+            south_east["y"] = center["y"] - length
+            south_west["x"] = center["x"] - (width / 2)
+            south_west["y"] = center["y"] - length
 
         elif wall_number == 3:
-            corners_coordinates["north_east"]["x"] = center["x"]
-            corners_coordinates["north_east"]["y"] = center["y"] - (length_and_width["width"] / 2)
-            corners_coordinates["north_west"]["x"] = center["x"]
-            corners_coordinates["north_west"]["y"] = center["y"] + (length_and_width["width"] / 2)
-            corners_coordinates["south_east"]["x"] = center["x"] - length_and_width["length"]
-            corners_coordinates["south_east"]["y"] = center["y"] - (length_and_width["width"] / 2)
-            corners_coordinates["south_west"]["x"] = center["x"] - length_and_width["length"]
-            corners_coordinates["south_west"]["y"] = center["y"] + (length_and_width["width"] / 2)
+            north_east["x"] = center["x"]
+            north_east["y"] = center["y"] - (width / 2)
+            north_west["x"] = center["x"]
+            north_west["y"] = center["y"] + (width / 2)
+            south_east["x"] = center["x"] - length
+            south_east["y"] = center["y"] - (width / 2)
+            south_west["x"] = center["x"] - length
+            south_west["y"] = center["y"] + (width / 2)
 
         elif wall_number == 4:
-            corners_coordinates["north_east"]["x"] = center["x"] - (length_and_width["width"] / 2)
-            corners_coordinates["north_east"]["y"] = center["y"]
-            corners_coordinates["north_west"]["x"] = center["x"] + (length_and_width["width"] / 2)
-            corners_coordinates["north_west"]["y"] = center["y"]
-            corners_coordinates["south_east"]["x"] = center["x"] - (length_and_width["width"] / 2)
-            corners_coordinates["south_east"]["y"] = center["y"] + length_and_width["length"]
-            corners_coordinates["south_west"]["x"] = center["x"] + (length_and_width["width"] / 2)
-            corners_coordinates["south_west"]["y"] = center["y"] + length_and_width["length"]
+            north_east["x"] = center["x"] - (width / 2)
+            north_east["y"] = center["y"]
+            north_west["x"] = center["x"] + (width / 2)
+            north_west["y"] = center["y"]
+            south_east["x"] = center["x"] - (width / 2)
+            south_east["y"] = center["y"] + length
+            south_west["x"] = center["x"] + (width / 2)
+            south_west["y"] = center["y"] + length
 
         return corners_coordinates
 
