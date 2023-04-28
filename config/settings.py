@@ -127,6 +127,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Настройки почтового ящика для отправки писем
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = '[YOUR EMAIL HOST]'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = '[YOUR EMAIL THAT WILL SEND]'
+# EMAIL_HOST_PASSWORD = '[YOUR EMAIL APP PASSWORD]'
+# EMAIL_USE_TLS = True
+
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
@@ -138,15 +147,16 @@ REST_FRAMEWORK = {
 }
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
-    "SERIALIZERS": {
-        "user_create": 'djoser.serializers.UserCreateSerializer',
-        "user": 'djoser.serializers.UserSerializer',
-        'current_user': 'djoser.serializers.UserSerializer',
-        'user_delete': 'djoser.serializers.UserDeleteSerializer',
+    'SEND_CONFIRMATION_EMAIL': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'SERIALIZERS': {
+        'user_create': 'djoser.serializers.UserCreateSerializer',
+        'user': 'djoser.serializers.UserSerializer',
     },
 }
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
