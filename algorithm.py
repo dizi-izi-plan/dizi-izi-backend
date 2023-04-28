@@ -162,6 +162,53 @@ class FurnitureArrangement:
             objects_counter = 0
             cycle_counter += 1
 
+        def rib_crossover_check(object, object_2):
+            # Проверка на пересечение ребер в левом нижнем углу
+            if object["south_east"]["y"] > object_2["south_east"]["y"] > object_2["south_west"]["y"] > object["north_east"]["y"] and \
+               object_2["south_east"]["x"] > object["south_west"]["x"] > object["south_east"]["x"] > object_2["north_east"]["x"]:
+                displacement()
+            # Проверка на пересечение ребер в левом верхнем углу
+            elif object_2["north_east"]["y"] > object["south_east"]["y"] > object["south_west"]["y"] > object_2["south_east"]["y"] and \
+                 object["south_east"]["x"] > object_2["south_east"]["x"] > object_2["south_west"]["x"] > object["north_east"]["x"]:
+                displacement()
+            # Проверка на пересечение ребер в правом верхнем углу
+            elif object["north_east"]["y"] > object_2["north_west"]["y"] > object_2["north_east"]["y"] > object["south_east"]["y"] and \
+                 object_2["north_east"]["x"] > object["south_east"]["x"] > object["south_west"]["x"] > object_2["south_east"]["x"]:
+                displacement()
+            # Проверка на пересечение ребер в правом нижнем углу
+            elif object_2["south_east"]["y"] > object["south_west"]["y"] > object["south_east"]["y"] > object_2["north_east"]["y"] and \
+                 object["north_east"]["x"] > object_2["south_west"]["x"] > object_2["south_east"]["x"] > object["south_east"]["x"]:
+                displacement()
+
+        def corner_crossover_check(object, object_2):
+            # Проверка на вхождение углов объектов в левом нижнем углу комнаты
+            if object_2["south_west"]["x"] > object["south_east"]["x"] > object_2["north_west"]["x"] and \
+               object_2["south_east"]["y"] > object["south_east"]["y"] > object_2["north_west"]["y"]:
+                displacement()
+            # Проверка на вхождение углов объектов в левом верхнем углу комнаты
+            elif object_2["south_east"]["x"] > object["south_east"]["x"] > object_2["south_west"]["x"] and \
+                 object_2["north_west"]["y"] > object["south_east"]["y"] > object_2["south_west"]["y"]:
+                displacement()
+            # Проверка на вхождение углов объектов в правом верхнем углу комнаты
+            elif object_2["north_east"]["x"] > object["south_east"]["x"] > object_2["south_east"]["x"] and \
+                 object_2["south_west"]["y"] > object["south_east"]["y"] > object_2["south_east"]["y"]:
+                displacement()
+            # Проверка на вхождение углов объектов в правом нижнем углу комнаты
+            elif object_2["south_west"]["x"] > object["south_east"]["x"] > object_2["south_east"]["x"] and \
+                 object_2["south_west"]["y"] > object["south_east"]["y"] > object_2["north_east"]["y"]:
+                displacement()
+
+
+        def layering_of_objects_check(object, object_2):
+            for item in object.values():
+                # Проверяем пересечение с другими объектами в комнате
+                if object_2["north_west"]["x"] <= item["x"] <= object_2["north_east"]["x"] and \
+                   object_2["south_east"]["y"] <= item["y"] <= object_2["north_east"]["y"]:
+                    displacement()
+
+                elif object_2["north_west"]["x"] >= item["x"] >= object_2["north_east"]["x"] and \
+                     object_2["south_east"]["y"] >= item["y"] >= object_2["north_east"]["y"]:
+                    displacement()
 
         # Задаем переменные, чтобы определить случаи для выхода из цикла
         objects_counter = 0
@@ -178,33 +225,19 @@ class FurnitureArrangement:
         while cycle_counter < cycle_border:
             while objects_counter < len(self.coordinates):
                 figure_2 = self.coordinates[objects_counter]
-                for item in figure.values():
-                    # Проверяем пересечение с другими объектами в комнате
-                    if figure_2["north_west"]["x"] <= item["x"] <= figure_2["north_east"]["x"] and \
-                       figure_2["south_east"]["y"] <= item["y"] <= figure_2["north_east"]["y"]:
-                        displacement()
 
-                    elif figure_2["north_west"]["x"] >= item["x"] >= figure_2["north_east"]["x"] and \
-                         figure_2["south_east"]["y"] >= item["y"] >= figure_2["north_east"]["y"]:
-                        displacement()
+                # Проверяем пересечение противоположных объектов
+                layering_of_objects_check(figure, figure_2)
+                # Проверяем объекты на поглощение друг друга
+                layering_of_objects_check(figure_2, figure)
+                # Проверка пересечения ребер, если объекты находятся с одной и с другой стороны друг от друга
+                rib_crossover_check(figure, figure_2)
+                rib_crossover_check(figure_2, figure)
+                # Проверяем на вхождение углов объектов внутрь друг друга
+                corner_crossover_check(figure, figure_2)
+                corner_crossover_check(figure_2, figure)
 
-                for item in figure_2.values():
-                    # Проверяем объекты на поглощение друг друга
-                    if figure["north_west"]["x"] <= item["x"] <= figure["north_east"]["x"] and \
-                       figure["south_east"]["y"] <= item["y"] <= figure["north_east"]["y"]:
-                        displacement()
-
-                    elif figure["north_west"]["x"] >= item["x"] >= figure["north_east"]["x"] and \
-                         figure["south_east"]["y"] >= item["y"] >= figure["north_east"]["y"]:
-                        displacement()
-
-                # Проверка на пересечение ребер
-                if figure["south_east"]["y"] > figure_2["south_east"]["y"] > figure_2["south_west"]["y"] > figure["south_west"]["y"] and \
-                   figure_2["north_east"]["x"] > figure["south_east"]["x"] > figure["south_west"]["x"] > figure_2["south_west"]["x"]
-
-
-                else:
-                    breaker += 1
+                breaker += 1
 
                 if cycle_counter >= cycle_border:
                     return False
