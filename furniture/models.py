@@ -54,6 +54,7 @@ class Furniture(models.Model):
 
 
 class Placement(models.Model):
+    """Размещение мебели в комнате."""
     furniture = models.ForeignKey(
         'Furniture',
         on_delete=models.CASCADE,
@@ -107,7 +108,7 @@ class Room(models.Model):
         related_name='rooms',
         verbose_name='Пользователь'
     )
-    furniture = models.ManyToManyField(
+    furniture_placement = models.ManyToManyField(
         'Furniture',
         through='Placement'
     )
