@@ -1,8 +1,11 @@
 from rest_framework import serializers
-from .models import Furniture
+
+from furniture.models import Furniture
 
 
 class FurnitureSerializer(serializers.ModelSerializer):
+    """Сериализатор для постов."""
+
     class Meta:
+        fields = '__all__'
         model = Furniture
-        fields = ['name', 'width', 'lenght', 'x_coordinate', 'y_coordinate']
