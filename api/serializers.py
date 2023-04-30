@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from django.db import transaction
 from furniture.models import Furniture, Room, Placement
 
 
@@ -18,9 +18,6 @@ class FurnitureSerializer(serializers.ModelSerializer):
 
 class PlacementSerializer(serializers.ModelSerializer):
     """Сериализатор для размещения мебели в комнате."""
-    furniture = serializers.StringRelatedField(
-        source='furniture.name'
-    )
 
     class Meta:
         fields = (
@@ -35,7 +32,6 @@ class RoomSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
     furniture_placement = PlacementSerializer(
         many=True,
-        read_only=True,
         source='room_placement'
     )
 
@@ -47,3 +43,22 @@ class RoomSerializer(serializers.ModelSerializer):
             'furniture_placement'
         )
         model = Room
+
+    @transaction.atomic
+    def create(self, validated_data):
+        """Создание комнаты с расстановкой."""
+        room_placement = validated_data.pop('room_placement')
+        room = super().create(validated_data)
+        furniture_placement = []
+        for placement in room_placement:
+            furniture = placement['furniture']
+            furniture_placement.append(
+                Placement(
+                    furniture=furniture,
+                    x_coordinate=placement['x_coordinate'],
+                    y_coordinate=placement['y_coordinate'],
+                    room=room
+                )
+            )
+        Placement.objects.bulk_create(furniture_placement)
+        return room

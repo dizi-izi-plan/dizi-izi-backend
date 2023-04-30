@@ -13,10 +13,13 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = FurnitureSerializer
 
 
-class RoomViewSet(viewsets.ReadOnlyModelViewSet):
+class RoomViewSet(viewsets.ModelViewSet):
     """Получение и изменение комнаты."""
+    serializer_class = RoomSerializer
+
     def get_queryset(self):
         """Получение данных о комнатах только пользователя запроса."""
         return self.request.user.rooms.all()
 
-    serializer_class = RoomSerializer
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
