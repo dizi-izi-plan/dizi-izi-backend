@@ -34,13 +34,20 @@ class RoomSerializer(serializers.ModelSerializer):
         many=True,
         source='room_placement'
     )
+    selected_furniture = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Furniture.objects.all(),
+        write_only=True,
+        allow_empty=True
+    )
 
     class Meta:
         fields = (
             'name',
             'length',
             'width',
-            'furniture_placement'
+            'furniture_placement',
+            'selected_furniture'
         )
         model = Room
 
@@ -48,6 +55,7 @@ class RoomSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Создание комнаты с расстановкой."""
         room_placement = validated_data.pop('room_placement')
+        selected_furniture = validated_data.pop('selected_furniture')
         room = super().create(validated_data)
         furniture_placement = []
         for placement in room_placement:
@@ -61,4 +69,8 @@ class RoomSerializer(serializers.ModelSerializer):
                 )
             )
         Placement.objects.bulk_create(furniture_placement)
+        for selected_furniture_one in selected_furniture:
+            # здесь применение алгоритма по расстановке мебели
+            pass
+
         return room
