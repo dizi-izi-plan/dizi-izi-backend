@@ -1,5 +1,5 @@
 from djoser.serializers import UserCreateSerializer
-from .models import CustomUser
+from ..models import CustomUser
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
