@@ -8,10 +8,13 @@ class FurnitureSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = (
+            'id',
             'name',
             'name_english',
             'length',
             'width',
+            'length_access',
+            'width_access',
         )
         model = Furniture
 
@@ -43,6 +46,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = (
+            'id',
             'name',
             'length',
             'width',

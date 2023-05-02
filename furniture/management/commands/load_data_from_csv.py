@@ -33,6 +33,8 @@ class Command(BaseCommand):
                     name_english=row['name_eng'],
                     length=row['length'],
                     width=row['width'],
+                    length_access=row['length_access'],
+                    width_access=row['width_access'],
                 )
             )
         Furniture.objects.bulk_create(furniture)

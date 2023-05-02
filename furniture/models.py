@@ -44,6 +44,16 @@ class Furniture(models.Model):
         help_text='Ширина в мм',
         validators=(minimum_len_width_validator, )
     )
+    length_access = models.PositiveIntegerField(
+        'Длина мебели c зоной подхода',
+        help_text='Длина c зоной подхода в мм',
+        validators=(minimum_len_width_validator, )
+    )
+    width_access = models.PositiveIntegerField(
+        'Ширина мебели c зоной подхода',
+        help_text='Ширина c зоной подхода в мм',
+        validators=(minimum_len_width_validator, )
+    )
 
     class Meta:
         verbose_name = 'Мебель'
