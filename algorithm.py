@@ -210,6 +210,14 @@ class FurnitureArrangement:
                      object_2["south_east"]["y"] >= item["y"] >= object_2["north_east"]["y"]:
                     displacement()
 
+                elif object_2["north_west"]["x"] <= item["x"] <= object_2["north_east"]["x"] and \
+                     object_2["south_east"]["y"] <= item["y"] <= object_2["south_west"]["y"]:
+                    displacement()
+
+                elif object_2["north_west"]["x"] >= item["x"] >= object_2["north_east"]["x"] and \
+                     object_2["south_east"]["y"] >= item["y"] >= object_2["south_west"]["y"]:
+                    displacement()
+
         # Задаем переменные, чтобы определить случаи для выхода из цикла
         objects_counter = 0
         cycle_counter = 0
@@ -402,3 +410,4 @@ class FurnitureArrangement:
 
         create_picture.create_rectangles(self.coordinates)
         print(self.coordinates)
+        
