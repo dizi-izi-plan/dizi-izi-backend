@@ -76,11 +76,11 @@ class Placement(models.Model):
         verbose_name='Комната',
         related_name='room_placement'
     )
-    x_coordinate = models.FloatField(
+    x_coordinate = models.PositiveIntegerField(
         verbose_name='Координата мебели X',
         default=0
     )
-    y_coordinate = models.FloatField(
+    y_coordinate = models.PositiveIntegerField(
         verbose_name='Координата мебели Y',
         default=0
     )
@@ -131,3 +131,79 @@ class Room(models.Model):
         return (
             f'{self.name} пользователя {self.user}'
         )
+
+
+class PowerSocket(models.Model):
+    """Модель размещения розетки в комнате."""
+    room = models.ForeignKey(
+        'Room',
+        verbose_name='Комната',
+        help_text='Комната, где размещена розетка',
+        on_delete=models.CASCADE,
+        related_name='power_sockets'
+    )
+    x_coordinate = models.PositiveIntegerField(
+        verbose_name='Координата розетки X',
+        default=0
+    )
+    y_coordinate = models.PositiveIntegerField(
+        verbose_name='Координата розетки Y',
+        default=0
+    )
+
+
+class Door(models.Model):
+    """Модель размещения двери в комнате."""
+    room = models.ForeignKey(
+        'Room',
+        verbose_name='Комната',
+        help_text='Комната, где размещена дверь',
+        on_delete=models.CASCADE,
+        related_name='doors'
+    )
+    width = models.PositiveIntegerField(
+        'Ширина двери',
+        help_text='Ширина в мм',
+        validators=(minimum_len_width_validator, )
+    )
+    x_coordinate = models.PositiveIntegerField(
+        verbose_name='Координата двери X',
+        default=0
+    )
+    y_coordinate = models.PositiveIntegerField(
+        verbose_name='Координата двери Y',
+        default=0
+    )
+    open_inside = models.BooleanField(
+        'Направление открытия двери',
+        help_text='Открытие в комнату - 1, из комнаты - 0'
+    )
+
+
+class Window(models.Model):
+    """Модель размещения окна в комнате."""
+    room = models.ForeignKey(
+        'Room',
+        verbose_name='Комната',
+        help_text='Комната, где размещено окно',
+        on_delete=models.CASCADE,
+        related_name='windows'
+    )
+    height = models.PositiveIntegerField(
+        'Высота окна',
+        help_text='Высота в мм',
+        validators=(minimum_len_width_validator, )
+    )
+    width = models.PositiveIntegerField(
+        'Ширина окна',
+        help_text='Ширина в мм',
+        validators=(minimum_len_width_validator, )
+    )
+    x_coordinate = models.PositiveIntegerField(
+        verbose_name='Координата окна X',
+        default=0
+    )
+    y_coordinate = models.PositiveIntegerField(
+        verbose_name='Координата окна Y',
+        default=0
+    )

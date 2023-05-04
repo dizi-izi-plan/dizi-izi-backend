@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from django.db import transaction
-from furniture.models import Furniture, Room, Placement
+from furniture.models import (
+    Furniture,
+    Room,
+    Placement,
+    PowerSocket,
+    Door
+)
 
 
 class FurnitureSerializer(serializers.ModelSerializer):
@@ -31,6 +37,30 @@ class PlacementSerializer(serializers.ModelSerializer):
         model = Placement
 
 
+class PowerSocketSerializer(serializers.ModelSerializer):
+    """Сериализатор для размещения розеток в комнате."""
+
+    class Meta:
+        fields = (
+            'x_coordinate',
+            'y_coordinate',
+        )
+        model = PowerSocket
+
+
+class DoorSerializer(serializers.ModelSerializer):
+    """Сериализатор для размещения розеток в комнате."""
+
+    class Meta:
+        fields = (
+            'width',
+            'open_inside',
+            'x_coordinate',
+            'y_coordinate',
+        )
+        model = Door
+
+
 class RoomSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
     furniture_placement = PlacementSerializer(
@@ -43,6 +73,13 @@ class RoomSerializer(serializers.ModelSerializer):
         write_only=True,
         allow_empty=True
     )
+    power_sockets = PowerSocketSerializer(
+        many=True,
+        read_only=True
+    )
+    doors = DoorSerializer(
+        many=True
+    )
 
     class Meta:
         fields = (
@@ -51,7 +88,9 @@ class RoomSerializer(serializers.ModelSerializer):
             'length',
             'width',
             'furniture_placement',
-            'selected_furniture'
+            'selected_furniture',
+            'doors',
+            'power_sockets'
         )
         model = Room
 

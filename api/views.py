@@ -1,9 +1,10 @@
 from rest_framework import viewsets
 from django.contrib.auth import get_user_model
-from furniture.models import Furniture
+from furniture.models import Furniture, Room
 from rest_framework import status
 from rest_framework.response import Response
 from .serializers import FurnitureSerializer, RoomSerializer
+from .permissions import CustumPer
 
 User = get_user_model()
 
@@ -17,7 +18,7 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
 class RoomViewSet(viewsets.ModelViewSet):
     """Получение и изменение комнаты."""
     serializer_class = RoomSerializer
-
+    # permission_classes = [CustumPer, ]
     def get_queryset(self):
         """Получение данных о комнатах только пользователя запроса."""
         return self.request.user.rooms.all()
