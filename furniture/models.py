@@ -54,6 +54,12 @@ class Furniture(models.Model):
         help_text='Ширина c зоной подхода в мм',
         validators=(minimum_len_width_validator, )
     )
+    image = models.ImageField(
+        verbose_name='Изображение мебели',
+        upload_to='furniture/',
+        blank=True,
+        null=True
+    )
 
     class Meta:
         verbose_name = 'Мебель'
@@ -63,53 +69,79 @@ class Furniture(models.Model):
         return f'{self.name}'
 
 
-class Placement(models.Model):
-    """Размещение мебели в комнате."""
+class RoomCoordinates(models.Model):
+    """Абстарктная модель с указателем на помещение и координаты."""
+    room = models.ForeignKey(
+        'Room',
+        on_delete=models.CASCADE,
+        verbose_name='Комната',
+        related_name='%(class)ss'
+    )
+    nw_coordinate = models.PositiveIntegerField(
+        verbose_name='Координата north_west',
+        default=0
+    )
+    ne_coordinate = models.PositiveIntegerField(
+        verbose_name='Координата north-east',
+        default=0
+    )
+    sw_coordinate = models.PositiveIntegerField(
+        verbose_name='Координата south-west',
+        default=0
+    )
+    se_coordinate = models.PositiveIntegerField(
+        verbose_name='Координата south-east',
+        default=0
+    )
+
+    class Meta:
+        abstract = True
+
+
+class Placement(RoomCoordinates):
+    """Размещение мебели в помещении."""
     furniture = models.ForeignKey(
         'Furniture',
         on_delete=models.CASCADE,
         verbose_name='Мебель',
     )
-    room = models.ForeignKey(
-        'Room',
-        on_delete=models.CASCADE,
-        verbose_name='Комната',
-        related_name='room_placement'
-    )
-    x_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата мебели X',
-        default=0
-    )
-    y_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата мебели Y',
-        default=0
-    )
 
     class Meta:
-        verbose_name = 'Связь размещения мебели для пользователя'
-        verbose_name_plural = 'Связи размещения мебели для пользователя'
+        verbose_name = 'Размещение мебели в помещении'
+        verbose_name_plural = 'Размещение мебели в помещении'
 
-    def __str__(self) -> str:
+    def __str__(self):
         return (
-            f'{self.furniture.name} расположена  в {self.room}'
-            f'в координатах {self.x_coordinate}, {self.y_coordinate}'
+            f'{self.furniture.name} расположена в {self.room} '
+            f'в координатах {self.nw_coordinate}, {self.ne_coordinate}, '
+            f'{self.sw_coordinate}, {self.se_coordinate}'
         )
 
 
 class Room(models.Model):
     """Модель помещения."""
     name = models.CharField(
-        'Название комнаты',
+        'Название помещения',
         max_length=128
     )
-    length = models.FloatField(
-        'Длина комнаты',
-        help_text='Длина в мм',
+    first_wall = models.PositiveIntegerField(
+        'Длина 1 стены',
+        help_text='Длина стены в мм',
         validators=(minimum_len_width_validator, )
     )
-    width = models.FloatField(
-        'Ширина комнаты',
-        help_text='Ширина в мм',
+    second_wall = models.PositiveIntegerField(
+        'Длина 2 стены',
+        help_text='Длина стены в мм',
+        validators=(minimum_len_width_validator, )
+    )
+    third_wall = models.PositiveIntegerField(
+        'Длина 3 стены',
+        help_text='Длина стены в мм',
+        validators=(minimum_len_width_validator, )
+    )
+    fourth_wall = models.PositiveIntegerField(
+        'Длина 4 стены',
+        help_text='Длина стены в мм',
         validators=(minimum_len_width_validator, )
     )
     user = models.ForeignKey(
@@ -124,74 +156,48 @@ class Room(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Комната'
-        verbose_name_plural = 'Комнаты'
+        verbose_name = 'Помещение'
+        verbose_name_plural = 'Помещения'
 
     def __str__(self) -> str:
-        return (
-            f'{self.name} пользователя {self.user}'
-        )
+        return f'{self.name} пользователя {self.user}'
 
 
-class PowerSocket(models.Model):
-    """Модель размещения розетки в комнате."""
-    room = models.ForeignKey(
-        'Room',
-        verbose_name='Комната',
-        help_text='Комната, где размещена розетка',
-        on_delete=models.CASCADE,
-        related_name='power_sockets'
-    )
-    x_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата розетки X',
-        default=0
-    )
-    y_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата розетки Y',
-        default=0
-    )
+class PowerSocket(RoomCoordinates):
+    """Модель размещения розетки в помещении."""
+    class Meta:
+        verbose_name = 'Розетка в помещении'
+        verbose_name_plural = 'Розетки в помещении'
+
+    def __str__(self) -> str:
+        return f'Розетка расположена в {self.room}'
 
 
-class Door(models.Model):
-    """Модель размещения двери в комнате."""
-    room = models.ForeignKey(
-        'Room',
-        verbose_name='Комната',
-        help_text='Комната, где размещена дверь',
-        on_delete=models.CASCADE,
-        related_name='doors'
-    )
+class Door(RoomCoordinates):
+    """Модель размещения двери в помещении."""
     width = models.PositiveIntegerField(
         'Ширина двери',
         help_text='Ширина в мм',
         validators=(minimum_len_width_validator, )
     )
-    x_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата двери X',
-        default=0
-    )
-    y_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата двери Y',
-        default=0
-    )
     open_inside = models.BooleanField(
-        'Направление открытия двери',
-        help_text='Открытие в комнату - 1, из комнаты - 0'
+        'Направление открытия двери внутрь помещения',
+        help_text='Открытие в помещении - 1, из помещения - 0'
     )
 
+    class Meta:
+        verbose_name = 'Дверь в помещении'
+        verbose_name_plural = 'Двери в помещении'
 
-class Window(models.Model):
-    """Модель размещения окна в комнате."""
-    room = models.ForeignKey(
-        'Room',
-        verbose_name='Комната',
-        help_text='Комната, где размещено окно',
-        on_delete=models.CASCADE,
-        related_name='windows'
-    )
-    height = models.PositiveIntegerField(
-        'Высота окна',
-        help_text='Высота в мм',
+    def __str__(self) -> str:
+        return f'Дверь расположена в {self.room}'
+
+
+class Window(RoomCoordinates):
+    """Модель размещения окна в помещении."""
+    length = models.PositiveIntegerField(
+        'Длина окна',
+        help_text='Длина в мм',
         validators=(minimum_len_width_validator, )
     )
     width = models.PositiveIntegerField(
@@ -199,11 +205,10 @@ class Window(models.Model):
         help_text='Ширина в мм',
         validators=(minimum_len_width_validator, )
     )
-    x_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата окна X',
-        default=0
-    )
-    y_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата окна Y',
-        default=0
-    )
+
+    class Meta:
+        verbose_name = 'Окно в помещении'
+        verbose_name_plural = 'Окна в помещении'
+
+    def __str__(self) -> str:
+        return f'Окно расположено в {self.room}'

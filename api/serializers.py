@@ -5,7 +5,8 @@ from furniture.models import (
     Room,
     Placement,
     PowerSocket,
-    Door
+    Door,
+    Window
 )
 
 
@@ -31,41 +32,62 @@ class PlacementSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
             'furniture',
-            'x_coordinate',
-            'y_coordinate',
+            'nw_coordinate',
+            'ne_coordinate',
+            'sw_coordinate',
+            'se_coordinate'
         )
         model = Placement
 
 
 class PowerSocketSerializer(serializers.ModelSerializer):
-    """Сериализатор для размещения розеток в комнате."""
+    """Сериализатор для размещения розеток в помещении."""
 
     class Meta:
         fields = (
-            'x_coordinate',
-            'y_coordinate',
+            'nw_coordinate',
+            'ne_coordinate',
+            'sw_coordinate',
+            'se_coordinate'
         )
         model = PowerSocket
 
 
 class DoorSerializer(serializers.ModelSerializer):
-    """Сериализатор для размещения розеток в комнате."""
+    """Сериализатор для размещения розеток в помещении."""
 
     class Meta:
         fields = (
             'width',
             'open_inside',
-            'x_coordinate',
-            'y_coordinate',
+            'nw_coordinate',
+            'ne_coordinate',
+            'sw_coordinate',
+            'se_coordinate'
         )
         model = Door
+
+
+class WindowSerializer(serializers.ModelSerializer):
+    """Сериализатор для размещения окон в помещении."""
+
+    class Meta:
+        fields = (
+            'length',
+            'width',
+            'nw_coordinate',
+            'ne_coordinate',
+            'sw_coordinate',
+            'se_coordinate'
+        )
+        model = Window
 
 
 class RoomSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
     furniture_placement = PlacementSerializer(
         many=True,
-        source='room_placement'
+        source='placements'
     )
     selected_furniture = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -75,9 +97,13 @@ class RoomSerializer(serializers.ModelSerializer):
     )
     power_sockets = PowerSocketSerializer(
         many=True,
-        read_only=True
+        read_only=True,
+        source='powersockets'
     )
     doors = DoorSerializer(
+        many=True,
+    )
+    windows = WindowSerializer(
         many=True
     )
 
@@ -85,20 +111,26 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
-            'length',
-            'width',
+            'first_wall',
+            'second_wall',
+            'third_wall',
+            'fourth_wall',
             'furniture_placement',
             'selected_furniture',
             'doors',
-            'power_sockets'
+            'power_sockets',
+            'windows'
         )
         model = Room
+        read_only = ('id', )
 
     @transaction.atomic
     def create(self, validated_data):
-        """Создание комнаты с расстановкой."""
-        room_placement = validated_data.pop('room_placement')
+        """Создание помещения с расстановкой."""
+        room_placement = validated_data.pop('placements')
         selected_furniture = validated_data.pop('selected_furniture')
+        doors = validated_data.pop('doors')
+        windows = validated_data.pop('windows')
         room = super().create(validated_data)
         furniture_placement = []
         for placement in room_placement:
@@ -106,12 +138,42 @@ class RoomSerializer(serializers.ModelSerializer):
             furniture_placement.append(
                 Placement(
                     furniture=furniture,
-                    x_coordinate=placement['x_coordinate'],
-                    y_coordinate=placement['y_coordinate'],
+                    nw_coordinate=placement['nw_coordinate'],
+                    ne_coordinate=placement['ne_coordinate'],
+                    sw_coordinate=placement['sw_coordinate'],
+                    se_coordinate=placement['se_coordinate'],
                     room=room
                 )
             )
         Placement.objects.bulk_create(furniture_placement)
+        room_doors = []
+        for door in doors:
+            room_doors.append(
+                Door(
+                    width=door['width'],
+                    open_inside=door['open_inside'],
+                    nw_coordinate=door['nw_coordinate'],
+                    ne_coordinate=door['ne_coordinate'],
+                    sw_coordinate=door['sw_coordinate'],
+                    se_coordinate=door['se_coordinate'],
+                    room=room
+                )
+            )
+        Door.objects.bulk_create(room_doors)
+        room_windows = []
+        for window in windows:
+            room_windows.append(
+                Window(
+                    width=window['width'],
+                    length=window['length'],
+                    nw_coordinate=window['nw_coordinate'],
+                    ne_coordinate=window['ne_coordinate'],
+                    sw_coordinate=window['sw_coordinate'],
+                    se_coordinate=window['se_coordinate'],
+                    room=room
+                )
+            )
+        Window.objects.bulk_create(room_windows)
         for selected_furniture_one in selected_furniture:
             # здесь применение алгоритма по расстановке мебели
             pass

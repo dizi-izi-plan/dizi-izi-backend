@@ -16,19 +16,13 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RoomViewSet(viewsets.ModelViewSet):
-    """Получение и изменение комнаты."""
+    """Получение и изменение помещения."""
     serializer_class = RoomSerializer
-    # permission_classes = [CustumPer, ]
-    def get_queryset(self):
-        """Получение данных о комнатах только пользователя запроса."""
-        return self.request.user.rooms.all()
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def get_queryset(self):
+        """Получение данных о помещении только пользователя запроса."""
+        if not self.request.user.is_anonymous:
+            return self.request.user.rooms.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
