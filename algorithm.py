@@ -8,7 +8,7 @@ class FurnitureArrangement:
     coordinates = []  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
     free_space = []  # хранение расстояний между мебелью через запятую (в виде координат)
 
-    def free_space_algorithm(self, objects: list) -> dict:
+    def free_space_algorithm(self, objects: list, room_coordinates: dict) -> dict:
         # На вход подается список с координатами углов объектов. Координаты между друг другом минусим, находим
         # по ближайшим неприлегающим углам расстояние по модулю в виде гипотенузы (вычитание по иксу -- это
         # один катет, вычитание по игрику -- другой). И записыванием самое большое расстояние в переменную. Углы
@@ -16,6 +16,14 @@ class FurnitureArrangement:
         # значение и длина стены "walls_length": {"first_wall": 1, "second_wall": 2, "third_wall": 1, "fourth_wall": 2}
         length = {}
         counter = 1
+
+
+        def area_calculation():
+            return area
+
+        def determining_one_of_three_types_of_cases(object_one, object_two, first_object_wall, second_object_wall):
+
+            return area
 
         def longest_distance_corner(first_left, first_right, second_left, second_right):
             first_distance = abs(first_left - second_left)
@@ -50,6 +58,7 @@ class FurnitureArrangement:
                 counter = 0
             core_and_output(item, objects)
             counter += 1
+        print(length)
         return length[max(length)]
 
     # Доделать по алгоритму. Вариант с единственным объектом в комнате. Вариант с примыкающими со стороны
@@ -117,7 +126,7 @@ class FurnitureArrangement:
 
             return convert_line_to_coordinates(shifted_point, walls_length)
 
-    def placing_in_coordinates(self, middle_point: dict, figure: dict, walls: dict) -> bool:
+    def placing_in_coordinates(self, middle_point: dict, figure: dict, walls: dict, length_and_width: dict) -> bool:
         """Функция проверки возможности резервирования места для мебели в комнате.
 
         Args:
@@ -125,6 +134,7 @@ class FurnitureArrangement:
             figure (dict): координаты для мебели. {"north_west": {"x": 0, "y": 0},
                    "north_east": {"x": 0, "y": 0}, "south_west": {"x": 0, "y": 0}, "south_east": {"x": 0, "y": 0}}
             walls (dict): стены комнаты начиная от левой {"first_wall": 0, "second_wall": 0, "third_wall": 0, "fourth_wall":0}
+            length_and_width(dict): ширина и длина располагаемого объекта
 
         Returns:
             bool: True, если место зарезервировано, иначе False
@@ -132,10 +142,10 @@ class FurnitureArrangement:
 
 
         # Определяем ширину и высоту объекта, чтобы передать ее в дальнейшем в corner_markings
-        length_and_width = {"length": abs(figure["north_west"]["y"] - figure["south_west"]["y"])
-                                    + abs(figure["north_west"]["y"] - figure["north_east"]["y"]),
-                             "width": abs(figure["north_west"]["x"] - figure["south_west"]["x"])
-                                    + abs(figure["north_west"]["x"] - figure["north_east"]["x"])}
+        # length_and_width = {"length": abs(figure["north_west"]["y"] - figure["south_west"]["y"])
+        #                             + abs(figure["north_west"]["y"] - figure["north_east"]["y"]),
+        #                      "width": abs(figure["north_west"]["x"] - figure["south_west"]["x"])
+        #                             + abs(figure["north_west"]["x"] - figure["north_east"]["x"])}
 
         # Определения координат комнаты для работы определения принадлежности координат к конкретной стене
         room_coordinates = {"south_west": {"x": 0, "y": 0},
@@ -398,15 +408,16 @@ class FurnitureArrangement:
                 return 2
             elif dot["x"] == room_coordinates["north_east"]["x"]:
                 return 3
+
         for item in doors_and_windows:
             self.coordinates.append(item)
 
         for item in furniture:
-            result_free_space = self.free_space_algorithm(self.coordinates)
+            result_free_space = self.free_space_algorithm(self.coordinates, room_coordinates)
             result_middle_distance = self.middle_of_the_distance_on_the_wall(result_free_space, room_size)
             result_wall_definition = wall_definition(result_middle_distance)
             result_corner_markings = self.corner_markings(item, result_middle_distance, result_wall_definition)
-            self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size)
+            self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size, item)
 
         create_picture.create_rectangles(self.coordinates)
         print(self.coordinates)

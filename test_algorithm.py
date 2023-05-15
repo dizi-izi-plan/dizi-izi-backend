@@ -179,3 +179,11 @@ class TestFurnitureArrangement(unittest.TestCase):
                                                "south_west": {"x": 14, "y": 4}, "south_east": {"x": 12, "y": 4}}],
                                              [{"width": 4, "length": 1}, {"width": 1, "length": 6}, {"width": 3, "length": 3}, {"width": 1, "length": 1}],
                                              {"first_wall": 10, "second_wall": 14, "third_wall": 10, "fourth_wall": 14})
+
+    def test_algorithm_activation_5(self):
+        self.calculator.algorithm_activation([{"north_west": {"x": 4, "y": 10}, "north_east": {"x": 7, "y": 10},
+                                               "south_west": {"x": 4, "y": 9}, "south_east": {"x": 7, "y": 9}},
+                                              {"north_west": {"x": 14, "y": 0}, "north_east": {"x": 12, "y": 0},
+                                               "south_west": {"x": 14, "y": 4}, "south_east": {"x": 12, "y": 4}}],
+                                             [{"width": 5, "length": 1}],
+                                             {"first_wall": 10, "second_wall": 14, "third_wall": 10, "fourth_wall": 14})
