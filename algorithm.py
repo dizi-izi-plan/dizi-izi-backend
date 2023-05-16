@@ -17,24 +17,35 @@ class FurnitureArrangement:
         length = {}
         counter = 1
 
+        def longest_distance_corner(left_point, right_point, left_point_wall, right_point_wall):
+            if abs(right_point_wall - left_point_wall) == 0:
+                return abs((right_point["y"] - left_point["y"]) + (right_point["x"] - left_point["x"]))
+            elif abs(right_point_wall - left_point_wall) == 1:
+                return abs(room_coordinates["north_east"]["x"] - )
+        #
+        # def angle_shift(corner: str, side: str):
+        #     right_side = ["north_west", "north_east", "south_east", "south_west"]
+        #     left_side = ["north_west", "south_west", "south_east", "north_east"]
+        #
+        #     if side == "right" and corner != "south_west":
+        #         return right_side[right_side.index(corner)+1]
+        #     elif side == "right" and corner == "south_west":
+        #         return right_side[0]
+        #     if side == "left" and corner != "south_west":
+        #         return left_side[left_side.index(corner)+1]
+        #     elif side == "left" and corner == "south_west":
+        #         return left_side[0]
 
-        def area_calculation():
-            return area
-
-        def determining_one_of_three_types_of_cases(object_one, object_two, first_object_wall, second_object_wall):
-
-            return area
-
-        def longest_distance_corner(first_left, first_right, second_left, second_right):
-            first_distance = abs(first_left - second_left)
-            second_distance = abs(first_left - second_right)
-            third_distance = abs(first_right - second_left)
-            fourth_distance = abs(first_right - second_right)
-
-            minimal_distance = min([first_distance, second_distance, third_distance, fourth_distance])
-            return minimal_distance
 
         def x_or_y_distance(first_object, second_object, x_or_y):
+            first_right_corner = "north_east"
+            second_left_corner = "north_west"
+
+            if first_object["north_east"] in room_coordinates.values():
+                first_right_corner = "south_east"
+            if second_object[counter]["north_west"] in room_coordinates.values():
+                second_left_corner = "south_west"
+
             result = longest_distance_corner(
                 first_object["south_west"][f"{x_or_y}"],
                 first_object["south_east"][f"{x_or_y}"],
@@ -61,11 +72,15 @@ class FurnitureArrangement:
         print(length)
         return length[max(length)]
 
-    # Доделать по алгоритму. Вариант с единственным объектом в комнате. Вариант с примыкающими со стороны
-    # к объекту стенами. Модернизировать алгоритм на высчитывание расстояния по стене, а не по диагоналям
-
-    def alternative_free_space_algorithm(self):
-        return None
+    def convert_coordinates_to_line(coordinates: dict, length_of_walls: tuple, room_perimeter) -> float | int:
+        """Функция преобразует координаты в точку на прямой."""
+        if coordinates['x'] == 0:
+            return coordinates['y']
+        elif coordinates['y'] == length_of_walls[0]:
+            return length_of_walls[0] + coordinates['x']
+        elif coordinates['x'] == length_of_walls[1]:
+            return sum(length_of_walls[:3]) - coordinates['y']
+        return sum(length_of_walls) - coordinates['x']
 
     def middle_of_the_distance_on_the_wall(self, free_space: dict, walls: dict) -> dict:
         """
@@ -75,17 +90,6 @@ class FurnitureArrangement:
         """
         walls_length = tuple(walls.values())
         room_perimeter = sum(walls_length)
-
-        def convert_coordinates_to_line(coordinates: dict, length_of_walls: tuple) -> float | int:
-            """Функция преобразует координаты в точку на прямой."""
-            nonlocal room_perimeter
-            if coordinates['x'] == 0:
-                return coordinates['y']
-            elif coordinates['y'] == length_of_walls[0]:
-                return length_of_walls[0] + coordinates['x']
-            elif coordinates['x'] == length_of_walls[1]:
-                return sum(length_of_walls[:3]) - coordinates['y']
-            return sum(length_of_walls) - coordinates['x']
 
         def convert_line_to_coordinates(dot: float | int, length_of_walls: tuple) -> dict:
             """Функция преобразует точку на прямой в координаты"""
@@ -101,15 +105,15 @@ class FurnitureArrangement:
             raise Exception('Ошибка данных, нет возможности разместить среднюю точку на одной из стен комнаты.')
 
         if 'left_corner' in free_space:
-            point_1 = convert_coordinates_to_line(free_space['left_corner'], walls_length)
-            point_2 = convert_coordinates_to_line(free_space['right_corner'], walls_length)
+            point_1 = self.convert_coordinates_to_line(free_space['left_corner'], walls_length, room_perimeter)
+            point_2 = self.convert_coordinates_to_line(free_space['right_corner'], walls_length, room_perimeter)
             middle_point = (point_2 + point_1) / 2 if point_1 < point_2 else (point_2 + point_1 + room_perimeter) / 2
             if middle_point > room_perimeter:
                 middle_point = middle_point - room_perimeter
             return convert_line_to_coordinates(middle_point, walls_length)
 
         elif "x" in free_space:
-            point = convert_coordinates_to_line({"x": free_space["x"], "y": free_space["y"]}, walls_length)
+            point = self.convert_coordinates_to_line({"x": free_space["x"], "y": free_space["y"]}, walls_length, room_perimeter)
             if free_space["shift_method"] == "plus":
                 shifted_point = point + free_space["displacement_value"]
             elif free_space["shift_method"] == "minus":
