@@ -5,5 +5,6 @@ from user_app import views
 
 urlpatterns = [
     path('api/v1/furniture/', views.FurnitureViewSet.as_view()),
-    path('admin/', admin.site.urls)
+    path('api/', include('api.urls')),
+    path('admin/', admin.site.urls),
 ]
