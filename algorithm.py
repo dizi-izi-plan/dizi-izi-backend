@@ -135,7 +135,7 @@ class FurnitureArrangement:
 
         def displacement():
             nonlocal figure, middle_point, objects_counter, cycle_counter, cycle_border
-            middle_point["x"], middle_point["y"] = self.middle_of_the_distance_on_the_wall(middle_point)
+            middle_point["x"], middle_point["y"] = self.middle_of_the_distance_on_the_wall(middle_point).values()
             wall = self.wall_definition(middle_point)
             figure = self.corner_markings(length_and_width, middle_point, wall)
             objects_counter = 0
@@ -376,14 +376,16 @@ class FurnitureArrangement:
 
         self.room_coordinates_tuple = tuple(self.room_coordinates.values())
 
-        def middle_point_finder(coordinates):
+        def middle_point(coordinates):
             return abs
 
         # Функция определения стены по координатам для отправки ее в дальнейшем в corner_markings
         for item in doors_and_windows:
-            
+            middle_point = {"x": (item["north_east"]["x"] + item["north_west"]["x"])/2, "y": (item["north_east"]["y"] + item["north_west"]["y"])/2}
             self.coordinates.append(item)
+            self.sorted_points.append(self.convert_coordinates_to_line(middle_point))
 
+        self.sorted_points.sort()
 
         for item in furniture:
             result_free_space = self.free_space_algorithm(self.coordinates)
