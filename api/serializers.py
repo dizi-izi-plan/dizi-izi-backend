@@ -174,8 +174,20 @@ class RoomSerializer(serializers.ModelSerializer):
                 )
             )
         Window.objects.bulk_create(room_windows)
+        # self.request.session['id_room'] = room.id
+        # print(room.id)
         for selected_furniture_one in selected_furniture:
             # здесь применение алгоритма по расстановке мебели
             pass
 
         return room
+
+    def save(self, **kwargs):
+        # if 'user' not in kwargs:
+        #     return self.create_anonymous(**kwargs)
+        return super().save(**kwargs)
+
+
+class RoomAnonymousSerializers(serializers.Serializer):
+    """Сериализатор для анонимного пользователя."""
+    pass

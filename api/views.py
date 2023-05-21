@@ -1,12 +1,10 @@
 from rest_framework import viewsets
-from django.contrib.auth import get_user_model
-from furniture.models import Furniture, Room
-from rest_framework import status
-from rest_framework.response import Response
-from .serializers import FurnitureSerializer, RoomSerializer
-from .permissions import CustumPer
-
-User = get_user_model()
+from furniture.models import Furniture
+from .serializers import (
+    FurnitureSerializer,
+    RoomSerializer,
+    RoomAnonymousSerializers
+)
 
 
 class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
@@ -18,11 +16,17 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
 class RoomViewSet(viewsets.ModelViewSet):
     """Получение и изменение помещения."""
     serializer_class = RoomSerializer
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
         """Получение данных о помещении только пользователя запроса."""
-        if not self.request.user.is_anonymous:
-            return self.request.user.rooms.all()
+        return self.request.user.rooms.all()
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        if not self.request.user.is_anonymous:
+            serializer.save(user=self.request.user)
+
+    def get_serializer_class(self):
+        if not self.request.user.is_anonymous:
+            return RoomSerializer
+        return RoomAnonymousSerializers
