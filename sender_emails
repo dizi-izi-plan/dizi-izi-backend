@@ -1,0 +1,35 @@
+from email.message import EmailMessage
+import ssl
+import smtplib
+email_reciver = 'isaeva.wlada@yandex.ru'
+
+subject = "Dizi-izi_plan and Vlada Check emails"
+body ="""
+Hello!
+
+I'm cheking new func
+"""
+
+def sent_email(subject: str, body: str, email_reciver: str):
+
+   """ Create and sent emais with subject, body to email_reciver   """
+
+   # use new gmail acciunt
+   email_password = 'xonrofnxaohndoxw'
+   email_sender = 'fexample898@gmail.com'
+
+   em = EmailMessage()
+
+   em['From'] = email_sender
+   em['To'] = email_reciver
+   em['subject'] = subject 
+   em.set_content(body)
+
+   context_em = ssl.create_default_context()
+   # use google server to sent email
+   with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context_em) as smtp:
+      smtp.login(email_sender, email_password)
+      smtp.sendmail(email_sender, email_reciver, em.as_string())
+   
+   return
+

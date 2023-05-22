@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'furniture',
     'api',
+    'rest_framework.authtoken',
+    'djoser',
+    'api',
+    'user_app'
 ]
 
 MIDDLEWARE = [
@@ -126,3 +130,40 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'furniture.User'
+
+# Настройки почтового ящика для отправки писем
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = '[YOUR EMAIL HOST]'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = '[YOUR EMAIL THAT WILL SEND]'
+# EMAIL_HOST_PASSWORD = '[YOUR EMAIL APP PASSWORD]'
+# EMAIL_USE_TLS = True
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+DJOSER = {
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    # 'SEND_CONFIRMATION_EMAIL': True,  # Добавить после настройки почтового сервера
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'LOGIN_FIELD': 'email',
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'SERIALIZERS': {
+        'user_create': 'api.v1.serializers.CustomUserCreateSerializer',
+        'user': 'api.v1.serializers.CustomUserCreateSerializer',
+    },
+}
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+AUTH_USER_MODEL = 'api.CustomUser'
