@@ -39,11 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'furniture',
-    'api',
+    'users',
     'rest_framework.authtoken',
     'djoser',
     'api',
-    'user_app'
 ]
 
 MIDDLEWARE = [
@@ -129,8 +128,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'furniture.User'
-
 # Настройки почтового ящика для отправки писем
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = '[YOUR EMAIL HOST]'
@@ -166,4 +163,4 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-AUTH_USER_MODEL = 'api.CustomUser'
+AUTH_USER_MODEL = 'users.CustomUser'

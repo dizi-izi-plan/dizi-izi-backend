@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import AbstractUser
+# from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 
 
@@ -17,9 +17,9 @@ def minimum_len_width_validator(value):
     return value
 
 
-class User(AbstractUser):
-    """Модель пользователя."""
-    pass
+# class User(AbstractUser):
+#     """Модель пользователя."""
+#     pass
 
 
 class Furniture(models.Model):
