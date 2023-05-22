@@ -25,6 +25,7 @@ class RoomViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         if not self.request.user.is_anonymous:
             serializer.save(user=self.request.user)
+        return super().perform_create(serializer)
 
     def get_serializer_class(self):
         if not self.request.user.is_anonymous:

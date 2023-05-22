@@ -174,8 +174,6 @@ class RoomSerializer(serializers.ModelSerializer):
                 )
             )
         Window.objects.bulk_create(room_windows)
-        # self.request.session['id_room'] = room.id
-        # print(room.id)
         for selected_furniture_one in selected_furniture:
             # здесь применение алгоритма по расстановке мебели
             pass
@@ -190,4 +188,104 @@ class RoomSerializer(serializers.ModelSerializer):
 
 class RoomAnonymousSerializers(serializers.Serializer):
     """Сериализатор для анонимного пользователя."""
-    pass
+    min_value_len_width = 1
+    name = serializers.CharField(
+        max_length=128,
+        label='Название помещения',
+    )
+    first_wall = serializers.IntegerField(
+        label='Длина 1 стены',
+        help_text='Длина стены в мм',
+        min_value=min_value_len_width
+    )
+    second_wall = serializers.IntegerField(
+        label='Длина 2 стены',
+        help_text='Длина стены в мм',
+        min_value=min_value_len_width
+    )
+    third_wall = serializers.IntegerField(
+        label='Длина 3 стены',
+        help_text='Длина стены в мм',
+        min_value=min_value_len_width
+    )
+    fourth_wall = serializers.IntegerField(
+        label='Длина 4 стены',
+        help_text='Длина стены в мм',
+        min_value=min_value_len_width
+    )
+    furniture_placement = PlacementSerializer(
+        many=True,
+        # source='placements'
+        # queryset=Placement.objects.all(),
+    )
+    selected_furniture = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Furniture.objects.all(),
+        write_only=True,
+        allow_empty=True
+    )
+    power_sockets = PowerSocketSerializer(
+        many=True,
+        read_only=True,
+    )
+    doors = DoorSerializer(
+        many=True,
+    )
+    windows = WindowSerializer(
+        many=True,
+    )
+    def save(self, **kwargs):
+        validated_data = {**self.validated_data, **kwargs}
+        # room_placement = validated_data.pop('furniture_placement')
+        # selected_furniture = validated_data.pop('selected_furniture')
+        # doors = validated_data.pop('doors')
+        # windows = validated_data.pop('windows')
+        room = Room(**self.validated_data)
+        return room
+        # furniture_placement = []
+        # for placement in room_placement:
+        #     furniture = placement['furniture']
+        #     furniture_placement.append(
+        #         Placement(
+        #             furniture=furniture,
+        #             nw_coordinate=placement['nw_coordinate'],
+        #             ne_coordinate=placement['ne_coordinate'],
+        #             sw_coordinate=placement['sw_coordinate'],
+        #             se_coordinate=placement['se_coordinate'],
+        #             room=room
+        #         )
+        #     )
+        # Placement.objects.bulk_create(furniture_placement)
+        # room_doors = []
+        # for door in doors:
+        #     room_doors.append(
+        #         Door(
+        #             width=door['width'],
+        #             open_inside=door['open_inside'],
+        #             nw_coordinate=door['nw_coordinate'],
+        #             ne_coordinate=door['ne_coordinate'],
+        #             sw_coordinate=door['sw_coordinate'],
+        #             se_coordinate=door['se_coordinate'],
+        #             room=room
+        #         )
+        #     )
+        # Door.objects.bulk_create(room_doors)
+        # room_windows = []
+        # for window in windows:
+        #     room_windows.append(
+        #         Window(
+        #             width=window['width'],
+        #             length=window['length'],
+        #             nw_coordinate=window['nw_coordinate'],
+        #             ne_coordinate=window['ne_coordinate'],
+        #             sw_coordinate=window['sw_coordinate'],
+        #             se_coordinate=window['se_coordinate'],
+        #             room=room
+        #         )
+        #     )
+        # Window.objects.bulk_create(room_windows)
+        # for selected_furniture_one in selected_furniture:
+        #     # здесь применение алгоритма по расстановке мебели
+        #     pass
+
+        # return room
