@@ -26,6 +26,7 @@ class RoomViewSet(viewsets.ModelViewSet):
             return self.request.user.rooms.all()
 
     def perform_create(self, serializer):
+        """Назначение данных для обработки запроса."""
         user=None
         if not self.request.user.is_anonymous:
             user=self.request.user
