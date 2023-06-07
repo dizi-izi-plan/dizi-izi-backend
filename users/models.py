@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from djoser import email
 
 
 class CustomUserManager(BaseUserManager):
@@ -49,5 +50,3 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
-
-

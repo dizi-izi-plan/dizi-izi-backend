@@ -130,13 +130,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Настройки почтового ящика для отправки писем
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
-# Ниже добавить почту мейл.ру
-EMAIL_HOST_USER = '[pochta@mail.ru]'
-DEFAULT_FROM_EMAIL = '[pochta@mail.ru]'
-# Ниже добавить пароль для приложений (если сервер мейл.ру)
-EMAIL_HOST_PASSWORD = '[пароль для приложений мейл.ру]'
+EMAIL_HOST_USER = 'fexample898@gmail.com'
+DEFAULT_FROM_EMAIL = 'fexample898@gmail.com'
+EMAIL_HOST_PASSWORD = 'xonrofnxaohndoxw'
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
