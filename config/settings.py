@@ -129,12 +129,14 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Настройки почтового ящика для отправки писем
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = '[YOUR EMAIL HOST]'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = '[YOUR EMAIL THAT WILL SEND]'
-# EMAIL_HOST_PASSWORD = '[YOUR EMAIL APP PASSWORD]'
-# EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'fexample898@gmail.com'
+DEFAULT_FROM_EMAIL = 'fexample898@gmail.com'
+EMAIL_HOST_PASSWORD = 'xonrofnxaohndoxw'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
 
 
 REST_FRAMEWORK = {
@@ -143,24 +145,26 @@ REST_FRAMEWORK = {
     # ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
 }
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
-    # 'SEND_CONFIRMATION_EMAIL': True,  # Добавить после настройки почтового сервера
+    'SEND_CONFIRMATION_EMAIL': True,
+    'ACTIVATION_URL': 'api/v1/auth/users/activate/{uid}/{token}',  # тут подключается фронт с активацией на url: /api/v1/auth/users/activation/
+    'SEND_ACTIVATION_EMAIL': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     'LOGIN_FIELD': 'email',
-    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'api/v1/auth/users/password/reset/confirm/{uid}/{token}',  # тут подключается фронт с отправкой на url: /api/v1/auth/users/reset_password_confirm/
     'SERIALIZERS': {
         'user_create': 'api.v1.serializers.CustomUserCreateSerializer',
         'user': 'api.v1.serializers.CustomUserCreateSerializer',
+        'current_user': 'api.v1.serializers.CustomUserCreateSerializer'
     },
-}
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
+
+    'PERMISSIONS': {
+        'user_delete': ['rest_framework.permissions.IsAdminUser'],
+    }
+
 
 AUTH_USER_MODEL = 'users.CustomUser'
