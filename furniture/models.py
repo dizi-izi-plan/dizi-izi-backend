@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-# from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 
 
@@ -15,11 +14,6 @@ def minimum_len_width_validator(value):
             )
         )
     return value
-
-
-# class User(AbstractUser):
-#     """Модель пользователя."""
-#     pass
 
 
 class Furniture(models.Model):
@@ -69,29 +63,53 @@ class Furniture(models.Model):
         return f'{self.name}'
 
 
+class Coordinate(models.Model):
+    """Модель координаты."""
+    x = models.PositiveIntegerField(
+        verbose_name='X'
+    )
+    y = models.PositiveIntegerField(
+        verbose_name='Y'
+    )
+
+    def __str__(self):
+        return f'x={self.x}, y={self.y}'
+
+
 class RoomCoordinates(models.Model):
-    """Абстарктная модель с указателем на помещение и координаты."""
+    """Абстрактная модель с указателем на помещение и координаты."""
     room = models.ForeignKey(
         'Room',
         on_delete=models.CASCADE,
         verbose_name='Комната',
         related_name='%(class)ss'
     )
-    nw_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата north_west',
-        default=0
+    north_west = models.OneToOneField(
+        'Coordinate',
+        verbose_name='Координата north-west',
+        on_delete=models.PROTECT,
+        null=True
     )
-    ne_coordinate = models.PositiveIntegerField(
+    north_east = models.OneToOneField(
+        'Coordinate',
         verbose_name='Координата north-east',
-        default=0
+        on_delete=models.PROTECT,
+        null=True,
+        related_name='+'
     )
-    sw_coordinate = models.PositiveIntegerField(
+    south_west = models.OneToOneField(
+        'Coordinate',
         verbose_name='Координата south-west',
-        default=0
+        on_delete=models.PROTECT,
+        null=True,
+        related_name='+'
     )
-    se_coordinate = models.PositiveIntegerField(
+    south_east = models.OneToOneField(
+        'Coordinate',
         verbose_name='Координата south-east',
-        default=0
+        on_delete=models.PROTECT,
+        null=True,
+        related_name='+'
     )
 
     class Meta:
@@ -113,8 +131,11 @@ class Placement(RoomCoordinates):
     def __str__(self):
         return (
             f'{self.furniture.name} расположена в {self.room} '
-            f'в координатах {self.nw_coordinate}, {self.ne_coordinate}, '
-            f'{self.sw_coordinate}, {self.se_coordinate}'
+            # f'в координатах north-west=({self.north_west})'
+# north_east
+# south_west
+# south_east{self.nw_coordinate}, {self.ne_coordinate}, '
+#             # f'{self.sw_coordinate}, {self.se_coordinate}'
         )
 
 

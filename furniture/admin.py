@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Furniture, Placement, Room, PowerSocket, Door, Window
+from .models import Furniture, Placement, Room, PowerSocket, Door, Window, Coordinate
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
@@ -28,6 +28,16 @@ class WindowInline(admin.TabularInline):
     model = Window
 
 
+@admin.register(Coordinate)
+class CoordinateAdmin(admin.ModelAdmin):
+    """Админка Coordinate."""
+    list_display = (
+        'id',
+        'x',
+        'y'
+    )
+
+
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     """Админка комнаты."""
@@ -45,3 +55,4 @@ class RoomAdmin(admin.ModelAdmin):
         'name',
     )
     inlines = (PlacementInline, PowerSocketInline, DoorInline, WindowInline)
+
