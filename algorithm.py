@@ -1,5 +1,7 @@
 """Algorithm."""
 
+import random
+
 import create_picture
 import bisect
 
@@ -396,3 +398,29 @@ class FurnitureArrangement:
 
         create_picture.create_rectangles(self.coordinates)
         print(self.coordinates)
+
+    def shuffle_furniture(furniture: list, mode: str) -> list:
+        '''Shuffle list of furniture with three mods.
+        mode keys: light, medium, hard.'''
+
+        def light_or_medium_shuffle(mode: str) -> list:
+            '''Light mode shuffle have swap position with one step.
+            Medium mode shuffle have swap position with two step.'''
+            if mode == 'light':
+                step = 1
+            if mode == 'medium':
+                step = 2
+            for i in range(0, len(furniture) - step, step + 1):
+                furniture[i], furniture[i+step] = furniture[i+step], furniture[i]
+            return furniture
+
+        def hard_shuffle():
+            '''Hard mode shuffle have random swap position.'''
+            random.shuffle(furniture)
+
+        # Key for selection mode
+        if mode == 'hard':
+            hard_shuffle()
+            return furniture
+        if mode == 'light' or 'medium':
+            return light_or_medium_shuffle(mode)

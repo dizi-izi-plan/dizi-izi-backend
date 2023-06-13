@@ -140,9 +140,9 @@ EMAIL_USE_SSL = True
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    # ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -161,6 +161,7 @@ DJOSER = {
         'user': 'api.v1.serializers.CustomUserCreateSerializer',
         'current_user': 'api.v1.serializers.CustomUserCreateSerializer'
     },
+
     'PERMISSIONS': {
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
     },
@@ -168,6 +169,6 @@ DJOSER = {
         'activation': 'users.emails.CustomActivationEmail',
         'password_reset': 'users.emails.CustomPasswordResetEmail'
     }
-}
+
 
 AUTH_USER_MODEL = 'users.CustomUser'
