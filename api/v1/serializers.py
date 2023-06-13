@@ -11,10 +11,12 @@ from furniture.models import (
     Window
 )
 
+User = get_user_model()
+
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
-        model = get_user_model()
+        model = User
         fields = ('id', 'email', 'password')
 
 

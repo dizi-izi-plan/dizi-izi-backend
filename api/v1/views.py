@@ -11,13 +11,11 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Furniture.objects.all()
     serializer_class = FurnitureSerializer
 
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.settings import api_settings
 
 class RoomViewSet(viewsets.ModelViewSet):
     """Получение и изменение помещения."""
     serializer_class = RoomSerializer
+
     # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
@@ -27,7 +25,7 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Назначение данных для обработки запроса."""
-        user=None
+        user = None
         if not self.request.user.is_anonymous:
-            user=self.request.user
+            user = self.request.user
         serializer.save(user=user)

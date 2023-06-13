@@ -23,7 +23,7 @@ def minimum_len_width_validator(value):
 
 
 class Furniture(models.Model):
-    """Модель мебели"""
+    """Модель мебели."""
     name = models.CharField(
         'Наименование мебели',
         max_length=128,
