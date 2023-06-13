@@ -132,9 +132,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'fexample898@gmail.com'
-DEFAULT_FROM_EMAIL = 'fexample898@gmail.com'
-EMAIL_HOST_PASSWORD = 'xonrofnxaohndoxw'
+EMAIL_HOST_USER = 'dizi.izi.plan@gmail.com'
+DEFAULT_FROM_EMAIL = 'dizi.izi.plan@gmail.com'
+EMAIL_HOST_PASSWORD = 'tkttxsrnycqeijpw'
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
@@ -163,6 +163,10 @@ DJOSER = {
     },
     'PERMISSIONS': {
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
+    },
+    'EMAIL': {
+        'activation': 'users.emails.CustomActivationEmail',
+        'password_reset': 'users.emails.CustomPasswordResetEmail'
     }
 }
 
