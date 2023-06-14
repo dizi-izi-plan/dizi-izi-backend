@@ -19,7 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zc))j&u4h!-r1r!8#!a_8p9q1kkt#7+64$*amhm107m$k(c*sm'
+SECRET_KEY = (
+    'django-insecure-zc))j&u4h!-r1r!8#!a_8p9q1kkt#7+64$*amhm107m$k(c*sm'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -137,7 +139,6 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     # ],
-
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
@@ -164,11 +165,16 @@ DJOSER = {
     'SERIALIZERS': {
         'user_create': 'api.v1.serializers.CustomUserCreateSerializer',
         'user': 'api.v1.serializers.CustomUserCreateSerializer',
-        'current_user': 'api.v1.serializers.CustomUserCreateSerializer'
+        'current_user': 'api.v1.serializers.CustomUserCreateSerializer',
     },
     'PERMISSIONS': {
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
-    }
+    },
 }
 
 AUTH_USER_MODEL = 'users.CustomUser'
+# константы проекта, если их будет много, то нужно будет их организовать в
+# отдельно файлике с разбивкой по тематике
+MAX_LENGTH_PROJECT_NAME = 128
+MAX_LENGTH_ROOM_NAME = 128
+MAX_LENGTH_FURNITURE_NAME = 128

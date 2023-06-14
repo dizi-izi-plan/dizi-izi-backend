@@ -7,9 +7,10 @@ def get_furniture(name: str) -> tuple[int, int]:
     return (furniture.width, furniture.lenght)
 
 
-def set_furniture_coordinates(name: str, x_coordinate: int, y_coordinate: int) -> None:
+def set_furniture_coordinates(
+    name: str, x_coordinate: int, y_coordinate: int
+) -> None:
     "Назначает координаты для мебели"
     furniture = models.Furniture.objects.get(name=name)
     furniture.x_coordinate = x_coordinate
     furniture.y_coordinate = y_coordinate
-    

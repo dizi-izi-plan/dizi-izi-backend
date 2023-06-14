@@ -1,8 +1,9 @@
-from csv import DictReader
-# from datetime import datetime
-from django.core.management import BaseCommand
 import logging
 import sys
+from csv import DictReader
+
+# from datetime import datetime
+from django.core.management import BaseCommand
 
 from furniture.models import Furniture
 
@@ -10,9 +11,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(stream=sys.stdout)
 logger.addHandler(handler)
-formatter = logging.Formatter(
-    '%(asctime)s, [%(levelname)s] %(message)s'
-)
+formatter = logging.Formatter('%(asctime)s, [%(levelname)s] %(message)s')
 handler.setFormatter(formatter)
 
 

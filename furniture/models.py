@@ -1,64 +1,53 @@
-from django.db import models
-from django.core.exceptions import ValidationError
 # from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.db import models
 
-
-def minimum_len_width_validator(value):
-    """Проверка минимального значения для длины и ширины мебели."""
-    min_value_len_width = 1
-    if value < min_value_len_width:
-        raise ValidationError(
-            (
-                f'Минимальное значение для длины '
-                f'и ширины равно {min_value_len_width}'
-            )
-        )
-    return value
-
+from config.settings import (MAX_LENGTH_FURNITURE_NAME,
+                             MAX_LENGTH_PROJECT_NAME, MAX_LENGTH_ROOM_NAME)
+#     pass
+from furniture.validators import minimum_len_width_validator
 
 # class User(AbstractUser):
 #     """Модель пользователя."""
-#     pass
 
 
 class Furniture(models.Model):
     """Модель мебели."""
+
     name = models.CharField(
         'Наименование мебели',
-        max_length=128,
-        unique=True
+        max_length=MAX_LENGTH_FURNITURE_NAME,
+        unique=True,
     )
     name_english = models.CharField(
-        'Наименование мебели на английском языке',
-        max_length=128,
-        unique=True
+        'Наименование мебели на английском языке', max_length=128, unique=True
     )
     length = models.PositiveIntegerField(
         'Длина мебели',
         help_text='Длина в мм',
-        validators=(minimum_len_width_validator, )
+        validators=(minimum_len_width_validator,),
     )
     width = models.PositiveIntegerField(
         'Ширина мебели',
         help_text='Ширина в мм',
-        validators=(minimum_len_width_validator, )
+        validators=(minimum_len_width_validator,),
     )
     length_access = models.PositiveIntegerField(
         'Длина мебели c зоной подхода',
         help_text='Длина c зоной подхода в мм',
-        validators=(minimum_len_width_validator, )
+        validators=(minimum_len_width_validator,),
     )
     width_access = models.PositiveIntegerField(
         'Ширина мебели c зоной подхода',
         help_text='Ширина c зоной подхода в мм',
-        validators=(minimum_len_width_validator, )
+        validators=(minimum_len_width_validator,),
     )
     image = models.ImageField(
         verbose_name='Изображение мебели',
         upload_to='furniture/',
         blank=True,
-        null=True
+        null=True,
     )
 
     class Meta:
@@ -71,27 +60,24 @@ class Furniture(models.Model):
 
 class RoomCoordinates(models.Model):
     """Абстарктная модель с указателем на помещение и координаты."""
+
     room = models.ForeignKey(
         'Room',
         on_delete=models.CASCADE,
         verbose_name='Комната',
-        related_name='%(class)ss'
+        related_name='%(class)ss',
     )
     nw_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата north_west',
-        default=0
+        verbose_name='Координата north_west', default=0
     )
     ne_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата north-east',
-        default=0
+        verbose_name='Координата north-east', default=0
     )
     sw_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата south-west',
-        default=0
+        verbose_name='Координата south-west', default=0
     )
     se_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата south-east',
-        default=0
+        verbose_name='Координата south-east', default=0
     )
 
     class Meta:
@@ -100,6 +86,7 @@ class RoomCoordinates(models.Model):
 
 class Placement(RoomCoordinates):
     """Размещение мебели в помещении."""
+
     furniture = models.ForeignKey(
         'Furniture',
         on_delete=models.CASCADE,
@@ -120,39 +107,32 @@ class Placement(RoomCoordinates):
 
 class Room(models.Model):
     """Модель помещения."""
+
     name = models.CharField(
-        'Название помещения',
-        max_length=128
+        'Название помещения', max_length=MAX_LENGTH_ROOM_NAME
     )
     first_wall = models.PositiveIntegerField(
         'Длина 1 стены',
         help_text='Длина стены в мм',
-        validators=(minimum_len_width_validator, )
+        validators=(minimum_len_width_validator,),
     )
     second_wall = models.PositiveIntegerField(
         'Длина 2 стены',
         help_text='Длина стены в мм',
-        validators=(minimum_len_width_validator, )
+        validators=(minimum_len_width_validator,),
     )
     third_wall = models.PositiveIntegerField(
         'Длина 3 стены',
         help_text='Длина стены в мм',
-        validators=(minimum_len_width_validator, )
+        validators=(minimum_len_width_validator,),
     )
     fourth_wall = models.PositiveIntegerField(
         'Длина 4 стены',
         help_text='Длина стены в мм',
-        validators=(minimum_len_width_validator, )
-    )
-    user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        related_name='rooms',
-        verbose_name='Пользователь'
+        validators=(minimum_len_width_validator,),
     )
     furniture_placement = models.ManyToManyField(
-        'Furniture',
-        through='Placement'
+        'Furniture', through='Placement'
     )
 
     class Meta:
@@ -163,8 +143,30 @@ class Room(models.Model):
         return f'{self.name} пользователя {self.user}'
 
 
+class Project(models.Model):
+    name = models.CharField(max_length=MAX_LENGTH_PROJECT_NAME)
+    room = models.ForeignKey(
+        'Room',
+        on_delete=models.SET_NULL,
+        verbose_name='Помещение',
+        null=True,
+        related_name='project',
+    )
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='дата и время создания',
+    )
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name='project',
+        verbose_name='Пользователь',
+    )
+
+
 class PowerSocket(RoomCoordinates):
     """Модель размещения розетки в помещении."""
+
     class Meta:
         verbose_name = 'Розетка в помещении'
         verbose_name_plural = 'Розетки в помещении'
@@ -175,14 +177,15 @@ class PowerSocket(RoomCoordinates):
 
 class Door(RoomCoordinates):
     """Модель размещения двери в помещении."""
+
     width = models.PositiveIntegerField(
         'Ширина двери',
         help_text='Ширина в мм',
-        validators=(minimum_len_width_validator, )
+        validators=(minimum_len_width_validator,),
     )
     open_inside = models.BooleanField(
         'Направление открытия двери внутрь помещения',
-        help_text='Открытие в помещении - 1, из помещения - 0'
+        help_text='Открытие в помещении - 1, из помещения - 0',
     )
 
     class Meta:
@@ -195,15 +198,16 @@ class Door(RoomCoordinates):
 
 class Window(RoomCoordinates):
     """Модель размещения окна в помещении."""
+
     length = models.PositiveIntegerField(
         'Длина окна',
         help_text='Длина в мм',
-        validators=(minimum_len_width_validator, )
+        validators=(minimum_len_width_validator,),
     )
     width = models.PositiveIntegerField(
         'Ширина окна',
         help_text='Ширина в мм',
-        validators=(minimum_len_width_validator, )
+        validators=(minimum_len_width_validator,),
     )
 
     class Meta:

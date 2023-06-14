@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
 
 
 class CustomUserManager(BaseUserManager):
@@ -17,8 +17,7 @@ class CustomUserManager(BaseUserManager):
 
     def create_superuser(self, email, password=None):
         user = self.create_user(
-            email=self.normalize_email(email),
-            password=password
+            email=self.normalize_email(email), password=password
         )
         user.is_admin = True
         user.is_staff = True
@@ -30,10 +29,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(
-        'Email',
-        db_index=True,
-        max_length=254,
-        unique=True
+        'Email', db_index=True, max_length=254, unique=True
     )
     password = models.CharField('Password', max_length=150)
 
