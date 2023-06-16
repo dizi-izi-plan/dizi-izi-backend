@@ -6,10 +6,13 @@ from django.db import models
 from config.settings import (MAX_LENGTH_FURNITURE_NAME,
                              MAX_LENGTH_PROJECT_NAME, MAX_LENGTH_ROOM_NAME)
 #     pass
+from furniture.logging.logger import logger
 from furniture.validators import minimum_len_width_validator
 
 # class User(AbstractUser):
 #     """Модель пользователя."""
+
+User = get_user_model()
 
 
 class Furniture(models.Model):
@@ -139,8 +142,9 @@ class Room(models.Model):
         verbose_name = 'Помещение'
         verbose_name_plural = 'Помещения'
 
-    def __str__(self) -> str:
-        return f'{self.name} пользователя {self.user}'
+    # def __str__(self) -> str:
+    #     # logger.debug(self.project.name)
+    #     return f"{self.name} в проекте {2}"
 
 
 class Project(models.Model):
@@ -157,7 +161,7 @@ class Project(models.Model):
         verbose_name='дата и время создания',
     )
     user = models.ForeignKey(
-        get_user_model(),
+        User,
         on_delete=models.CASCADE,
         related_name='project',
         verbose_name='Пользователь',

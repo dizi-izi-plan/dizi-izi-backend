@@ -3,13 +3,14 @@ from django.db import transaction
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
-from furniture.models import (Door, Furniture, Placement, PowerSocket, Project,
-                              Room, Window)
 
-User = get_user_model()
+from furniture.logging.logger import logger
+from furniture.models import (Door, Furniture, Placement, PowerSocket, Project,
+                              Room, Window, User)
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
+
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = ('id', 'email', 'password')
@@ -199,8 +200,10 @@ class RoomSerializer(serializers.ModelSerializer):
         return self.instance
 
 
-class ProjectListSerializer(serializers.ModelSerializer):
-    room = RoomSerializer()
+class ProjectReadSerializer(serializers.ModelSerializer):
+    room = RoomSerializer(
+        read_only=True,
+    )
 
     class Meta:
         model = Project
@@ -210,16 +213,20 @@ class ProjectListSerializer(serializers.ModelSerializer):
             'created',
         )
 
+
+class ProjectWriteSerializer(serializers.ModelSerializer):
+    room = serializers.PrimaryKeyRelatedField(
+        queryset=Room.objects.all(),
+        many=True,
+    )
+
+    class Meta:
+        model = Project
+        fields = (
+            'name',
+            'room',
+        )
+
     def create(self, validated_data):
-        room = Room.objects.create(**validated_data)
-        projects = validated_data.pop('projects')
-        print(validated_data,'validated')
-        for project in projects:
-            user = validated_data['user']
-            projects.append(
-                project(
-                    user=user,
-                    room=room,
-                )
-            )
-        Project.objects.bulk_create(projects)
+
+        return Project.objects.create(**validated_data)
