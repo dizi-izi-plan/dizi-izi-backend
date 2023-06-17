@@ -6,7 +6,9 @@ from furniture.logging.logger import logger
 from furniture.models import Furniture, Project, Room
 
 from .serializers import (FurnitureSerializer, ProjectReadSerializer,
-                          RoomSerializer, ProjectWriteSerializer)
+                          RoomSerializer,
+                          # ProjectWriteSerializer
+                          )
 
 
 class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
@@ -27,7 +29,7 @@ class RoomViewSet(viewsets.ModelViewSet):
         """Получение данных о помещении только пользователя запроса."""
         if self.request.user.is_authenticated:
 
-            return Room.objects.filter(project__user=self.request.user)
+            return Room.objects.filter(projects__user=self.request.user)
 
     # def perform_create(self, serializer):
     #     """Назначение данных для обработки запроса."""
@@ -40,6 +42,7 @@ class RoomViewSet(viewsets.ModelViewSet):
 
 class ProjectListViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
+    serializer_class = ProjectReadSerializer
 
     def get_queryset(self) -> QuerySet[Project]:
         """Получает `queryset` в соответствии с параметрами запроса.
@@ -49,44 +52,43 @@ class ProjectListViewSet(viewsets.ModelViewSet):
 
         """
         queryset = self.queryset
-        print(queryset, '!!!!!!!!!!!!!!!!!!!!!!!!!!')
         queryset = queryset.filter(user=self.request.user)
-        print(queryset,'!!!!!!!!!!!!!!!!!!!!!!!!!!')
         if self.request.user.is_authenticated:
             logger.debug(queryset)
             return queryset
 
-    def get_serializer_class(
-        self,
-    ) -> [ProjectReadSerializer | ProjectWriteSerializer]:
-        """Выбор сериализатора в зависимости от вида запроса.
-
-        Returns:
-            Выбранный сериализатор.
-
-        """
-        if self.action in (
-            'list',
-            'retrieve',
-        ):
-            return ProjectReadSerializer
-        print('PProjectWriteSerializer')
-        return ProjectWriteSerializer
+    # def get_serializer_class(
+    #     self,
+    # ) -> [ProjectReadSerializer | ProjectWriteSerializer]:
+    #     """Выбор сериализатора в зависимости от вида запроса.
+    #
+    #     Returns:
+    #         Выбранный сериализатор.
+    #
+    #     """
+    #     if self.action in (
+    #         'list',
+    #         'retrieve',
+    #     ):
+    #         return ProjectReadSerializer
+    #     print('PProjectWriteSerializer')
+    #     return ProjectWriteSerializer
     #
     # @staticmethod
     # def quantity_of_projects(request: HttpRequest) -> int:
     #     return Project.objects.filter(user=request.user).count()
 
-    def perform_create(self, serializer: ProjectWriteSerializer):
+    def perform_create(self,
+                       serializer# :  # ProjectWriteSerializer
+                       ):
         """Назначение данных для обработки запроса."""
 
         if self.request.user.is_authenticated:
             print(serializer)
 
-            # serializer.save(
-            #     user=self.request.user,
-            #     name=f'Проект{Project.objects.filter(user=self.request.user).count()}',
-            #
-            # )
-            serializer.save()
+            serializer.save(
+                user=self.request.user,
+                name=f'Проект{Project.objects.filter(user=self.request.user).count()}',
+            )
+
         print('endsdfasdfasdfasdhfhasdfjkashdfajlsdfsdfasdfasdfasdhfhasdfjkashdfajlsdf')

@@ -154,7 +154,7 @@ class Project(models.Model):
         on_delete=models.SET_NULL,
         verbose_name='Помещение',
         null=True,
-        related_name='project',
+        related_name='projects',
     )
     created = models.DateTimeField(
         auto_now_add=True,

@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
+from drf_writable_nested import WritableNestedModelSerializer
 
 
 from furniture.logging.logger import logger
@@ -181,28 +182,29 @@ class RoomSerializer(serializers.ModelSerializer):
 
         return room
 
-    def save(self, **kwargs):
-        if not kwargs['user']:
-            room = self.validated_data
-            selected_furniture = room.pop('selected_furniture')
-            # for furniture in selected_furniture:
-            #     # здесь применение алгоритма по расстановке мебели
-            #     one_furniture_placement = {}
-            #     one_furniture_placement['furniture']=furniture
-            #     one_furniture_placement['nw_coordinate']=12
-            #     one_furniture_placement['ne_coordinate']=13
-            #     one_furniture_placement['sw_coordinate']=14
-            #     one_furniture_placement['se_coordinate']=15
-            #     room['placements'].append(one_furniture_placement)
-            self.instance = room
-        else:
-            self.instance = super().save(**kwargs)
-        return self.instance
+    # def save(self, **kwargs):
+    #     print(kwargs, self.validated_data)
+    #     if not kwargs['user']:
+    #         room = self.validated_data
+    #         selected_furniture = room.pop('selected_furniture')
+    #         # for furniture in selected_furniture:
+    #         #     # здесь применение алгоритма по расстановке мебели
+    #         #     one_furniture_placement = {}
+    #         #     one_furniture_placement['furniture']=furniture
+    #         #     one_furniture_placement['nw_coordinate']=12
+    #         #     one_furniture_placement['ne_coordinate']=13
+    #         #     one_furniture_placement['sw_coordinate']=14
+    #         #     one_furniture_placement['se_coordinate']=15
+    #         #     room['placements'].append(one_furniture_placement)
+    #         self.instance = room
+    #     else:
+    #         self.instance = super().save(**kwargs)
+    #     return self.instance
 
 
-class ProjectReadSerializer(serializers.ModelSerializer):
+class ProjectReadSerializer(WritableNestedModelSerializer):
     room = RoomSerializer(
-        read_only=True,
+        many=True,
     )
 
     class Meta:
@@ -214,19 +216,33 @@ class ProjectReadSerializer(serializers.ModelSerializer):
         )
 
 
-class ProjectWriteSerializer(serializers.ModelSerializer):
-    room = serializers.PrimaryKeyRelatedField(
-        queryset=Room.objects.all(),
-        many=True,
-    )
+# class ProjectWriteSerializer(WritableNestedModelSerializer):
+#     room = RoomSerializer(
+#         many=True,
+#         # allow_empty=True,
+#     )
+#
+#     class Meta:
+#         model = Project
+#         fields = (
+#             'name',
+#             'room',
+#         )
 
-    class Meta:
-        model = Project
-        fields = (
-            'name',
-            'room',
-        )
-
-    def create(self, validated_data):
-
-        return Project.objects.create(**validated_data)
+    # @transaction.atomic
+    # def create(self, validated_data):
+    #     logger.debug(validated_data)
+    #     # name = validated_data.pop('name')
+    #     rooms = validated_data.pop('room')
+    #     project = Project.objects.create(**validated_data)
+    #     # project.name.set(name)
+    #     print( '//////////////////////')
+    #
+    #     for room in rooms:
+    #         room_list.append
+    #     return project
+    #
+    # def to_representation(self, instance):
+    #     request = self.context.get('request')
+    #     context = {'request': request}
+    #     return ProjectReadSerializer(instance, context=context).data
