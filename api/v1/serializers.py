@@ -1,9 +1,8 @@
 from django.contrib.auth import get_user_model
-from django.db import transaction
+from django.db import transaction, models
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from drf_writable_nested import WritableNestedModelSerializer
-
 
 from furniture.logging.logger import logger
 from furniture.models import (Door, Furniture, Placement, PowerSocket, Project,
@@ -11,7 +10,6 @@ from furniture.models import (Door, Furniture, Placement, PowerSocket, Project,
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
-
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = ('id', 'email', 'password')
@@ -125,34 +123,45 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         read_only = ('id',)
 
+    @staticmethod
+    def sub_create(validated_params: list, model: type(models.Model), room: Room, args):
+        objects_list = []
+
+        for obj in validated_params:
+            params_additional = [obj[arg] for arg in args]
+            params = {
+                'nw_coordinate': obj['nw_coordinate'],
+                'ne_coordinate': obj['ne_coordinate'],
+                'sw_coordinate': obj['sw_coordinate'],
+                'se_coordinate': obj['se_coordinate'],
+                'room': room,
+            }
+            objects_list.append(
+                model(
+                    *params_additional,
+                    **params,
+                )
+            )
+        model.objects.bulk_create(objects_list)
+
     @transaction.atomic
     def create(self, validated_data):
         """Создание помещения с расстановкой."""
+
         room_placement = validated_data.pop('placements')
         selected_furniture = validated_data.pop('selected_furniture')
         doors = validated_data.pop('doors')
         windows = validated_data.pop('windows')
         room = Room.objects.create(**validated_data)
-        furniture_placement = []
-        for placement in room_placement:
-            furniture = placement['furniture']
-            furniture_placement.append(
-                Placement(
-                    furniture=furniture,
-                    nw_coordinate=placement['nw_coordinate'],
-                    ne_coordinate=placement['ne_coordinate'],
-                    sw_coordinate=placement['sw_coordinate'],
-                    se_coordinate=placement['se_coordinate'],
-                    room=room,
-                )
-            )
-        Placement.objects.bulk_create(furniture_placement)
+
+        self.sub_create(room_placement, Placement, room, ('width', 'open_inside'),)
+        # self.sub_create(windows, Window, room)
+        # self.sub_create(room_placement, Placement, room)
         room_doors = []
         for door in doors:
             room_doors.append(
                 Door(
-                    width=door['width'],
-                    open_inside=door['open_inside'],
+
                     nw_coordinate=door['nw_coordinate'],
                     ne_coordinate=door['ne_coordinate'],
                     sw_coordinate=door['sw_coordinate'],
@@ -202,47 +211,14 @@ class RoomSerializer(serializers.ModelSerializer):
     #     return self.instance
 
 
-class ProjectReadSerializer(WritableNestedModelSerializer):
-    room = RoomSerializer(
-        many=True,
-    )
+class ProjectSerializer(WritableNestedModelSerializer):
+    room = RoomSerializer()
 
     class Meta:
         model = Project
         fields = (
             'name',
+            'user',
             'room',
             'created',
         )
-
-
-# class ProjectWriteSerializer(WritableNestedModelSerializer):
-#     room = RoomSerializer(
-#         many=True,
-#         # allow_empty=True,
-#     )
-#
-#     class Meta:
-#         model = Project
-#         fields = (
-#             'name',
-#             'room',
-#         )
-
-    # @transaction.atomic
-    # def create(self, validated_data):
-    #     logger.debug(validated_data)
-    #     # name = validated_data.pop('name')
-    #     rooms = validated_data.pop('room')
-    #     project = Project.objects.create(**validated_data)
-    #     # project.name.set(name)
-    #     print( '//////////////////////')
-    #
-    #     for room in rooms:
-    #         room_list.append
-    #     return project
-    #
-    # def to_representation(self, instance):
-    #     request = self.context.get('request')
-    #     context = {'request': request}
-    #     return ProjectReadSerializer(instance, context=context).data

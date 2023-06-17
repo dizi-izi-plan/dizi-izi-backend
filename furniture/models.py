@@ -1,16 +1,10 @@
-# from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.db import models
 
 from config.settings import (MAX_LENGTH_FURNITURE_NAME,
                              MAX_LENGTH_PROJECT_NAME, MAX_LENGTH_ROOM_NAME)
-#     pass
-from furniture.logging.logger import logger
-from furniture.validators import minimum_len_width_validator
 
-# class User(AbstractUser):
-#     """Модель пользователя."""
+from furniture.validators import minimum_len_width_validator
 
 User = get_user_model()
 
@@ -62,7 +56,7 @@ class Furniture(models.Model):
 
 
 class RoomCoordinates(models.Model):
-    """Абстарктная модель с указателем на помещение и координаты."""
+    """Абстрактная модель с указателем на помещение и координаты."""
 
     room = models.ForeignKey(
         'Room',
