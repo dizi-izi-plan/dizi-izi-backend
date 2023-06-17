@@ -1,14 +1,10 @@
 from django.db.models import QuerySet
-from django.http import HttpRequest
-from rest_framework import views, viewsets
 
-from furniture.logging.logger import logger
 from furniture.models import Furniture, Project, Room
+from rest_framework import viewsets
 
-from .serializers import (FurnitureSerializer, ProjectSerializer,
-                          RoomSerializer,
-                          # ProjectWriteSerializer
-                          )
+from .serializers import FurnitureSerializer  # ProjectWriteSerializer
+from .serializers import ProjectSerializer, RoomSerializer
 
 
 class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
@@ -28,7 +24,6 @@ class RoomViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Получение данных о помещении только пользователя запроса."""
         if self.request.user.is_authenticated:
-
             return Room.objects.filter(projects__user=self.request.user)
 
     # def perform_create(self, serializer):
@@ -56,13 +51,12 @@ class ProjectListViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             return queryset
 
-    def perform_create(self,
-                       serializer:  ProjectSerializer
-                       ):
+    def perform_create(self, serializer: ProjectSerializer):
         """Назначение данных для обработки запроса."""
-
         if self.request.user.is_authenticated:
             serializer.save(
                 user=self.request.user,
-                name=f'Проект{Project.objects.filter(user=self.request.user).count()}',
+                name=(f'Проект'
+                      f'{Project.objects.filter(user=self.request.user).count()}'
+                      ),
             )

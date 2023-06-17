@@ -24,7 +24,7 @@ class Command(BaseCommand):
         logger.info('Загрузка мебели в БД')
         furniture = []
         for row in DictReader(
-            open('furniture/data/furniture.csv', encoding='utf-8')
+            open('furniture/data/furniture.csv', encoding='utf-8'),
         ):
             furniture.append(
                 Furniture(
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                     width=row['width'],
                     length_access=row['length_access'],
                     width_access=row['width_access'],
-                )
+                ),
             )
         Furniture.objects.bulk_create(furniture)
 

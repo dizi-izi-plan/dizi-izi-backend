@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from config.settings import (MAX_LENGTH_FURNITURE_NAME,
-                             MAX_LENGTH_PROJECT_NAME, MAX_LENGTH_ROOM_NAME)
-
+from config.settings import (
+    MAX_LENGTH_FURNITURE_NAME,
+    MAX_LENGTH_PROJECT_NAME,
+    MAX_LENGTH_ROOM_NAME,
+)
 from furniture.validators import minimum_len_width_validator
 
 User = get_user_model()
@@ -18,7 +20,9 @@ class Furniture(models.Model):
         unique=True,
     )
     name_english = models.CharField(
-        'Наименование мебели на английском языке', max_length=128, unique=True
+        'Наименование мебели на английском языке',
+        max_length=128,
+        unique=True,
     )
     length = models.PositiveIntegerField(
         'Длина мебели',
@@ -65,16 +69,20 @@ class RoomCoordinates(models.Model):
         related_name='%(class)ss',
     )
     nw_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата north_west', default=0
+        verbose_name='Координата north_west',
+        default=0,
     )
     ne_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата north-east', default=0
+        verbose_name='Координата north-east',
+        default=0,
     )
     sw_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата south-west', default=0
+        verbose_name='Координата south-west',
+        default=0,
     )
     se_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата south-east', default=0
+        verbose_name='Координата south-east',
+        default=0,
     )
 
     class Meta:
@@ -106,7 +114,8 @@ class Room(models.Model):
     """Модель помещения."""
 
     name = models.CharField(
-        'Название помещения', max_length=MAX_LENGTH_ROOM_NAME
+        'Название помещения',
+        max_length=MAX_LENGTH_ROOM_NAME,
     )
     first_wall = models.PositiveIntegerField(
         'Длина 1 стены',
@@ -129,20 +138,22 @@ class Room(models.Model):
         validators=(minimum_len_width_validator,),
     )
     furniture_placement = models.ManyToManyField(
-        'Furniture', through='Placement'
+        'Furniture',
+        through='Placement',
     )
 
     class Meta:
         verbose_name = 'Помещение'
         verbose_name_plural = 'Помещения'
 
-    # def __str__(self) -> str:
-    #     # logger.debug(self.project.name)
-    #     return f"{self.name} в проекте {2}"
+    def __str__(self) -> str:
+        return f"{self.name} в {Project.objects.get(room=self)}"
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=MAX_LENGTH_PROJECT_NAME)
+    name = models.CharField(
+        max_length=MAX_LENGTH_PROJECT_NAME,
+    )
     room = models.ForeignKey(
         'Room',
         on_delete=models.SET_NULL,
@@ -160,6 +171,13 @@ class Project(models.Model):
         related_name='project',
         verbose_name='Пользователь',
     )
+
+    class Meta:
+        verbose_name = 'планировка'
+        verbose_name_plural = 'планировки'
+
+    def __str__(self):
+        return f'{self.name} пользователя {self.user}'
 
 
 class PowerSocket(RoomCoordinates):

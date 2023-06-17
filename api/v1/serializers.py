@@ -1,12 +1,16 @@
-from django.contrib.auth import get_user_model
-from django.db import transaction, models
 from djoser.serializers import UserCreateSerializer
-from rest_framework import serializers
 from drf_writable_nested import WritableNestedModelSerializer
-
-from furniture.logging.logger import logger
-from furniture.models import (Door, Furniture, Placement, PowerSocket, Project,
-                              Room, Window, User)
+from furniture.models import (
+    Door,
+    Furniture,
+    Placement,
+    PowerSocket,
+    Project,
+    Room,
+    User,
+    Window,
+)
+from rest_framework import serializers
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -99,7 +103,9 @@ class RoomSerializer(serializers.ModelSerializer):
         allow_empty=True,
     )
     power_sockets = PowerSocketSerializer(
-        many=True, read_only=True, source='powersockets'
+        many=True,
+        read_only=True,
+        source='powersockets',
     )
     doors = DoorSerializer(
         many=True,
@@ -123,51 +129,39 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         read_only = ('id',)
 
-    @staticmethod
-    def sub_create(validated_params: list, model: type(models.Model), room: Room, args):
-        objects_list = []
-
-        for obj in validated_params:
-            params_additional = [obj[arg] for arg in args]
-            params = {
-                'nw_coordinate': obj['nw_coordinate'],
-                'ne_coordinate': obj['ne_coordinate'],
-                'sw_coordinate': obj['sw_coordinate'],
-                'se_coordinate': obj['se_coordinate'],
-                'room': room,
-            }
-            objects_list.append(
-                model(
-                    *params_additional,
-                    **params,
-                )
-            )
-        model.objects.bulk_create(objects_list)
-
-    @transaction.atomic
     def create(self, validated_data):
         """Создание помещения с расстановкой."""
-
         room_placement = validated_data.pop('placements')
         selected_furniture = validated_data.pop('selected_furniture')
         doors = validated_data.pop('doors')
         windows = validated_data.pop('windows')
         room = Room.objects.create(**validated_data)
-
-        self.sub_create(room_placement, Placement, room, ('width', 'open_inside'),)
-        # self.sub_create(windows, Window, room)
-        # self.sub_create(room_placement, Placement, room)
+        furniture_placement = []
+        for placement in room_placement:
+            furniture = placement['furniture']
+            furniture_placement.append(
+                Placement(
+                    furniture=furniture,
+                    nw_coordinate=placement['nw_coordinate'],
+                    ne_coordinate=placement['ne_coordinate'],
+                    sw_coordinate=placement['sw_coordinate'],
+                    se_coordinate=placement['se_coordinate'],
+                    room=room,
+                ),
+            )
+        Placement.objects.bulk_create(furniture_placement)
         room_doors = []
         for door in doors:
             room_doors.append(
                 Door(
-
+                    width=door['width'],
+                    open_inside=door['open_inside'],
                     nw_coordinate=door['nw_coordinate'],
                     ne_coordinate=door['ne_coordinate'],
                     sw_coordinate=door['sw_coordinate'],
                     se_coordinate=door['se_coordinate'],
                     room=room,
-                )
+                ),
             )
         Door.objects.bulk_create(room_doors)
         room_windows = []
@@ -181,7 +175,7 @@ class RoomSerializer(serializers.ModelSerializer):
                     sw_coordinate=window['sw_coordinate'],
                     se_coordinate=window['se_coordinate'],
                     room=room,
-                )
+                ),
             )
         Window.objects.bulk_create(room_windows)
         furniture_placement = []
@@ -213,6 +207,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(WritableNestedModelSerializer):
     room = RoomSerializer()
+    user = UserCreateSerializer(read_only=True)
+    name = serializers.CharField(max_length=128, required=False)
 
     class Meta:
         model = Project

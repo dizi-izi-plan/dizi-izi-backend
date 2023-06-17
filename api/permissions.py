@@ -2,11 +2,7 @@ from rest_framework import permissions
 
 
 class CustumPer(permissions.BasePermission):
-    """
-    Разрешает доступ только пользователям с правами администратора
-    или для чтения.
-    """
-
+    """Разрешает доступ только с правами администратора или для чтения."""
     def has_permission(self, request, view):
         if request.user.is_anonymous:
             return False
@@ -17,18 +13,15 @@ class CustumPer(permissions.BasePermission):
         # )
 
     def has_object_permission(self, request, view, obj):
-        """
-        Return `True` if permission is granted, `False` otherwise.
-        """
+        """Return `True` if permission is granted, `False` otherwise."""
         return False
 
 
 class ReviewCommentPermission(permissions.BasePermission):
-    """
-    Разрешает доступ для чтения или для редактирования пользователям
+    """Разрешает доступ для чтения или для редактирования пользователям
     с правами администратора, модератора или автора.
-    """
 
+    """
     def has_permission(self, request, view):
         return (
             request.method in permissions.SAFE_METHODS
