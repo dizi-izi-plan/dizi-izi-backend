@@ -8,7 +8,7 @@ from furniture.models import (
     Placement,
     PowerSocket,
     Door,
-    Window
+    Window, TypeOfRoom
 )
 
 
@@ -18,8 +18,15 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         fields = ('id', 'email', 'password')
 
 
+class TypeOfRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TypeOfRoom
+        fields = ('name', 'slug')
+
+
 class FurnitureSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
+    type_of_rooms = TypeOfRoomSerializer()
 
     class Meta:
         fields = (
@@ -30,6 +37,7 @@ class FurnitureSerializer(serializers.ModelSerializer):
             'width',
             'length_access',
             'width_access',
+            'type_of_rooms'
         )
         model = Furniture
 
@@ -130,7 +138,7 @@ class RoomSerializer(serializers.ModelSerializer):
             'windows'
         )
         model = Room
-        read_only = ('id', )
+        read_only = ('id',)
 
     @transaction.atomic
     def create(self, validated_data):
@@ -242,6 +250,7 @@ class RoomAnonymousSerializers(serializers.Serializer):
     windows = WindowSerializer(
         many=True,
     )
+
     def save(self, **kwargs):
         validated_data = {**self.validated_data, **kwargs}
         # room_placement = validated_data.pop('furniture_placement')

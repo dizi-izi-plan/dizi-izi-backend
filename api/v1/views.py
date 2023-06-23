@@ -1,5 +1,7 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from furniture.models import Furniture
+from .filters import FurnitureFilter
 from .serializers import (
     FurnitureSerializer,
     RoomSerializer,
@@ -11,11 +13,14 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
     """Получение данных о мебели."""
     queryset = Furniture.objects.all()
     serializer_class = FurnitureSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = FurnitureFilter
 
 
 class RoomViewSet(viewsets.ModelViewSet):
     """Получение и изменение помещения."""
     serializer_class = RoomSerializer
+
     # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
