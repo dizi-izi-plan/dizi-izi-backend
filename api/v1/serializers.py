@@ -1,5 +1,4 @@
 from djoser.serializers import UserCreateSerializer
-from drf_writable_nested import WritableNestedModelSerializer
 from furniture.models import (
     Door,
     Furniture,
@@ -94,6 +93,7 @@ class WindowSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
 
+    user = UserCreateSerializer(read_only=True)
     furniture_placement = PlacementSerializer(many=True, source='placements')
     selected_furniture = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -124,6 +124,7 @@ class RoomSerializer(serializers.ModelSerializer):
             'doors',
             'power_sockets',
             'windows',
+            'user',
         )
         model = Room
         read_only = ('id',)
