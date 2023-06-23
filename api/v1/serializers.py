@@ -184,21 +184,21 @@ class RoomSerializer(serializers.ModelSerializer):
 
         return room
 
-    # def save(self, **kwargs):
-    #     print(kwargs, self.validated_data)
-    #     if not kwargs['user']:
-    #         room = self.validated_data
-    #         selected_furniture = room.pop('selected_furniture')
-    #         # for furniture in selected_furniture:
-    #         #     # здесь применение алгоритма по расстановке мебели
-    #         #     one_furniture_placement = {}
-    #         #     one_furniture_placement['furniture']=furniture
-    #         #     one_furniture_placement['nw_coordinate']=12
-    #         #     one_furniture_placement['ne_coordinate']=13
-    #         #     one_furniture_placement['sw_coordinate']=14
-    #         #     one_furniture_placement['se_coordinate']=15
-    #         #     room['placements'].append(one_furniture_placement)
-    #         self.instance = room
-    #     else:
-    #         self.instance = super().save(**kwargs)
-    #     return self.instance
+    def save(self, **kwargs):
+        print(kwargs, self.validated_data)
+        if not kwargs['user']:
+            room = self.validated_data
+            selected_furniture = room.pop('selected_furniture')
+            # for furniture in selected_furniture:
+            #     # здесь применение алгоритма по расстановке мебели
+            #     one_furniture_placement = {}
+            #     one_furniture_placement['furniture']=furniture
+            #     one_furniture_placement['nw_coordinate']=12
+            #     one_furniture_placement['ne_coordinate']=13
+            #     one_furniture_placement['sw_coordinate']=14
+            #     one_furniture_placement['se_coordinate']=15
+            #     room['placements'].append(one_furniture_placement)
+            self.instance = room
+        else:
+            self.instance = super().save(**kwargs)
+        return self.instance

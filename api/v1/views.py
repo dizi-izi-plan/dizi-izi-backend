@@ -19,12 +19,25 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
+    # def get_queryset(self):
+    #     """Получение данных о помещении только пользователя запроса."""
+    #     if self.request.user.is_authenticated:
+    #         return Room.objects.filter(user=self.request.user)
+
+    # def perform_create(self, serializer):
+    #     """Назначение данных для обработки запроса."""
+    #     if self.request.user.is_authenticated:
+    #         serializer.save(user=self.request.user)
+
     def get_queryset(self):
         """Получение данных о помещении только пользователя запроса."""
-        if self.request.user.is_authenticated:
-            return Room.objects.filter(user=self.request.user)
+        if not self.request.user.is_anonymous:
+            return self.request.user.rooms.all()
 
     def perform_create(self, serializer):
         """Назначение данных для обработки запроса."""
-        if self.request.user.is_authenticated:
-            serializer.save(user=self.request.user)
+        user = None
+        if not self.request.user.is_anonymous:
+            user = self.request.user
+            print(user)
+        serializer.save(user=user)
