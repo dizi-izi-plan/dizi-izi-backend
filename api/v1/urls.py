@@ -2,12 +2,11 @@ from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 
-from .views import FurnitureViewSet, ProjectListViewSet, RoomViewSet
+from .views import FurnitureViewSet, RoomViewSet
 
 router = DefaultRouter()
 router.register('furniture', FurnitureViewSet, basename='furniture')
 router.register('rooms', RoomViewSet, basename='room')
-router.register('project', ProjectListViewSet, basename='project')
 
 
 urlpatterns = [

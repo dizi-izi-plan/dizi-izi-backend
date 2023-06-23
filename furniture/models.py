@@ -113,9 +113,20 @@ class Placement(RoomCoordinates):
 class Room(models.Model):
     """Модель помещения."""
 
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='rooms',
+        verbose_name='Пользователь',
+    )
     name = models.CharField(
-        'Название помещения',
+        'Название планировки',
         max_length=MAX_LENGTH_ROOM_NAME,
+    )
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='дата и время создания',
+        db_index=True,
     )
     first_wall = models.PositiveIntegerField(
         'Длина 1 стены',
@@ -147,37 +158,37 @@ class Room(models.Model):
         verbose_name_plural = 'Помещения'
 
     def __str__(self) -> str:
-        return f"{self.name} в {Project.objects.get(room=self)}"
+        return f"Проект{self.name} пользователя {self.user.name}"
 
 
-class Project(models.Model):
-    name = models.CharField(
-        max_length=MAX_LENGTH_PROJECT_NAME,
-    )
-    room = models.ForeignKey(
-        'Room',
-        on_delete=models.SET_NULL,
-        verbose_name='Помещение',
-        null=True,
-        related_name='projects',
-    )
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='дата и время создания',
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='project',
-        verbose_name='Пользователь',
-    )
-
-    class Meta:
-        verbose_name = 'планировка'
-        verbose_name_plural = 'планировки'
-
-    def __str__(self):
-        return f'{self.name} пользователя {self.user}'
+# class Project(models.Model):
+#     name = models.CharField(
+#         max_length=MAX_LENGTH_PROJECT_NAME,
+#     )
+#     room = models.ForeignKey(
+#         'Room',
+#         on_delete=models.SET_NULL,
+#         verbose_name='Помещение',
+#         null=True,
+#         related_name='projects',
+#     )
+#     created = models.DateTimeField(
+#         auto_now_add=True,
+#         verbose_name='дата и время создания',
+#     )
+#     user = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='project',
+#         verbose_name='Пользователь',
+#     )
+#
+#     class Meta:
+#         verbose_name = 'планировка'
+#         verbose_name_plural = 'планировки'
+#
+#     def __str__(self):
+#         return f'{self.name} пользователя {self.user}'
 
 
 class PowerSocket(RoomCoordinates):

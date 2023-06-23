@@ -1,10 +1,8 @@
-from django.db.models import QuerySet
-
-from furniture.models import Furniture, Project, Room
+from furniture.models import Furniture, Room
 from rest_framework import viewsets
 
 from .serializers import FurnitureSerializer  # ProjectWriteSerializer
-from .serializers import ProjectSerializer, RoomSerializer
+from .serializers import RoomSerializer
 
 
 class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
@@ -24,39 +22,9 @@ class RoomViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Получение данных о помещении только пользователя запроса."""
         if self.request.user.is_authenticated:
-            return Room.objects.filter(projects__user=self.request.user)
+            return Room.objects.filter(user=self.request.user)
 
-    # def perform_create(self, serializer):
-    #     """Назначение данных для обработки запроса."""
-    #     print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-    #     user = None
-    #     if not self.request.user.is_anonymous:
-    #         user = self.request.user
-    #     serializer.save(user=user)
-
-
-class ProjectListViewSet(viewsets.ModelViewSet):
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
-
-    def get_queryset(self) -> QuerySet[Project]:
-        """Получает `queryset` в соответствии с параметрами запроса.
-
-        Returns:
-            `QuerySet`: Список запрошенных объектов.
-
-        """
-        queryset = self.queryset
-        queryset = queryset.filter(user=self.request.user)
-        if self.request.user.is_authenticated:
-            return queryset
-
-    def perform_create(self, serializer: ProjectSerializer):
+    def perform_create(self, serializer):
         """Назначение данных для обработки запроса."""
         if self.request.user.is_authenticated:
-            serializer.save(
-                user=self.request.user,
-                name=(f'Проект'
-                      f'{Project.objects.filter(user=self.request.user).count()}'
-                      ),
-            )
+            serializer.save(user=self.request.user)

@@ -5,7 +5,6 @@ from furniture.models import (
     Furniture,
     Placement,
     PowerSocket,
-    Project,
     Room,
     User,
     Window,
@@ -136,17 +135,25 @@ class RoomSerializer(serializers.ModelSerializer):
         doors = validated_data.pop('doors')
         windows = validated_data.pop('windows')
         room = Room.objects.create(**validated_data)
+
+        def basic_parameters(model: dict):
+            return {
+                'nw_coordinate': model['nw_coordinate'],
+                'ne_coordinate': model['ne_coordinate'],
+                'sw_coordinate': model[
+                    'sw_coordinate'],
+                'se_coordinate':
+                    model['se_coordinate'],
+                'room': room,
+            }
+
         furniture_placement = []
         for placement in room_placement:
             furniture = placement['furniture']
             furniture_placement.append(
                 Placement(
                     furniture=furniture,
-                    nw_coordinate=placement['nw_coordinate'],
-                    ne_coordinate=placement['ne_coordinate'],
-                    sw_coordinate=placement['sw_coordinate'],
-                    se_coordinate=placement['se_coordinate'],
-                    room=room,
+                    **basic_parameters(placement)
                 ),
             )
         Placement.objects.bulk_create(furniture_placement)
@@ -156,11 +163,7 @@ class RoomSerializer(serializers.ModelSerializer):
                 Door(
                     width=door['width'],
                     open_inside=door['open_inside'],
-                    nw_coordinate=door['nw_coordinate'],
-                    ne_coordinate=door['ne_coordinate'],
-                    sw_coordinate=door['sw_coordinate'],
-                    se_coordinate=door['se_coordinate'],
-                    room=room,
+                    **basic_parameters(door)
                 ),
             )
         Door.objects.bulk_create(room_doors)
@@ -170,11 +173,7 @@ class RoomSerializer(serializers.ModelSerializer):
                 Window(
                     width=window['width'],
                     length=window['length'],
-                    nw_coordinate=window['nw_coordinate'],
-                    ne_coordinate=window['ne_coordinate'],
-                    sw_coordinate=window['sw_coordinate'],
-                    se_coordinate=window['se_coordinate'],
-                    room=room,
+                    **basic_parameters(window)
                 ),
             )
         Window.objects.bulk_create(room_windows)
@@ -203,18 +202,3 @@ class RoomSerializer(serializers.ModelSerializer):
     #     else:
     #         self.instance = super().save(**kwargs)
     #     return self.instance
-
-
-class ProjectSerializer(WritableNestedModelSerializer):
-    room = RoomSerializer()
-    user = UserCreateSerializer(read_only=True)
-    name = serializers.CharField(max_length=128, required=False)
-
-    class Meta:
-        model = Project
-        fields = (
-            'name',
-            'user',
-            'room',
-            'created',
-        )
