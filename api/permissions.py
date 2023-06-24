@@ -3,6 +3,7 @@ from rest_framework import permissions
 
 class CustumPer(permissions.BasePermission):
     """Разрешает доступ только с правами администратора или для чтения."""
+
     def has_permission(self, request, view):
         if request.user.is_anonymous:
             return False
@@ -22,6 +23,7 @@ class ReviewCommentPermission(permissions.BasePermission):
     с правами администратора, модератора или автора.
 
     """
+
     def has_permission(self, request, view):
         return (
             request.method in permissions.SAFE_METHODS

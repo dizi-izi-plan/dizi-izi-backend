@@ -1,13 +1,5 @@
 from djoser.serializers import UserCreateSerializer
-from furniture.models import (
-    Door,
-    Furniture,
-    Placement,
-    PowerSocket,
-    Room,
-    User,
-    Window,
-)
+from furniture.models import Door, Furniture, Placement, PowerSocket, Room, User, Window
 from rest_framework import serializers
 
 
@@ -141,10 +133,8 @@ class RoomSerializer(serializers.ModelSerializer):
             return {
                 'nw_coordinate': model['nw_coordinate'],
                 'ne_coordinate': model['ne_coordinate'],
-                'sw_coordinate': model[
-                    'sw_coordinate'],
-                'se_coordinate':
-                    model['se_coordinate'],
+                'sw_coordinate': model['sw_coordinate'],
+                'se_coordinate': model['se_coordinate'],
                 'room': room,
             }
 
@@ -152,10 +142,7 @@ class RoomSerializer(serializers.ModelSerializer):
         for placement in room_placement:
             furniture = placement['furniture']
             furniture_placement.append(
-                Placement(
-                    furniture=furniture,
-                    **basic_parameters(placement)
-                ),
+                Placement(furniture=furniture, **basic_parameters(placement)),
             )
         Placement.objects.bulk_create(furniture_placement)
         room_doors = []
@@ -187,7 +174,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         print(kwargs, self.validated_data)
-        if not kwargs['user']:
+        if not kwargs.get('user'):
             room = self.validated_data
             selected_furniture = room.pop('selected_furniture')
             # for furniture in selected_furniture:
@@ -203,3 +190,21 @@ class RoomSerializer(serializers.ModelSerializer):
         else:
             self.instance = super().save(**kwargs)
         return self.instance
+
+
+class RoomCopySerializer(serializers.ModelSerializer):
+    furniture_placement = PlacementSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Room
+        fields = [
+            'id',
+            'user',
+            'name',
+            'created',
+            'first_wall',
+            'second_wall',
+            'third_wall',
+            'fourth_wall',
+            'furniture_placement',
+        ]
