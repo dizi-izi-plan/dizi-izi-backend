@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from api.utils import get_name
 from config.settings import (
     MAX_LENGTH_FURNITURE_NAME,
     MAX_LENGTH_ROOM_NAME,
@@ -161,14 +162,6 @@ class Room(models.Model):
     def __str__(self) -> str:
         return f"Проект {self.name} пользователя {self.user.email}"
 
-    def get_name(self, name, request):
-        all_names = request.user.rooms.values_list('name')
-        if self.name in all_names:
-            new_number = max(all_names, key=lambda value: int(value[len(PROJECT_NAME_BY_DEFAULT) :]),)
-            return f'{PROJECT_NAME_BY_DEFAULT}{new_number}'
-        else:
-            return name
-
     def copy(self, request):
         """
         Returns a copy of the Room instance with a new primary key and the
@@ -178,7 +171,7 @@ class Room(models.Model):
         """
         return Room.objects.create(
             user=self.user,
-            name=self.get_name(request),
+            name=get_name(self.user),
             first_wall=self.first_wall,
             second_wall=self.second_wall,
             third_wall=self.third_wall,

@@ -106,7 +106,6 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
             'id',
-            'name',
             'first_wall',
             'second_wall',
             'third_wall',
@@ -175,12 +174,12 @@ class RoomSerializer(serializers.ModelSerializer):
             )
         Window.objects.bulk_create(room_windows)
 
-        room_powersocket = []
-        for powersocket in power_sockets:
-            room_powersocket.append(
-                PowerSocket(**self._get_basic_parameters(powersocket)),
-            )
-        PowerSocket.objects.bulk_create(room_powersocket)
+        # room_powersocket = []
+        # for powersocket in power_sockets:
+        #     room_powersocket.append(
+        #         PowerSocket(**self._get_basic_parameters(powersocket)),
+        #     )
+        # PowerSocket.objects.bulk_create(room_powersocket)
 
         furniture_placement = []
         for furniture in selected_furniture:

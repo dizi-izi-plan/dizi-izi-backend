@@ -14,6 +14,7 @@ from .serializers import (  # ProjectWriteSerializer
     RoomCopySerializer,
     RoomSerializer,
 )
+from ..utils import get_name
 
 
 class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
@@ -41,11 +42,8 @@ class RoomViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             serializer.save(
                 user=self.request.user,
-                name=(
-                    f'Проект'
-                    f'{Room.objects.filter(user=self.request.user).count()}'
-                ),
-            )
+                name=get_name(self.request.user)
+                )
 
 
 class RoomCopyView(APIView):
