@@ -138,14 +138,10 @@ DJOSER = {
     'PERMISSIONS': {
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
     },
-
-
-
     'EMAIL': {
         'activation': 'users.emails.CustomActivationEmail',
-        'password_reset': 'users.emails.CustomPasswordResetEmail'
-    }
-
+        'password_reset': 'users.emails.CustomPasswordResetEmail',
+    },
 }
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -154,3 +150,4 @@ AUTH_USER_MODEL = 'users.CustomUser'
 MAX_LENGTH_PROJECT_NAME = 128
 MAX_LENGTH_ROOM_NAME = 128
 MAX_LENGTH_FURNITURE_NAME = 128
+PROJECT_NAME_BY_DEFAULT = 'Проект'

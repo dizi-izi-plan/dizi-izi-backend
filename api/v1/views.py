@@ -1,6 +1,7 @@
 from django.forms import model_to_dict
+from django.http import HttpRequest
 
-from furniture.models import Door, Furniture, Placement, Room, Window
+from furniture.models import Door, Furniture, Placement, PowerSocket, Room, Window
 from rest_framework import status, viewsets
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView, get_object_or_404
@@ -49,9 +50,21 @@ class RoomViewSet(viewsets.ModelViewSet):
 
 class RoomCopyView(APIView):
     """
-    Создаем копию объекта `Room` по пустому пост запросу на url
-    /api/v1/rooms/pk.
+    Создаем копию объекта `Room` по произвольному пост запросу на url
+    /api/v1/rooms/pk/.
     """
+
+    @staticmethod
+    def _copy_object(
+        model: [Door | Window | PowerSocket],
+        orig_room: Room,
+        new_room: Room,
+    ):
+        models = model.objects.filter(room=orig_room)
+        for model in models:
+            model.pk = None
+            model.room = new_room
+            model.save()
 
     def get(self, request, pk):
         orig_room = get_object_or_404(Room, pk=pk)
@@ -63,9 +76,7 @@ class RoomCopyView(APIView):
         new_room = orig_room.copy(request)
         new_room.save()
         serializer = RoomSerializer(new_room)
-        furniture = Furniture.objects.filter(
-            room=orig_room
-        )
+        furniture = Furniture.objects.filter(room=orig_room)
 
         for furn in furniture:
             Placement.objects.create(
@@ -85,12 +96,13 @@ class RoomCopyView(APIView):
                 ).se_coordinate,
             )
 
-        for door in Door.objects.filter(room=orig_room):
-            door.room = new_room
-            door.save()
-
-        for window in Window.objects.filter(room=orig_room):
-            window.room = new_room
-            window.save()
+        [
+            self._copy_object(obj, orig_room, new_room)
+            for obj in [
+                Door,
+                Window,
+                PowerSocket,
+            ]
+        ]
 
         return Response(serializer.data)

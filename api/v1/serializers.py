@@ -95,7 +95,7 @@ class RoomSerializer(serializers.ModelSerializer):
     )
     power_sockets = PowerSocketSerializer(
         many=True,
-        read_only=True,
+        # read_only=True,
         source='powersockets',
     )
     doors = DoorSerializer(
@@ -121,50 +121,67 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         read_only = ('id',)
 
+    @staticmethod
+    def _get_basic_parameters(
+        validated_data_dictionary: dict, model: Room = Room
+    ) -> dict[str, str]:
+        return {
+            'nw_coordinate': validated_data_dictionary['nw_coordinate'],
+            'ne_coordinate': validated_data_dictionary['ne_coordinate'],
+            'sw_coordinate': validated_data_dictionary['sw_coordinate'],
+            'se_coordinate': validated_data_dictionary['se_coordinate'],
+            'room': model,
+        }
+
     def create(self, validated_data):
         """Создание помещения с расстановкой."""
         room_placement = validated_data.pop('placements')
         selected_furniture = validated_data.pop('selected_furniture')
         doors = validated_data.pop('doors')
         windows = validated_data.pop('windows')
+        power_sockets = validated_data.pop('powersockets')
         room = Room.objects.create(**validated_data)
-
-        def basic_parameters(model: dict):
-            return {
-                'nw_coordinate': model['nw_coordinate'],
-                'ne_coordinate': model['ne_coordinate'],
-                'sw_coordinate': model['sw_coordinate'],
-                'se_coordinate': model['se_coordinate'],
-                'room': room,
-            }
 
         furniture_placement = []
         for placement in room_placement:
             furniture = placement['furniture']
             furniture_placement.append(
-                Placement(furniture=furniture, **basic_parameters(placement)),
+                Placement(
+                    furniture=furniture,
+                    **self._get_basic_parameters(placement)
+                ),
             )
         Placement.objects.bulk_create(furniture_placement)
+
         room_doors = []
         for door in doors:
             room_doors.append(
                 Door(
                     width=door['width'],
                     open_inside=door['open_inside'],
-                    **basic_parameters(door)
+                    **self._get_basic_parameters(door)
                 ),
             )
         Door.objects.bulk_create(room_doors)
+
         room_windows = []
         for window in windows:
             room_windows.append(
                 Window(
                     width=window['width'],
                     length=window['length'],
-                    **basic_parameters(window)
+                    **self._get_basic_parameters(window)
                 ),
             )
         Window.objects.bulk_create(room_windows)
+
+        room_powersocket = []
+        for powersocket in power_sockets:
+            room_powersocket.append(
+                PowerSocket(**self._get_basic_parameters(powersocket)),
+            )
+        PowerSocket.objects.bulk_create(room_powersocket)
+
         furniture_placement = []
         for furniture in selected_furniture:
             # здесь применение алгоритма по расстановке мебели
