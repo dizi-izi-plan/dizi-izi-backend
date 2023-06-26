@@ -573,7 +573,7 @@ class FurnitureArrangement:
             return furniture
 
         def hard_shuffle():
-            '''Hard mode shuffle have random swap position.'''
+            """Hard mode shuffle have random swap position."""
             random.shuffle(furniture)
 
         # Key for selection mode

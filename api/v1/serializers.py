@@ -85,6 +85,7 @@ class WindowSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
 
+    name = serializers.CharField(read_only=True)
     user = UserCreateSerializer(read_only=True)
     furniture_placement = PlacementSerializer(many=True, source='placements')
     selected_furniture = serializers.PrimaryKeyRelatedField(
@@ -106,6 +107,7 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
             'id',
+            'name',
             'first_wall',
             'second_wall',
             'third_wall',
@@ -122,7 +124,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _get_basic_parameters(
-        validated_data_dictionary: dict, model: Room = Room
+        validated_data_dictionary: dict,
+        model: Room,
     ) -> dict[str, str]:
         return {
             'nw_coordinate': validated_data_dictionary['nw_coordinate'],
@@ -147,7 +150,7 @@ class RoomSerializer(serializers.ModelSerializer):
             furniture_placement.append(
                 Placement(
                     furniture=furniture,
-                    **self._get_basic_parameters(placement)
+                    **self._get_basic_parameters(placement, room),
                 ),
             )
         Placement.objects.bulk_create(furniture_placement)
@@ -158,7 +161,7 @@ class RoomSerializer(serializers.ModelSerializer):
                 Door(
                     width=door['width'],
                     open_inside=door['open_inside'],
-                    **self._get_basic_parameters(door)
+                    **self._get_basic_parameters(door, room),
                 ),
             )
         Door.objects.bulk_create(room_doors)
@@ -169,17 +172,17 @@ class RoomSerializer(serializers.ModelSerializer):
                 Window(
                     width=window['width'],
                     length=window['length'],
-                    **self._get_basic_parameters(window)
+                    **self._get_basic_parameters(window, room),
                 ),
             )
         Window.objects.bulk_create(room_windows)
 
-        # room_powersocket = []
-        # for powersocket in power_sockets:
-        #     room_powersocket.append(
-        #         PowerSocket(**self._get_basic_parameters(powersocket)),
-        #     )
-        # PowerSocket.objects.bulk_create(room_powersocket)
+        room_powersocket = []
+        for powersocket in power_sockets:
+            room_powersocket.append(
+                PowerSocket(**self._get_basic_parameters(powersocket, room)),
+            )
+        PowerSocket.objects.bulk_create(room_powersocket)
 
         furniture_placement = []
         for furniture in selected_furniture:
@@ -189,7 +192,6 @@ class RoomSerializer(serializers.ModelSerializer):
         return room
 
     def save(self, **kwargs):
-        print(kwargs, self.validated_data)
         if not kwargs.get('user'):
             room = self.validated_data
             selected_furniture = room.pop('selected_furniture')

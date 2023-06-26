@@ -1,20 +1,11 @@
-from django.forms import model_to_dict
-from django.http import HttpRequest
-
 from furniture.models import Door, Furniture, Placement, PowerSocket, Room, Window
-from rest_framework import status, viewsets
-from rest_framework.exceptions import NotFound
-from rest_framework.generics import CreateAPIView, get_object_or_404
-from rest_framework.mixins import CreateModelMixin
+from rest_framework import viewsets
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import (  # ProjectWriteSerializer
-    FurnitureSerializer,
-    RoomCopySerializer,
-    RoomSerializer,
-)
 from ..utils import get_name
+from .serializers import FurnitureSerializer, RoomSerializer
 
 
 class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
@@ -38,12 +29,11 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Назначение данных для обработки запроса."""
-
         if self.request.user.is_authenticated:
             serializer.save(
                 user=self.request.user,
-                name=get_name(self.request.user)
-                )
+                name=get_name(self.request.user),
+            )
 
 
 class RoomCopyView(APIView):
@@ -77,21 +67,17 @@ class RoomCopyView(APIView):
         furniture = Furniture.objects.filter(room=orig_room)
 
         for furn in furniture:
+            placement = Placement.objects.get(
+                furniture=furn,
+                room=orig_room,
+            )
             Placement.objects.create(
                 room=new_room,
                 furniture=furn,
-                nw_coordinate=Placement.objects.get(
-                    furniture=furn, room=orig_room
-                ).nw_coordinate,
-                ne_coordinate=Placement.objects.get(
-                    furniture=furn, room=orig_room
-                ).ne_coordinate,
-                sw_coordinate=Placement.objects.get(
-                    furniture=furn, room=orig_room
-                ).sw_coordinate,
-                se_coordinate=Placement.objects.get(
-                    furniture=furn, room=orig_room
-                ).se_coordinate,
+                nw_coordinate=placement.nw_coordinate,
+                ne_coordinate=placement.ne_coordinate,
+                sw_coordinate=placement.sw_coordinate,
+                se_coordinate=placement.se_coordinate,
             )
 
         [
@@ -103,4 +89,11 @@ class RoomCopyView(APIView):
             ]
         ]
 
+        return Response(serializer.data)
+
+    def patch(self, request, pk):
+        instance = get_object_or_404(Room, pk=pk)
+        instance.name = request.data.get('name')
+        instance.save()
+        serializer = RoomSerializer(instance)
         return Response(serializer.data)
