@@ -209,38 +209,58 @@ class RoomSerializer(serializers.ModelSerializer):
             )
         Window.objects.bulk_create(room_windows)
         furniture_placement = []
-        for furniture in selected_furniture:
-            # здесь применение алгоритма по расстановке мебели
-            pass
+        if selected_furniture:
+            doors_and_windows = []
+            doors_and_windows.extend(doors)
+            doors_and_windows.extend(windows)
+            doors_and_windows.extend(room_placement)
+            furniture = []
+            for one_furniture in selected_furniture:
+                furniture.append(
+                    {
+                        'length': one_furniture.length,
+                        'width': one_furniture.width
+                    }
+                )
+            room_size = {
+                'first_wall': room.first_wall,
+                'second_wall': room.second_wall,
+                'third_wall': room.third_wall,
+                'fourth_wall': room.fourth_wall,
+            }
+            furniture_arrangement = algorithm.FurnitureArrangement()
+            furniture_arrangement.algorithm_activation(
+                doors_and_windows, furniture, room_size
+            )
         return room
 
     def save(self, **kwargs):
         if not kwargs['user']:
             room = self.validated_data
             selected_furniture = room.pop('selected_furniture')
-            fp = algorithm.FurnitureArrangement()
-            doors_and_windows = room['doors']
-            furniture = []
-            room_size = {
-                'first_wall': room['first_wall'],
-                'second_wall': room['second_wall'],
-                'third_wall': room['third_wall'],
-                'fourth_wall': room['fourth_wall'],
-            }
-            fp.algorithm_activation(
-                doors_and_windows, furniture, room_size
-            )
-            print(fp)
-            for furniture in selected_furniture:
-                pass
-            #     # здесь применение алгоритма по расстановке мебели
-            #     one_furniture_placement = {}
-            #     one_furniture_placement['furniture']=furniture
-            #     one_furniture_placement['nw_coordinate']=12
-            #     one_furniture_placement['ne_coordinate']=13
-            #     one_furniture_placement['sw_coordinate']=14
-            #     one_furniture_placement['se_coordinate']=15
-            #     room['placements'].append(one_furniture_placement)
+            if selected_furniture:
+                doors_and_windows = []
+                doors_and_windows.extend(room['doors'])
+                doors_and_windows.extend(room['windows'])
+                doors_and_windows.extend(room['placements'])
+                furniture = []
+                for one_furniture in selected_furniture:
+                    furniture.append(
+                        {
+                            'length': one_furniture.length,
+                            'width': one_furniture.width
+                        }
+                    )
+                room_size = {
+                    'first_wall': room['first_wall'],
+                    'second_wall': room['second_wall'],
+                    'third_wall': room['third_wall'],
+                    'fourth_wall': room['fourth_wall'],
+                }
+                furniture_arrangement = algorithm.FurnitureArrangement()
+                furniture_arrangement.algorithm_activation(
+                    doors_and_windows, furniture, room_size
+                )
             self.instance = room
         else:
             self.instance = super().save(**kwargs)
