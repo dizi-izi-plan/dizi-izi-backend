@@ -5,7 +5,17 @@ from django.contrib.auth.models import Group
 
 admin.site.unregister(Group)
 admin.site.register(get_user_model())
-admin.site.register(Furniture)
+
+
+@admin.register(Furniture)
+class FurnitureeAdmin(admin.ModelAdmin):
+    """Админка мебели."""
+    list_display = (
+        'id',
+        'name',
+        'length',
+        'width',
+    )
 
 
 class PlacementInline(admin.TabularInline):
