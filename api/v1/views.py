@@ -36,7 +36,7 @@ class RoomViewSet(viewsets.ModelViewSet):
                 name=get_name(self.request.user),
             )
 
-    @action(detail=True)
+    @action(detail=True, methods=['post'])
     def send_email(self, request, pk):
         # room = get_object_or_404(Room, pk=pk, user=request.user)
         subj = 'План размещения мебели'
