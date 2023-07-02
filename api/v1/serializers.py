@@ -12,7 +12,7 @@ from furniture.models import (
     Window,
     Coordinate
 )
-from . import algorithm
+from algorithm import FurnitureArrangement
 
 FIELDS_COORDINATE = (
             'north_west',
@@ -140,6 +140,7 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         read_only = ('id',)
 
+    @transaction.atomic
     def create(self, validated_data):
         """Создание помещения с расстановкой."""
 
@@ -237,7 +238,7 @@ class RoomSerializer(serializers.ModelSerializer):
                 'third_wall': room.third_wall,
                 'fourth_wall': room.fourth_wall,
             }
-            furniture_arrangement = algorithm.FurnitureArrangement()
+            furniture_arrangement = FurnitureArrangement()
             furniture_arrangement.algorithm_activation(
                 doors_and_windows, furniture, room_size
             )
@@ -269,7 +270,7 @@ class RoomSerializer(serializers.ModelSerializer):
                     'third_wall': room['third_wall'],
                     'fourth_wall': room['fourth_wall'],
                 }
-                furniture_arrangement = algorithm.FurnitureArrangement()
+                furniture_arrangement = FurnitureArrangement()
                 furniture_arrangement.algorithm_activation(
                     doors_and_windows, furniture, room_size
                 )
