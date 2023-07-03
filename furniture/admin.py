@@ -2,11 +2,29 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
-from .models import Door, Furniture, Placement, PowerSocket, Room, Window
+from .models import (
+    Door,
+    Furniture,
+    Placement,
+    PowerSocket,
+    Room,
+    Window,
+    Coordinate
+)
 
 admin.site.unregister(Group)
 admin.site.register(get_user_model())
-admin.site.register(Furniture)
+
+
+@admin.register(Furniture)
+class FurnitureeAdmin(admin.ModelAdmin):
+    """Админка мебели."""
+    list_display = (
+        'id',
+        'name',
+        'length',
+        'width',
+    )
 
 
 class PlacementInline(admin.TabularInline):
@@ -33,6 +51,16 @@ class WindowInline(admin.TabularInline):
     model = Window
 
 
+@admin.register(Coordinate)
+class CoordinateAdmin(admin.ModelAdmin):
+    """Админка Coordinate."""
+    list_display = (
+        'id',
+        'x',
+        'y'
+    )
+
+
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     """Админка комнаты."""
@@ -44,6 +72,7 @@ class RoomAdmin(admin.ModelAdmin):
         'second_wall',
         'third_wall',
         'fourth_wall',
+        'created'
     )
     list_display_links = ('name',)
     inlines = (PlacementInline, PowerSocketInline, DoorInline, WindowInline)

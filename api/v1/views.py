@@ -29,11 +29,10 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Назначение данных для обработки запроса."""
+        user = None
         if self.request.user.is_authenticated:
-            serializer.save(
-                user=self.request.user,
-                name=get_name(self.request.user),
-            )
+            user=self.request.user
+        serializer.save(user=user)    
 
 
 class RoomCopyView(APIView):

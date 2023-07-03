@@ -5,7 +5,6 @@ from api.utils import get_name
 from config.settings import (
     MAX_LENGTH_FURNITURE_NAME,
     MAX_LENGTH_ROOM_NAME,
-    PROJECT_NAME_BY_DEFAULT,
 )
 from furniture.validators import minimum_len_width_validator
 
@@ -60,6 +59,19 @@ class Furniture(models.Model):
         return f'{self.name}'
 
 
+class Coordinate(models.Model):
+    """Модель координаты."""
+    x = models.PositiveIntegerField(
+        verbose_name='X'
+    )
+    y = models.PositiveIntegerField(
+        verbose_name='Y'
+    )
+
+    def __str__(self):
+        return f'x={self.x}, y={self.y}'
+
+
 class RoomCoordinates(models.Model):
     """Абстрактная модель с указателем на помещение и координаты."""
 
@@ -69,21 +81,32 @@ class RoomCoordinates(models.Model):
         verbose_name='Комната',
         related_name='%(class)ss',
     )
-    nw_coordinate = models.PositiveIntegerField(
-        verbose_name='Координата north_west',
-        default=0,
+    north_west = models.OneToOneField(
+        'Coordinate',
+        verbose_name='Координата north-west',
+        on_delete=models.PROTECT,
+        null=True
     )
-    ne_coordinate = models.PositiveIntegerField(
+    north_east = models.OneToOneField(
+        'Coordinate',
         verbose_name='Координата north-east',
-        default=0,
+        on_delete=models.PROTECT,
+        null=True,
+        related_name='+'
     )
-    sw_coordinate = models.PositiveIntegerField(
+    south_west = models.OneToOneField(
+        'Coordinate',
         verbose_name='Координата south-west',
-        default=0,
+        on_delete=models.PROTECT,
+        null=True,
+        related_name='+'
     )
-    se_coordinate = models.PositiveIntegerField(
+    south_east = models.OneToOneField(
+        'Coordinate',
         verbose_name='Координата south-east',
-        default=0,
+        on_delete=models.PROTECT,
+        null=True,
+        related_name='+'
     )
 
     class Meta:
@@ -105,16 +128,11 @@ class Placement(RoomCoordinates):
         verbose_name_plural = 'Размещение мебели в помещении'
 
     def __str__(self):
-        return (
-            f'{self.furniture.name} расположена в {self.room} '
-            f'в координатах {self.nw_coordinate}, {self.ne_coordinate}, '
-            f'{self.sw_coordinate}, {self.se_coordinate}'
-        )
+        return f'{self.furniture.name} расположена в {self.room}'
 
 
 class Room(models.Model):
     """Модель помещения."""
-
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -127,7 +145,7 @@ class Room(models.Model):
     )
     created = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='дата и время создания',
+        verbose_name='Дата и время создания',
         db_index=True,
     )
     first_wall = models.PositiveIntegerField(
