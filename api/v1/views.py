@@ -2,6 +2,7 @@ from furniture.models import Door, Furniture, Placement, PowerSocket, Room, Wind
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -35,18 +36,6 @@ class RoomViewSet(viewsets.ModelViewSet):
                 user=self.request.user,
                 name=get_name(self.request.user),
             )
-
-    @action(detail=True, methods=['post'])
-    def send_email(self, request, pk):
-        # room = get_object_or_404(Room, pk=pk, user=request.user)
-        subj = 'План размещения мебели'
-        text = 'В приложении подготовленный план размещения мебели'
-        email = request.user.email
-
-        # в дальнейшем добавить линк на pdf план в таблицу БД Room
-        # и запрашивать его оттуда через "room.link_to_pdf"
-        link = 'test_storage/test_user/test_pdf_1.pdf'
-        return send_pdf_file(subj, email, link, text)
 
 
 class RoomCopyView(APIView):
@@ -110,3 +99,17 @@ class RoomCopyView(APIView):
         instance.save()
         serializer = RoomSerializer(instance)
         return Response(serializer.data)
+
+
+class SendPDFView(APIView):
+    """Отправка pdf файла на почту"""
+
+    parser_classes = (MultiPartParser, )
+
+    def post(self, request, format='pdf'):
+        print(request.FILES)
+        up_file = request.FILES['file']
+        subj = 'План размещения мебели'
+        text = 'В приложении подготовленный план размещения мебели'
+        email = request.user.email
+        return send_pdf_file(subj, email, up_file, text)

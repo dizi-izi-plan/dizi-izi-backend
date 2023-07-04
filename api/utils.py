@@ -1,8 +1,6 @@
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
-import mimetypes
-from pathlib import Path
 import smtplib
 import ssl
 
@@ -25,10 +23,9 @@ def get_name(user):
         return name
 
 
-def send_pdf_file(subj, email, link, text=None):
+def send_pdf_file(subj, email, file, text=None):
     sender = 'dizi.izi.plan@gmail.com'  # Позднее убрать в .env
     password = 'tkttxsrnycqeijpw'  # Позднее убрать в .env
-
     context = ssl.create_default_context()
 
     # Позднее убрать в .env
@@ -41,14 +38,9 @@ def send_pdf_file(subj, email, link, text=None):
             msg['Subject'] = subj
             if text:
                 msg.attach(MIMEText(text))
-
-            # Позднее получать pdf по url
-            file = Path(__file__).parents[1].joinpath(link)
-            ftype, encoding = mimetypes.guess_type(file)
-            file_type, subtype = ftype.split('/')
+            file_type, subtype = file.content_type.split('/')
             filename = file.name
-            with open(file, 'rb') as f:
-                file = MIMEApplication(f.read(), subtype)
+            file = MIMEApplication(file.read(), subtype)
             file.add_header('content-disposition', 'attachment',
                             filename=filename)
             msg.attach(file)
