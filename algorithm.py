@@ -7,21 +7,12 @@ import create_picture
 
 
 class FurnitureArrangement:
-    coordinates = (
-        []
-    )  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
-    free_space = (
-        []
-    )  # хранение расстояний между мебелью через запятую (в виде координат)
-    sorted_points = (
-        []
-    )  # хранения точек на прямой из сложенных сторон комнаты для правильной вставки получившихся координат в список
-    wall_perimetr = (
-        0  # хранения периметра комнаты для удобства обращения из функций
-    )
-    room_coordinates = (
-        {}
-    )  # хранение координат комнаты для удобства обращения из функций
+    coordinates = []  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
+    free_space = []  # хранение расстояний между мебелью через запятую (в виде координат)
+    sorted_points = []  # хранения точек на прямой из сложенных сторон комнаты для правильной вставки получившихся координат в список
+    wall_perimetr = 0  # хранения периметра комнаты для удобства обращения из функций
+
+    room_coordinates = {}  # хранение координат комнаты для удобства обращения из функций
     room_coordinates_tuple = ()  # хранение координаты комнаты для удобства вычислений
     walls_length = ()  # хранение длин стен для удобства обращения
 
@@ -61,28 +52,19 @@ class FurnitureArrangement:
 
             if first_object["north_east"] in self.room_coordinates_tuple:
                 first_right_corner = "south_east"
-            if (
-                second_object[counter]["north_west"]
-                in self.room_coordinates_tuple
-            ):
+            if second_object[counter]["north_west"] in self.room_coordinates_tuple:
                 second_left_corner = "south_west"
 
-            first_point = self.convert_coordinates_to_line(
-                first_object[first_right_corner]
-            )
-            second_point = self.convert_coordinates_to_line(
-                second_object[counter][second_left_corner]
-            )
+            first_point = self.convert_coordinates_to_line(first_object[first_right_corner])
+            second_point = self.convert_coordinates_to_line(second_object[counter][second_left_corner])
             distance = 0
             if second_point >= first_point:
                 distance = second_point - first_point
             elif second_point < first_point:
                 distance = second_point + (self.wall_perimetr - first_point)
 
-            length[distance] = {
-                "left_corner": first_object[first_right_corner],
-                "right_corner": second_object[counter][second_left_corner],
-            }
+            length[distance] = {"left_corner": first_object[first_right_corner],
+                                "right_corner": second_object[counter][second_left_corner], }
 
             # расстояния могут быть одинаковые, но нам по сути неважно какой из вариантов брать, а значит мы
             # можем просто перезаписать ключ словаря
@@ -107,17 +89,11 @@ class FurnitureArrangement:
             if 0 <= dot <= self.walls_length[0]:
                 return {'x': 0, 'y': dot}
             elif self.walls_length[0] < dot <= sum(self.walls_length[:2]):
-                return {
-                    'x': dot - self.walls_length[0],
-                    'y': self.walls_length[0],
-                }
-            elif (
-                sum(self.walls_length[:2]) < dot <= sum(self.walls_length[:3])
-            ):
-                return {
-                    'x': self.walls_length[1],
-                    'y': sum(self.walls_length[:3]) - dot,
-                }
+                return {'x': dot - self.walls_length[0],
+                        'y': self.walls_length[0]}
+            elif sum(self.walls_length[:2]) < dot <= sum(self.walls_length[:3]):
+                return {'x': self.walls_length[1],
+                        'y': sum(self.walls_length[:3]) - dot}
             elif sum(self.walls_length[:3]) < dot <= self.wall_perimetr:
                 return {'x': self.wall_perimetr - dot, 'y': 0}
             raise Exception(
@@ -125,12 +101,8 @@ class FurnitureArrangement:
             )
 
         if 'left_corner' in free_space:
-            point_1 = self.convert_coordinates_to_line(
-                free_space['left_corner']
-            )
-            point_2 = self.convert_coordinates_to_line(
-                free_space['right_corner']
-            )
+            point_1 = self.convert_coordinates_to_line(free_space['left_corner'])
+            point_2 = self.convert_coordinates_to_line(free_space['right_corner'])
             middle_point = (
                 (point_2 + point_1) / 2
                 if point_1 < point_2
@@ -141,9 +113,7 @@ class FurnitureArrangement:
             return convert_line_to_coordinates(middle_point)
 
         elif "x" in free_space:
-            point = self.convert_coordinates_to_line(
-                {"x": free_space["x"], "y": free_space["y"]}
-            )
+            point = self.convert_coordinates_to_line({"x": free_space["x"], "y": free_space["y"]})
             if free_space["shift_method"] == "plus":
                 shifted_point = point + free_space["displacement_value"]
             elif free_space["shift_method"] == "minus":
@@ -182,10 +152,7 @@ class FurnitureArrangement:
 
         def displacement():
             nonlocal figure, middle_point, objects_counter, cycle_counter, cycle_border
-            (
-                middle_point["x"],
-                middle_point["y"],
-            ) = self.middle_of_the_distance_on_the_wall(middle_point).values()
+            middle_point["x"], middle_point["y"] = self.middle_of_the_distance_on_the_wall(middle_point).values()
             wall = self.wall_definition(middle_point)
             figure = self.corner_markings(length_and_width, middle_point, wall)
             objects_counter = 0
@@ -193,16 +160,11 @@ class FurnitureArrangement:
 
         def rib_crossover_check(object, object_2):
             # Проверка на пересечение ребер в левом нижнем углу
-            if (
-                object["south_east"]["y"]
-                > object_2["south_east"]["y"]
-                > object_2["south_west"]["y"]
-                > object["north_east"]["y"]
-                and object_2["south_east"]["x"]
-                > object["south_west"]["x"]
-                > object["south_east"]["x"]
-                > object_2["north_east"]["x"]
-            ):
+            if (object["south_east"]["y"] > object_2["south_east"]["y"]
+            > object_2["south_west"]["y"] > object["north_east"]["y"]
+          and object_2["south_east"]["x"] > object["south_west"]["x"]
+              > object["south_east"]["x"] > object_2["north_east"]["x"]):
+
                 displacement()
             # Проверка на пересечение ребер в левом верхнем углу
             elif (
@@ -286,44 +248,20 @@ class FurnitureArrangement:
         def layering_of_objects_check(object, object_2):
             for item in object.values():
                 # Проверяем пересечение с другими объектами в комнате
-                if (
-                    object_2["north_west"]["x"]
-                    <= item["x"]
-                    <= object_2["north_east"]["x"]
-                    and object_2["south_east"]["y"]
-                    <= item["y"]
-                    <= object_2["north_east"]["y"]
-                ):
+                if (object_2["north_west"]["x"] <= item["x"] <= object_2["north_east"]["x"]
+                and object_2["south_east"]["y"] <= item["y"] <= object_2["north_east"]["y"]):
                     displacement()
 
-                elif (
-                    object_2["north_west"]["x"]
-                    >= item["x"]
-                    >= object_2["north_east"]["x"]
-                    and object_2["south_east"]["y"]
-                    >= item["y"]
-                    >= object_2["north_east"]["y"]
-                ):
+                elif (object_2["north_west"]["x"] >= item["x"] >= object_2["north_east"]["x"]
+                  and object_2["south_east"]["y"] >= item["y"] >= object_2["north_east"]["y"]):
                     displacement()
 
-                elif (
-                    object_2["north_west"]["x"]
-                    <= item["x"]
-                    <= object_2["north_east"]["x"]
-                    and object_2["south_east"]["y"]
-                    <= item["y"]
-                    <= object_2["south_west"]["y"]
-                ):
+                elif (object_2["north_west"]["x"] <= item["x"] <= object_2["north_east"]["x"]
+                  and object_2["south_east"]["y"] <= item["y"] <= object_2["south_west"]["y"]):
                     displacement()
 
-                elif (
-                    object_2["north_west"]["x"]
-                    >= item["x"]
-                    >= object_2["north_east"]["x"]
-                    and object_2["south_east"]["y"]
-                    >= item["y"]
-                    >= object_2["south_west"]["y"]
-                ):
+                elif (object_2["north_west"]["x"] >= item["x"] >= object_2["north_east"]["x"]
+                  and object_2["south_east"]["y"] >= item["y"] >= object_2["south_west"]["y"]):
                     displacement()
 
         # Задаем переменные, чтобы определить случаи для выхода из цикла
@@ -359,21 +297,15 @@ class FurnitureArrangement:
                 objects_counter += 1
 
             # Проверяем, что мебель не выходит за пределы комнаты
-            if (
-                figure["north_east"]["x"] > walls["second_wall"]
-                or figure["south_east"]["x"] > walls["second_wall"]
-            ):
+            if (figure["north_east"]["x"] > walls["second_wall"]
+                or figure["south_east"]["x"] > walls["second_wall"]):
                 displacement()
 
-            elif (
-                figure["north_east"]["y"] > walls["first_wall"]
-                or figure["south_east"]["y"] > walls["first_wall"]
-            ):
+            elif (figure["north_east"]["y"] > walls["first_wall"]
+                or figure["south_east"]["y"] > walls["first_wall"]):
                 displacement()
 
-            elif (
-                figure["south_west"]["x"] < 0 or figure["south_west"]["y"] < 0
-            ):
+            elif figure["south_west"]["x"] < 0 or figure["south_west"]["y"] < 0:
                 displacement()
 
             else:
@@ -399,9 +331,7 @@ class FurnitureArrangement:
         self.coordinates.insert(self.sorted_points.index(final_point), figure)
         return True
 
-    def corner_markings(
-        self, length_and_width: dict, center: dict, wall_number: int
-    ) -> dict:
+    def corner_markings(self, length_and_width: dict, center: dict, wall_number: int) -> dict:
         corners_coordinates = {
             "north_west": {"x": 0, "y": 0},
             "north_east": {"x": 0, "y": 0},
@@ -459,51 +389,8 @@ class FurnitureArrangement:
 
         return corners_coordinates
 
-    # class DataVerificationAndImplementation(FurnitureArrangement):
-    #
-    #     def area_calculation(self, figure: Figure) -> float:
-    #         "Метод вычисления площади фигуры."
-    #         if figure.side_a == figure.side_c and figure.side_b == figure.side_d:
-    #             area = figure.side_a * figure.side_b
-    #             return area
-    #
-    #         else:
-    #             raise IncorrectFigure("Неверно заданы размеры помещения!")
-    #
-    #     def area_monitoring(self, area: dict) -> bool:
-    #         "Метод контроля допустимой общей площади мебели в помещении."
-    #         if (area["area_furniture"] / area["area_room"]) > 0.75:
-    #             raise LackSpace("Общая площадь мебели превышает площадь помещения!")
-    #         return True
-    #
-    # def algorithm_activation(self, furniture: tuple, room_size: dict, random_switcher: bool):
-    #     furniture_check = self.area_monitoring(db_operations(furniture))
-    #     # надо дописать функции с возвратом данных из бд и переделать входящие данные для area_monitoring
-    #
-    #     if furniture_check is False:
-    #         raise_area_error(False)
-    #
-    #     # прописать функцию ошибки с выводом во фронт
-    #
-    #     def activation_core(algorithm_type):
-    #         counter = 1
-    #         while counter != len(furniture):
-    #             result_free_space = algorithm_type(db_operations(furniture))
-    #             self.middle_of_the_distance_on_the_wall(result_free_space)
-    #             draw_objects(self.coordinates)
-    #             counter += 1
-    #
-    #     if random_switcher is True:
-    #         # условные переменные вызова (пока что)
-    #         activation_core(self.random_free_space_algorithm(db_operations(furniture)))
-    #
-    #     elif random_switcher is False:
-    #         activation_core(self.free_space_algorithm(db_operations(furniture)))
-    #
 
-    def algorithm_activation(
-        self, doors_and_windows: list, furniture: list, room_size: dict
-    ):
+    def algorithm_activation(self, doors_and_windows: list, furniture: list, room_size: dict):
         # Определения координат комнаты для работы определения принадлежности координат к конкретной стене
         self.walls_length = tuple(room_size.values())
         self.wall_perimetr = sum(self.walls_length)
@@ -525,31 +412,19 @@ class FurnitureArrangement:
 
         # Функция определения стены по координатам для отправки ее в дальнейшем в corner_markings
         for item in doors_and_windows:
-            middle_point = {
-                "x": (item["north_east"]["x"] + item["north_west"]["x"]) / 2,
-                "y": (item["north_east"]["y"] + item["north_west"]["y"]) / 2,
-            }
+            middle_point = {"x": (item["north_east"]["x"] + item["north_west"]["x"]) / 2,
+                            "y": (item["north_east"]["y"] + item["north_west"]["y"]) / 2}
             self.coordinates.append(item)
-            self.sorted_points.append(
-                self.convert_coordinates_to_line(middle_point)
-            )
+            self.sorted_points.append(self.convert_coordinates_to_line(middle_point))
 
         self.sorted_points.sort()
 
         for item in furniture:
             result_free_space = self.free_space_algorithm(self.coordinates)
-            result_middle_distance = self.middle_of_the_distance_on_the_wall(
-                result_free_space
-            )
-            result_wall_definition = self.wall_definition(
-                result_middle_distance
-            )
-            result_corner_markings = self.corner_markings(
-                item, result_middle_distance, result_wall_definition
-            )
-            self.placing_in_coordinates(
-                result_middle_distance, result_corner_markings, room_size, item
-            )
+            result_middle_distance = self.middle_of_the_distance_on_the_wall(result_free_space)
+            result_wall_definition = self.wall_definition(result_middle_distance)
+            result_corner_markings = self.corner_markings(item, result_middle_distance, result_wall_definition)
+            self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size, item)
 
         create_picture.create_rectangles(self.coordinates)
         print(self.coordinates)
