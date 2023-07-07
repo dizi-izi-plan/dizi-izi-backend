@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from djoser.serializers import UserCreateSerializer
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
@@ -10,6 +12,7 @@ from furniture.models import (
     Door,
     Window, TypeOfRoom
 )
+from info.models import Tariff, UsersTariffs
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -306,3 +309,39 @@ class RoomAnonymousSerializers(serializers.Serializer):
         #     pass
 
         # return room
+
+
+class TariffSerializer(serializers.ModelSerializer):
+    is_active = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Tariff
+        fields = '__all__'
+
+    def get_is_active(self, obj):
+        request = self.context.get('request')
+        return (request
+                and request.user.is_authenticated
+                and obj.user_tariff.filter(user=request.user).exists())
+
+
+class ChangeTariffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsersTariffs
+        fields = ('user', 'tariff')
+        read_only_fields = ('user', 'tariff')
+
+    def validate(self, data):
+        tariff = self.initial_data.get('tariff')
+        user = self.initial_data.get('user')
+        if UsersTariffs.objects.filter(user=user, tariff=tariff).exists():
+            raise serializers.ValidationError(
+                'У вас уже этот тариф.'
+            )
+        return data
+
+    # def to_representation(self, instance):
+    #     return TariffSerializer(
+    #         instance.tariff,
+    #         context={'request': self.context.get('request')}
+    #     ).data
