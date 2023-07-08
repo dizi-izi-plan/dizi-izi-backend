@@ -12,7 +12,7 @@ from furniture.models import (
     Window,
     Coordinate
 )
-from algorithm import FurnitureArrangement
+from layout_algorithm import *
 
 FIELDS_COORDINATE = (
             'north_west',

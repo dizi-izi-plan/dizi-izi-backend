@@ -2,7 +2,9 @@
 
 import bisect
 import random
-import create_picture
+from crossover_checks import *
+from corner_markings import *
+from layout_algorithm import create_picture, crossover_checks
 
 
 class FurnitureArrangement:
@@ -19,7 +21,6 @@ class FurnitureArrangement:
         """Функция преобразует координаты в точку на прямой.
 
         Args:
-
         Returns:
 
         """
@@ -106,7 +107,7 @@ class FurnitureArrangement:
             counter += 1
         return length[max(length)]
 
-    def middle_of_the_distance_on_the_wall(self, free_space: dict) -> dict:
+    def middle_and_shift(self, free_space: dict) -> dict:
         """
         Функция для нахождения средней точки в оставшемся пустом пространстве комнаты.
         Получает на вход координаты точек и длины стен.
@@ -209,167 +210,30 @@ class FurnitureArrangement:
 
         def displacement():
             """
-
-            Args:
-
-            Returns:
-
             """
+            nonlocal figure, middle_point, objects_counter, cycle_counter, cycle_border, displacement_start
+            # if cycle_counter % 2 != 0:
+            #     middle_point["shift_method"] = "minus"
+            # elif cycle_counter % 2 == 0:
+            #     middle_point["shift_method"] = "plus"
+            # displacement_start += middle_point["displacement_value"]
+            #
 
-            nonlocal figure, middle_point, objects_counter, cycle_counter, cycle_border
-            middle_point["x"], middle_point["y"] = self.middle_of_the_distance_on_the_wall(middle_point).values()
+            middle_point["x"], middle_point["y"] = self.middle_and_shift(middle_point).values()
             wall = self.wall_definition(middle_point)
-            figure = self.corner_markings(length_and_width, middle_point, wall)
+            figure = corner_markings(length_and_width, middle_point, wall)
             objects_counter = 0
             cycle_counter += 1
 
-        def rib_crossover_check(object, object_2):
-            """
-
-            Args:
-
-            Returns:
-
-            """
-
-            # Проверка на пересечение ребер в левом нижнем углу
-            if (object["south_east"]["y"] > object_2["south_east"]["y"]
-            > object_2["south_west"]["y"] > object["north_east"]["y"]
-          and object_2["south_east"]["x"] > object["south_west"]["x"]
-              > object["south_east"]["x"] > object_2["north_east"]["x"]):
-
-                displacement()
-            # Проверка на пересечение ребер в левом верхнем углу
-            elif (
-                object_2["north_east"]["y"]
-                > object["south_east"]["y"]
-                > object["south_west"]["y"]
-                > object_2["south_east"]["y"]
-                and object["south_east"]["x"]
-                > object_2["south_east"]["x"]
-                > object_2["south_west"]["x"]
-                > object["north_east"]["x"]
-            ):
-                displacement()
-            # Проверка на пересечение ребер в правом верхнем углу
-            elif (
-                object["north_east"]["y"]
-                > object_2["north_west"]["y"]
-                > object_2["north_east"]["y"]
-                > object["south_east"]["y"]
-                and object_2["north_east"]["x"]
-                > object["south_east"]["x"]
-                > object["south_west"]["x"]
-                > object_2["south_east"]["x"]
-            ):
-                displacement()
-            # Проверка на пересечение ребер в правом нижнем углу
-            elif (
-                object_2["south_east"]["y"]
-                > object["south_west"]["y"]
-                > object["south_east"]["y"]
-                > object_2["north_east"]["y"]
-                and object["north_east"]["x"]
-                > object_2["south_west"]["x"]
-                > object_2["south_east"]["x"]
-                > object["south_east"]["x"]
-            ):
-                displacement()
-
-        def corner_crossover_check(object, object_2):
-            """
-
-            Args:
-
-            Returns:
-
-            """
-
-            # Проверка на вхождение углов объектов в левом нижнем углу комнаты
-            if (
-                object_2["south_west"]["x"]
-                > object["south_east"]["x"]
-                > object_2["north_west"]["x"]
-                and object_2["south_east"]["y"]
-                > object["south_east"]["y"]
-                > object_2["north_west"]["y"]
-            ):
-                displacement()
-            # Проверка на вхождение углов объектов в левом верхнем углу комнаты
-            elif (
-                object_2["south_east"]["x"]
-                > object["south_east"]["x"]
-                > object_2["south_west"]["x"]
-                and object_2["north_west"]["y"]
-                > object["south_east"]["y"]
-                > object_2["south_west"]["y"]
-            ):
-                displacement()
-            # Проверка на вхождение углов объектов в правом верхнем углу комнаты
-            elif (
-                object_2["north_east"]["x"]
-                > object["south_east"]["x"]
-                > object_2["south_east"]["x"]
-                and object_2["south_west"]["y"]
-                > object["south_east"]["y"]
-                > object_2["south_east"]["y"]
-            ):
-                displacement()
-            # Проверка на вхождение углов объектов в правом нижнем углу комнаты
-            elif (
-                object_2["south_west"]["x"]
-                > object["south_east"]["x"]
-                > object_2["south_east"]["x"]
-                and object_2["south_west"]["y"]
-                > object["south_east"]["y"]
-                > object_2["north_east"]["y"]
-            ):
-                displacement()
-
-        def layering_of_objects_check(object, object_2):
-            """
-
-            Args:
-
-            Returns:
-
-            """
-
-            items = [
-                object["north_west"],
-                object["north_east"],
-                object["south_west"],
-                object["south_east"],
-            ]
-
-
-            for item in items:
-                # Проверяем пересечение с другими объектами в комнате
-                if (object_2["north_west"]["x"] <= item["x"] <= object_2["north_east"]["x"]
-                and object_2["south_east"]["y"] <= item["y"] <= object_2["north_east"]["y"]):
-                    displacement()
-
-                elif (object_2["north_west"]["x"] >= item["x"] >= object_2["north_east"]["x"]
-                  and object_2["south_east"]["y"] >= item["y"] >= object_2["north_east"]["y"]):
-                    displacement()
-
-                elif (object_2["north_west"]["x"] <= item["x"] <= object_2["north_east"]["x"]
-                  and object_2["south_east"]["y"] <= item["y"] <= object_2["south_west"]["y"]):
-                    displacement()
-
-                elif (object_2["north_west"]["x"] >= item["x"] >= object_2["north_east"]["x"]
-                  and object_2["south_east"]["y"] >= item["y"] >= object_2["south_west"]["y"]):
-                    displacement()
-
         # Задаем переменные, чтобы определить случаи для выхода из цикла
         objects_counter = 0  # переменная необходимая для учета всех объектов, относительно которых делается проверка на пересечение
-        cycle_counter = 0  # переменная для посчета количества циклов, дабы они не были бесконечными
+        cycle_counter = 0  # переменная для подсчета количества циклов, дабы они не были бесконечными
         cycle_border = 2000  # переменная, указывающая при каком значении будет критическая ошибка о невозможности размещения
-        breaker = 1  # Переменная, выводящая из общего цикла при не пересечении объектов
+        breaker = 2  # Переменная, выводящая из общего цикла при не пересечении объектов
 
         # Задаем данные для дальнейшей их отправки в функцию переноса объекта
         displacement_start = 0  # переменная необходима для обозначения стартовой точки, относительно которой будет смещение
-        middle_point["displacement_value"] = 1  # обозначаем значение, на которое будет смещаться объект
+        middle_point["displacement_value"] = 1  # значение на которое будет смещаться объект
         middle_point["shift_method"] = "plus"  # указываем сторону для начального смещения
 
         # сам цикл, в котором мы пытаемся разметить объект заданное количество циклов и проверяем пересечения со всеми объектами
@@ -377,43 +241,19 @@ class FurnitureArrangement:
             while objects_counter < len(self.coordinates):
                 figure_2 = self.coordinates[objects_counter]
 
-                # Проверяем пересечение противоположных объектов
-                layering_of_objects_check(figure, figure_2)
-                # Проверяем объекты на поглощение друг друга
-                layering_of_objects_check(figure_2, figure)
-                # Проверка пересечения ребер, если объекты находятся с одной и с другой стороны друг от друга
-                rib_crossover_check(figure, figure_2)
-                rib_crossover_check(figure_2, figure)
-                # Проверяем на вхождение углов объектов внутрь друг друга
-                corner_crossover_check(figure, figure_2)
-                corner_crossover_check(figure_2, figure)
-
-                breaker += 1
+                if checks(figure, figure_2, walls):
+                    # добавляем значение, что с этим объектом все проверки прошли успешно
+                    breaker += 1
+                    objects_counter += 1
+                else:
+                    displacement()
 
                 # выходим из цикла, если достигнут лимит циклов
                 if cycle_counter >= cycle_border:
                     return False
 
-                # добавляем значение, что с этим объектом все проверки прошли успешно
-                objects_counter += 1
-
-            # Проверяем, что мебель не выходит за пределы комнаты
-            if (figure["north_east"]["x"] > walls["second_wall"]
-                or figure["south_east"]["x"] > walls["second_wall"]):
-                displacement()
-
-            elif (figure["north_east"]["y"] > walls["first_wall"]
-                or figure["south_east"]["y"] > walls["first_wall"]):
-                displacement()
-
-            elif figure["south_west"]["x"] < 0 or figure["south_west"]["y"] < 0:
-                displacement()
-
-            else:
-                breaker += 1
-
             # если пересечения со всеми объектами были проверены успешно, то выходим из цикла
-            if breaker >= len(self.coordinates) + 1:
+            if breaker >= len(self.coordinates):
                 break
 
             breaker = 1
@@ -433,84 +273,6 @@ class FurnitureArrangement:
         bisect.insort(self.sorted_points, final_point)
         self.coordinates.insert(self.sorted_points.index(final_point), figure)
         return True
-
-
-    def corner_markings(self, length_and_width: dict, center: dict, wall_number: int) -> dict:
-        """Эта функция необходима, чтобы, имея центр объекта и его размеры, относительно
-        конкретной стены обозначить его углы координатами.
-        Args:
-            length_and_width: dict: ширина и длина объекта {length: 1, width: 1}
-            center (dict): центр стороны объекта, примыкающей к стене {"x": 0, "y": 0},
-            wall_number: сторона комнаты с учетом, что левая сторона первая, а дальнейшие нумеруются по часовой стрелке
-        Returns:
-            dict: словарь с координатами углов
-                    {
-                    "north_west": {"x": 0, "y": 0},
-                    "north_east": {"x": 0, "y": 0},
-                    "south_west": {"x": 0, "y": 0},
-                    "south_east": {"x": 0, "y": 0},
-                    }
-        """
-
-        corners_coordinates = {
-            "north_west": {"x": 0, "y": 0},
-            "north_east": {"x": 0, "y": 0},
-            "south_west": {"x": 0, "y": 0},
-            "south_east": {"x": 0, "y": 0},
-        }
-
-        # последующие шесть строчек нужны для визуального сокращения кода
-        north_east = corners_coordinates["north_east"]
-        north_west = corners_coordinates["north_west"]
-        south_east = corners_coordinates["south_east"]
-        south_west = corners_coordinates["south_west"]
-
-        length = length_and_width["length"]
-        width = length_and_width["width"]
-
-        # так как примыкающая сторона объекта смещает внутренние стороны света углов, то относительно каждой
-        # стороны координаты вычисляются по-разному
-        if wall_number == 1:
-            north_east["x"] = center["x"]
-            north_east["y"] = center["y"] + (width / 2)
-            north_west["x"] = center["x"]
-            north_west["y"] = center["y"] - (width / 2)
-            south_east["x"] = center["x"] + length
-            south_east["y"] = center["y"] + (width / 2)
-            south_west["x"] = center["x"] + length
-            south_west["y"] = center["y"] - (width / 2)
-
-        elif wall_number == 2:
-            north_east["x"] = center["x"] + (width / 2)
-            north_east["y"] = center["y"]
-            north_west["x"] = center["x"] - (width / 2)
-            north_west["y"] = center["y"]
-            south_east["x"] = center["x"] + (width / 2)
-            south_east["y"] = center["y"] - length
-            south_west["x"] = center["x"] - (width / 2)
-            south_west["y"] = center["y"] - length
-
-        elif wall_number == 3:
-            north_east["x"] = center["x"]
-            north_east["y"] = center["y"] - (width / 2)
-            north_west["x"] = center["x"]
-            north_west["y"] = center["y"] + (width / 2)
-            south_east["x"] = center["x"] - length
-            south_east["y"] = center["y"] - (width / 2)
-            south_west["x"] = center["x"] - length
-            south_west["y"] = center["y"] + (width / 2)
-
-        elif wall_number == 4:
-            north_east["x"] = center["x"] - (width / 2)
-            north_east["y"] = center["y"]
-            north_west["x"] = center["x"] + (width / 2)
-            north_west["y"] = center["y"]
-            south_east["x"] = center["x"] - (width / 2)
-            south_east["y"] = center["y"] + length
-            south_west["x"] = center["x"] + (width / 2)
-            south_west["y"] = center["y"] + length
-
-        return corners_coordinates
 
 
     def data_preprocessing(self, room_size, doors_and_windows):
@@ -562,9 +324,9 @@ class FurnitureArrangement:
         self.data_preprocessing(room_size, doors_and_windows)
         for item in furniture:
             result_free_space = self.free_space_algorithm(self.coordinates)
-            result_middle_distance = self.middle_of_the_distance_on_the_wall(result_free_space)
+            result_middle_distance = self.middle_and_shift(result_free_space)
             result_wall_definition = self.wall_definition(result_middle_distance)
-            result_corner_markings = self.corner_markings(item, result_middle_distance, result_wall_definition)
+            result_corner_markings = corner_markings(item, result_middle_distance, result_wall_definition)
             self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size, item)
 
         # функции для возможности наглядного тестирования результата до отправки на фронт

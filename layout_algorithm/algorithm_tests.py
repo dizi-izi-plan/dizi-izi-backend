@@ -25,7 +25,8 @@ class TestFurnitureArrangement(unittest.TestCase):
                     "south_east": {"x": 12, "y": 4},
                 },
             ],
-            [{"width": 2, "length": 3}, {"width": 3, "length": 1}],
+            [{"width": 2, "length": 3},
+             {"width": 3, "length": 1}],
             {
                 "first_wall": 10,
                 "second_wall": 14,
@@ -50,7 +51,8 @@ class TestFurnitureArrangement(unittest.TestCase):
                     "south_east": {"x": 12, "y": 4},
                 },
             ],
-            [{"width": 4, "length": 6}, {"width": 4, "length": 2}],
+            [{"width": 4, "length": 6},
+             {"width": 3, "length": 2}],
             {
                 "first_wall": 10,
                 "second_wall": 14,
