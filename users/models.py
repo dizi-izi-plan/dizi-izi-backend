@@ -35,6 +35,9 @@ class CustomUser(AbstractUser):
         max_length=254,
         unique=True,
     )
+    city = models.CharField('Город', max_length=50, null=True, blank=True)
+    birthday = models.DateField(blank=True, null=True)
+    i_am_designer = models.BooleanField(default=False,)
     password = models.CharField('Password', max_length=150)
 
     is_active = models.BooleanField(default=True)
