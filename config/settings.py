@@ -115,7 +115,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Di-zi',
-    'DESCRIPTION': 'Super impa project',
+    'DESCRIPTION': 'Super imba project',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
@@ -133,7 +133,7 @@ DJOSER = {
     'SERIALIZERS': {
         'user_create': 'api.v1.serializers.CustomUserCreateSerializer',
         'user': 'api.v1.serializers.CustomUserCreateSerializer',
-        'current_user': 'api.v1.serializers.CustomUserAddSerializer',
+        'current_user': 'api.v1.serializers.CustomUserCreateSerializer',
     },
     'PERMISSIONS': {
         'user_delete': ['rest_framework.permissions.IsAdminUser'],

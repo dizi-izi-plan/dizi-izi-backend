@@ -101,7 +101,7 @@ class RoomCopyView(APIView):
 
 
 class SendPDFView(APIView):
-    """Отправка pdf файла на почту"""
+    """Отправка pdf файла на почту."""
 
     parser_classes = (MultiPartParser, )
 
@@ -112,3 +112,4 @@ class SendPDFView(APIView):
         text = 'В приложении подготовленный план размещения мебели'
         email = request.user.email
         return send_pdf_file(subj, email, up_file, text)
+
