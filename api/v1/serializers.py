@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
+from django.utils.timezone import utc
 from djoser.serializers import UserCreateSerializer
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
@@ -315,7 +316,7 @@ class TariffSerializer(serializers.ModelSerializer):
     is_active = serializers.IntegerField(default=0)
     start_day = serializers.SerializerMethodField()
     period = serializers.SerializerMethodField()
-    # period = serializers.DurationField()
+    next_day_of_payment = serializers.SerializerMethodField()
 
     class Meta:
         model = Tariff
@@ -327,9 +328,15 @@ class TariffSerializer(serializers.ModelSerializer):
             user_tariff = obj.user_tariff.get(user=request.user)
             return user_tariff.start_date.strftime("%d.%m.%Y")
 
+    def get_next_day_of_payment(self, obj):
+        request = self.context.get('request')
+        if obj.is_active:
+            user_tariff = obj.user_tariff.get(user=request.user)
+            return (f'{user_tariff.start_date.strftime("%d")}.'
+                    f'{datetime.now(timezone.utc).strftime("%m")}')
+
     def get_period(self, obj):
         return f'{obj.period.days} дней'
-
 
 
 class ChangeTariffSerializer(serializers.ModelSerializer):
