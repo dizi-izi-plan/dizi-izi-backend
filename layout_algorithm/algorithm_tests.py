@@ -1,11 +1,11 @@
 import unittest
 
-from algorithm import FurnitureArrangement
+from core import Core
 
 
 class TestFurnitureArrangement(unittest.TestCase):
     def setUp(self):
-        self.calculator = FurnitureArrangement()
+        self.calculator = Core()
 
 
 

@@ -4,7 +4,7 @@ import bisect
 import random
 from crossover_checks import *
 from corner_markings import *
-from layout_algorithm import create_picture, crossover_checks
+
 
 
 class FurnitureArrangement:
@@ -212,10 +212,10 @@ class FurnitureArrangement:
             """
             """
             nonlocal figure, middle_point, objects_counter, cycle_counter, cycle_border, displacement_start
-            if cycle_counter % 2 != 0:
-                middle_point["shift_method"] = "minus"
-            elif cycle_counter % 2 == 0:
-                middle_point["shift_method"] = "plus"
+            # if cycle_counter % 2 != 0:
+            #     middle_point["shift_method"] = "minus"
+            # elif cycle_counter % 2 == 0:
+            #     middle_point["shift_method"] = "plus"
             displacement_start += middle_point["displacement_value"]
 
 
@@ -237,27 +237,24 @@ class FurnitureArrangement:
         middle_point["shift_method"] = "plus"  # указываем сторону для начального смещения
 
         # сам цикл, в котором мы пытаемся разметить объект заданное количество циклов и проверяем пересечения со всеми объектами
-        while cycle_counter < cycle_border:
-            while objects_counter < len(self.coordinates):
-                figure_2 = self.coordinates[objects_counter]
+        while cycle_counter < cycle_border and objects_counter < len(self.coordinates):
 
-                if checks(figure, figure_2, walls):
-                    # добавляем значение, что с этим объектом все проверки прошли успешно
-                    breaker += 1
-                    objects_counter += 1
-                else:
-                    displacement()
-
-                # выходим из цикла, если достигнут лимит циклов
-                if cycle_counter >= cycle_border:
-                    return False
+            figure_2 = self.coordinates[objects_counter]
+            if checks(figure, figure_2, walls):
+                # добавляем значение, что с этим объектом все проверки прошли успешно
+                breaker += 1
+                objects_counter += 1
+            else:
+                displacement()
+            # выходим из цикла, если достигнут лимит циклов
+            if cycle_counter >= cycle_border:
+                return False
 
             # если пересечения со всеми объектами были проверены успешно, то выходим из цикла
             if breaker >= len(self.coordinates):
                 break
 
             breaker = 1
-
             # # меняем значения для отправки в функцию смещения
             # if cycle_counter % 2 != 0:
             #     middle_point["shift_method"] = "minus"
@@ -266,7 +263,7 @@ class FurnitureArrangement:
             # displacement_start += middle_point["displacement_value"]
 
             if cycle_counter >= cycle_border:
-                return False
+                raise Exception("Превышено число попыток на размещение")
 
         # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
         final_point = self.convert_coordinates_to_line(middle_point)
@@ -308,30 +305,6 @@ class FurnitureArrangement:
             self.sorted_points.append(self.convert_coordinates_to_line(middle_point))
 
         self.sorted_points.sort()
-
-    def algorithm_activation(self, doors_and_windows: list, furniture: list, room_size: dict):
-        """Основная функция алгоритма, проходящаяся по всему заданному списку мебели
-        и расставляющая каждую единицу внутри помещения
-
-        Args:
-            doors_and_windows:
-            furniture:
-            room_size:
-        Returns:
-
-        """
-
-        self.data_preprocessing(room_size, doors_and_windows)
-        for item in furniture:
-            result_free_space = self.free_space_algorithm(self.coordinates)
-            result_middle_distance = self.middle_and_shift(result_free_space)
-            result_wall_definition = self.wall_definition(result_middle_distance)
-            result_corner_markings = corner_markings(item, result_middle_distance, result_wall_definition)
-            self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size, item)
-
-        # функции для возможности наглядного тестирования результата до отправки на фронт
-        create_picture.create_rectangles(self.coordinates, self.room_coordinates)
-        print(self.coordinates)
 
 
     def shuffle_furniture(self, furniture: list, mode: str) -> list:

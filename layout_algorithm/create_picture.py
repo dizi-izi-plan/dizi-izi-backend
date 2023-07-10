@@ -25,8 +25,25 @@ def create_rectangles(data: list, borders: dict):
                                     int(borders["north_east"]["y"]*external_border)),
                                     color=(255, 255, 255))
 
+
+
     # Создаем объект кисть для холста
     paint_brush = ImageDraw.Draw(canvas)
+
+    # рисуем границы комнаты для визуального отслеживания пересечений
+    paint_brush.line((borders["south_west"]["x"] + centering, borders["south_west"]["y"] + centering,
+                      borders["south_east"]["x"] + centering, borders["south_east"]["y"] + centering),
+                     fill=(177, 220, 165), width=border_width)
+    paint_brush.line((borders["south_east"]["x"] + centering, borders["south_east"]["y"] + centering,
+                      borders["north_east"]["x"] + centering, borders["north_east"]["y"] + centering),
+                     fill=(177, 220, 165), width=border_width)
+    paint_brush.line((borders["north_west"]["x"] + centering, borders["north_west"]["y"] + centering,
+                      borders["north_east"]["x"] + centering, borders["north_east"]["y"] + centering),
+                     fill=(177, 220, 165), width=border_width)
+    paint_brush.line((borders["south_west"]["x"] + centering, borders["south_west"]["y"] + centering,
+                      borders["north_west"]["x"] + centering, borders["north_west"]["y"] + centering),
+                     fill=(177, 220, 165), width=border_width)
+
 
     # проходя через данные отрисовываем каждый прямоугольник цвета fill с шириной width
     # для построения прямоугольника достаточно использовать только две точки по диагонали
@@ -47,19 +64,6 @@ def create_rectangles(data: list, borders: dict):
             fill=(222, 184, 200),
             width=10,
         )
-    # рисуем границы комнаты для визуального отслеживания пересечений
-    paint_brush.line((borders["south_west"]["x"] + centering, borders["south_west"]["y"] + centering,
-                      borders["south_east"]["x"] + centering, borders["south_east"]["y"] + centering),
-                     fill=(177, 220, 165), width=border_width)
-    paint_brush.line((borders["south_east"]["x"] + centering, borders["south_east"]["y"] + centering,
-                      borders["north_east"]["x"] + centering, borders["north_east"]["y"] + centering),
-                     fill=(177, 220, 165), width=border_width)
-    paint_brush.line((borders["north_west"]["x"] + centering, borders["north_west"]["y"] + centering,
-                      borders["north_east"]["x"] + centering, borders["north_east"]["y"] + centering),
-                     fill=(177, 220, 165), width=border_width)
-    paint_brush.line((borders["south_west"]["x"] + centering, borders["south_west"]["y"] + centering,
-                      borders["north_west"]["x"] + centering, borders["north_west"]["y"] + centering),
-                     fill=(177, 220, 165), width=border_width)
 
     canvas = canvas.rotate(180)
     canvas = ImageOps.mirror(canvas)
