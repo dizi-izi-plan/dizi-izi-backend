@@ -48,7 +48,16 @@ class RoomViewSet(viewsets.ModelViewSet):
 
 class APITariff(ListAPIView):
     serializer_class = TariffSerializer
-    queryset = Tariff.objects.all()
+
+    def get_queryset(self):
+        return Tariff.objects.annotate(
+            is_active=Exists(
+                UsersTariffs.objects.filter(
+                    user=self.request.user,
+                    tariff=OuterRef('pk')
+                )
+            )
+        )
 
 
 class APIChangeTariff(APIView):

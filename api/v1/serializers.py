@@ -312,17 +312,24 @@ class RoomAnonymousSerializers(serializers.Serializer):
 
 
 class TariffSerializer(serializers.ModelSerializer):
-    is_active = serializers.SerializerMethodField()
+    is_active = serializers.IntegerField(default=0)
+    start_day = serializers.SerializerMethodField()
+    period = serializers.SerializerMethodField()
+    # period = serializers.DurationField()
 
     class Meta:
         model = Tariff
         fields = '__all__'
 
-    def get_is_active(self, obj):
+    def get_start_day(self, obj):
         request = self.context.get('request')
-        return (request
-                and request.user.is_authenticated
-                and obj.user_tariff.filter(user=request.user).exists())
+        if obj.is_active:
+            user_tariff = obj.user_tariff.get(user=request.user)
+            return user_tariff.start_date.strftime("%d.%m.%Y")
+
+    def get_period(self, obj):
+        return f'{obj.period.days} дней'
+
 
 
 class ChangeTariffSerializer(serializers.ModelSerializer):
@@ -339,9 +346,3 @@ class ChangeTariffSerializer(serializers.ModelSerializer):
                 'У вас уже этот тариф.'
             )
         return data
-
-    # def to_representation(self, instance):
-    #     return TariffSerializer(
-    #         instance.tariff,
-    #         context={'request': self.context.get('request')}
-    #     ).data

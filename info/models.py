@@ -119,8 +119,9 @@ class UsersTariffs(models.Model):
         related_name='user_tariff'
     )
     start_date = models.DateTimeField(
-        verbose_name='Дата начала',
-        auto_now_add=True
+        verbose_name='Тариф приобретен',
+        auto_now_add=True,
+
     )
 
     class Meta:
