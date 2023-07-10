@@ -24,18 +24,6 @@ FIELDS_COORDINATE = (
 User = get_user_model()
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
-    class Meta(UserCreateSerializer.Meta):
-        model = User
-        fields = ('id', 'email', 'password',)
-
-
-class CustomUserAddSerializer(UserSerializer):
-    class Meta(UserCreateSerializer.Meta):
-        model = User
-        fields = ('id', 'birthday', 'city', 'i_am_designer',)
-
-
 class FurnitureSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
 

@@ -121,7 +121,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 DJOSER = {
-    'USER_CREATE_PASSWORD_RETYPE': True,
+    # 'USER_CREATE_PASSWORD_RETYPE': True,
     'SEND_CONFIRMATION_EMAIL': True,
     'ACTIVATION_URL': 'api/v1/auth/users/activate/{uid}/{token}',
     # тут подключается фронт с активацией на url: /api/v1/auth/users/activation/
@@ -131,9 +131,9 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'api/v1/auth/users/password/reset/confirm/{uid}/{token}',
     # тут подключается фронт с отправкой на url: /api/v1/auth/users/reset_password_confirm/
     'SERIALIZERS': {
-        'user_create': 'api.v1.serializers.CustomUserCreateSerializer',
-        'user': 'api.v1.serializers.CustomUserCreateSerializer',
-        'current_user': 'api.v1.serializers.CustomUserCreateSerializer',
+        'user_create': 'users.serializers.CustomUserCreateSerializer',
+        'user': 'users.serializers.CustomUserCreateSerializer',
+        'current_user': 'users.serializers.CustomUserCreateSerializer',
     },
     'PERMISSIONS': {
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
