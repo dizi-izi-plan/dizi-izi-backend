@@ -105,6 +105,7 @@ class FurnitureArrangement:
                 counter = 0
             core_and_output(item, objects)
             counter += 1
+
         return length[max(length)]
 
     def middle_and_shift(self, free_space: dict) -> dict:
@@ -212,10 +213,6 @@ class FurnitureArrangement:
             """
             """
             nonlocal figure, middle_point, objects_counter, cycle_counter, cycle_border, displacement_start
-            # if cycle_counter % 2 != 0:
-            #     middle_point["shift_method"] = "minus"
-            # elif cycle_counter % 2 == 0:
-            #     middle_point["shift_method"] = "plus"
             displacement_start += middle_point["displacement_value"]
 
 
@@ -227,14 +224,25 @@ class FurnitureArrangement:
 
         # Задаем переменные, чтобы определить случаи для выхода из цикла
         objects_counter = 0  # переменная необходимая для учета всех объектов, относительно которых делается проверка на пересечение
-        cycle_counter = 0  # переменная для подсчета количества циклов, дабы они не были бесконечными
-        cycle_border = 2000  # переменная, указывающая при каком значении будет критическая ошибка о невозможности размещения
-        breaker = 2  # Переменная, выводящая из общего цикла при не пересечении объектов
+        cycle_counter = 0  # переменная для подсчета количества циклов, дабы они не были бесконечным
+        cycle_border = self.wall_perimetr  # переменная, указывающая при каком значении будет критическая ошибка о невозможности размещения
+        breaker = 0  # Переменная, выводящая из общего цикла при не пересечении объектов
 
         # Задаем данные для дальнейшей их отправки в функцию переноса объекта
         displacement_start = 0  # переменная необходима для обозначения стартовой точки, относительно которой будет смещение
-        middle_point["displacement_value"] = 1  # значение на которое будет смещаться объект
         middle_point["shift_method"] = "plus"  # указываем сторону для начального смещения
+
+        # указываем значение на которое будет смещаться объект в зависимости от разрядности периметра
+        if self.wall_perimetr < 100:
+
+            middle_point["displacement_value"] = 1
+        elif self.wall_perimetr < 1000:
+            middle_point["displacement_value"] = 10
+        elif self.wall_perimetr < 10000:
+            middle_point["displacement_value"] = 100
+        elif self.wall_perimetr < 100000:
+            middle_point["displacement_value"] = 1000
+
 
         # сам цикл, в котором мы пытаемся разметить объект заданное количество циклов и проверяем пересечения со всеми объектами
         while cycle_counter < cycle_border and objects_counter < len(self.coordinates):
@@ -255,12 +263,6 @@ class FurnitureArrangement:
                 break
 
             breaker = 1
-            # # меняем значения для отправки в функцию смещения
-            # if cycle_counter % 2 != 0:
-            #     middle_point["shift_method"] = "minus"
-            # elif cycle_counter % 2 == 0:
-            #     middle_point["shift_method"] = "plus"
-            # displacement_start += middle_point["displacement_value"]
 
             if cycle_counter >= cycle_border:
                 raise Exception("Превышено число попыток на размещение")
