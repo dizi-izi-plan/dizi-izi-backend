@@ -1,33 +1,43 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.password_validation import validate_password
-from djoser.compat import get_user_email, get_user_email_field_name
-from django.core import exceptions as django_exceptions
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import UserCreateSerializer
 
-from djoser.conf import settings
 from rest_framework import serializers
 
 User = get_user_model()
 
 
-class CustomUserCreateSerializer(UserSerializer):
-    password = serializers.CharField(style={"input_type": "password"},
-                                     write_only=True)
-    class Meta:
+class CustomUserCreateSerializer(UserCreateSerializer):
+    password = serializers.CharField(
+        style={"input_type": "password"}, write_only=True
+    )
+
+    class Meta(UserCreateSerializer.Meta):
         model = User
-        fields = "__all__"
-        read_only_fields = (settings.LOGIN_FIELD,)
+        fields = (
+            "id",
+            "email",
+            "birthday",
+            "city",
+            "i_am_designer",
+            "password",
+        )
 
-    def validate(self, attrs):
-        user = User(**attrs)
-        password = attrs.get("password")
-
-        try:
-            validate_password(password, user)
-        except django_exceptions.ValidationError as e:
-            serializer_error = serializers.as_serializer_error(e)
-            raise serializers.ValidationError(
-                {"password": serializer_error["non_field_errors"]}
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        if user.is_superuser or user == instance:
+            instance.city = validated_data.get("city", instance.city)
+            instance.email = validated_data.get("email", instance.email)
+            instance.i_am_designer = validated_data.get(
+                "i_am_designer", instance.i_am_designer
             )
-
-        return attrs
+            instance.birthday = validated_data.get(
+                "birthday", instance.birthday
+            )
+            if validated_data.get("password"):
+                instance.set_password(validated_data["password"])
+            instance.save()
+            return instance
+        else:
+            raise serializers.ValidationError(
+                "Вы не можете изменять данные других пользователей."
+            )

@@ -12,7 +12,6 @@ urlpatterns = [
     path(r'rooms/send_email/', SendPDFView.as_view()),
     path(r'rooms/<int:pk>/', RoomCopyView.as_view()),
     path('', include(router.urls)),
-    path('auth/users/me/', UserView.as_view(),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
 ]
