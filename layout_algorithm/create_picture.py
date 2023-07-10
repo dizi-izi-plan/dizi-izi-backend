@@ -47,7 +47,7 @@ def create_rectangles(data: list, borders: dict):
             fill=(222, 184, 200),
             width=10,
         )
-
+    # рисуем границы комнаты для визуального отслеживания пересечений
     paint_brush.line((borders["south_west"]["x"] + centering, borders["south_west"]["y"] + centering,
                       borders["south_east"]["x"] + centering, borders["south_east"]["y"] + centering),
                      fill=(177, 220, 165), width=border_width)

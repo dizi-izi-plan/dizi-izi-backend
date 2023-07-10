@@ -212,12 +212,12 @@ class FurnitureArrangement:
             """
             """
             nonlocal figure, middle_point, objects_counter, cycle_counter, cycle_border, displacement_start
-            # if cycle_counter % 2 != 0:
-            #     middle_point["shift_method"] = "minus"
-            # elif cycle_counter % 2 == 0:
-            #     middle_point["shift_method"] = "plus"
-            # displacement_start += middle_point["displacement_value"]
-            #
+            if cycle_counter % 2 != 0:
+                middle_point["shift_method"] = "minus"
+            elif cycle_counter % 2 == 0:
+                middle_point["shift_method"] = "plus"
+            displacement_start += middle_point["displacement_value"]
+
 
             middle_point["x"], middle_point["y"] = self.middle_and_shift(middle_point).values()
             wall = self.wall_definition(middle_point)
@@ -258,12 +258,12 @@ class FurnitureArrangement:
 
             breaker = 1
 
-            # меняем значения для отправки в функцию смещения
-            if cycle_counter % 2 != 0:
-                middle_point["shift_method"] = "minus"
-            elif cycle_counter % 2 == 0:
-                middle_point["shift_method"] = "plus"
-            displacement_start += middle_point["displacement_value"]
+            # # меняем значения для отправки в функцию смещения
+            # if cycle_counter % 2 != 0:
+            #     middle_point["shift_method"] = "minus"
+            # elif cycle_counter % 2 == 0:
+            #     middle_point["shift_method"] = "plus"
+            # displacement_start += middle_point["displacement_value"]
 
             if cycle_counter >= cycle_border:
                 return False
