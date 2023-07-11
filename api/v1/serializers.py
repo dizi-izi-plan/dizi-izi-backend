@@ -12,7 +12,7 @@ from furniture.models import (
     Window,
     Coordinate
 )
-from layout_algorithm import *
+from layout_algorithm import core
 
 FIELDS_COORDINATE = (
             'north_west',
@@ -238,7 +238,7 @@ class RoomSerializer(serializers.ModelSerializer):
                 'third_wall': room.third_wall,
                 'fourth_wall': room.fourth_wall,
             }
-            furniture_arrangement = FurnitureArrangement()
+            furniture_arrangement = core.Core()
             furniture_arrangement.algorithm_activation(
                 doors_and_windows, furniture, room_size
             )
@@ -270,7 +270,7 @@ class RoomSerializer(serializers.ModelSerializer):
                     'third_wall': room['third_wall'],
                     'fourth_wall': room['fourth_wall'],
                 }
-                furniture_arrangement = FurnitureArrangement()
+                furniture_arrangement = core.Core()
                 furniture_arrangement.algorithm_activation(
                     doors_and_windows, furniture, room_size
                 )

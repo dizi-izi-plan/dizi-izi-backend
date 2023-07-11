@@ -1,4 +1,4 @@
-from algorithm import *
+from main_functions import *
 from corner_markings import corner_markings
 from layout_algorithm import create_picture
 
