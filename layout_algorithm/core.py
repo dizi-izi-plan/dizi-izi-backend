@@ -19,7 +19,7 @@ class Core(FurnitureArrangement):
         self.data_preprocessing(room_size, doors_and_windows)
         for item in furniture:
             result_free_space = self.free_space_algorithm(self.coordinates)
-            result_middle_distance = self.middle_and_shift(result_free_space)
+            result_middle_distance = self.middle_point_finder(result_free_space, self.wall_perimetr, self.walls_length)
             result_wall_definition = self.wall_definition(result_middle_distance)
             result_corner_markings = corner_markings(item, result_middle_distance, result_wall_definition)
             self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size, item)

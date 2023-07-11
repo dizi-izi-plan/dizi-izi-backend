@@ -4,10 +4,10 @@ import bisect
 import random
 from crossover_checks import *
 from corner_markings import *
+from offset_finder_convert import MiddlePointAndShift
 
 
-
-class FurnitureArrangement:
+class FurnitureArrangement(MiddlePointAndShift):
     coordinates = []  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
     free_space = []  # хранение расстояний между мебелью через запятую (в виде координат)
     sorted_points = []  # хранения точек на прямой из сложенных сторон комнаты для правильной вставки получившихся координат в список
@@ -17,39 +17,6 @@ class FurnitureArrangement:
     room_coordinates_tuple = ()  # хранение координаты комнаты для удобства вычислений
     walls_length = ()  # хранение длин стен для удобства обращения
 
-    def convert_coordinates_to_line(self, coordinates: dict) -> float | int:
-        """Функция преобразует координаты в точку на прямой.
-
-        Args:
-        Returns:
-
-        """
-        if coordinates['x'] == 0:
-            return coordinates['y']
-        elif coordinates['y'] == self.walls_length[0]:
-            return self.walls_length[0] + coordinates['x']
-        elif coordinates['x'] == self.walls_length[1]:
-            return sum(self.walls_length[:3]) - coordinates['y']
-        return sum(self.walls_length) - coordinates['x']
-
-    def wall_definition(self, dot: dict):
-        """
-
-        Args:
-
-        Returns:
-
-        """
-
-        if dot["y"] == 0:
-            return 4
-        elif dot["x"] == 0:
-            return 1
-        elif dot["y"] == self.room_coordinates["north_east"]["y"]:
-            return 2
-        elif dot["x"] == self.room_coordinates["north_east"]["x"]:
-            return 3
-        self.room_coordinates = 0
 
     def free_space_algorithm(self, objects: list) -> dict:
         # На вход подается список с координатами углов объектов. Координаты между друг другом минусим, находим
@@ -86,8 +53,8 @@ class FurnitureArrangement:
             if second_object[counter]["north_west"] in self.room_coordinates_tuple:
                 second_left_corner = "south_west"
 
-            first_point = self.convert_coordinates_to_line(first_object[first_right_corner])
-            second_point = self.convert_coordinates_to_line(second_object[counter][second_left_corner])
+            first_point = self.convert_coordinates_to_line(first_object[first_right_corner], self.walls_length)
+            second_point = self.convert_coordinates_to_line(second_object[counter][second_left_corner], self.walls_length)
             distance = 0
             if second_point >= first_point:
                 distance = second_point - first_point
@@ -95,7 +62,7 @@ class FurnitureArrangement:
                 distance = second_point + (self.wall_perimetr - first_point)
 
             length[distance] = {"left_corner": first_object[first_right_corner],
-                                "right_corner": second_object[counter][second_left_corner], }
+                                "right_corner": second_object[counter][second_left_corner]}
 
             # расстояния могут быть одинаковые, но нам по сути неважно какой из вариантов брать, а значит мы
             # можем просто перезаписать ключ словаря
@@ -108,90 +75,10 @@ class FurnitureArrangement:
 
         return length[max(length)]
 
-    def middle_and_shift(self, free_space: dict) -> dict:
-        """
-        Функция для нахождения средней точки в оставшемся пустом пространстве комнаты.
-        Получает на вход координаты точек и длины стен.
-        Возвращает координаты средней точки.
-
-        Args:
-
-        Returns:
-
-        """
-
-        def convert_line_to_coordinates(dot: float | int) -> dict:
-            """Функция преобразует точку на прямой в координаты
-
-        Args:
-
-        Returns:
-
-        """
-
-            if 0 <= dot <= self.walls_length[0]:
-                return {'x': 0, 'y': dot}
-            elif self.walls_length[0] < dot <= sum(self.walls_length[:2]):
-                return {'x': dot - self.walls_length[0],
-                        'y': self.walls_length[0]}
-            elif sum(self.walls_length[:2]) < dot <= sum(self.walls_length[:3]):
-                return {'x': self.walls_length[1],
-                        'y': sum(self.walls_length[:3]) - dot}
-            elif sum(self.walls_length[:3]) < dot <= self.wall_perimetr:
-                return {'x': self.wall_perimetr - dot, 'y': 0}
-            raise Exception(
-                'Ошибка данных, нет возможности разместить среднюю точку на одной из стен комнаты.'
-            )
-
-        if 'left_corner' in free_space:
-            """
-
-            Args:
-
-            Returns:
-
-            """
-
-            point_1 = self.convert_coordinates_to_line(free_space['left_corner'])
-            point_2 = self.convert_coordinates_to_line(free_space['right_corner'])
-            middle_point = (
-                (point_2 + point_1) / 2
-                if point_1 < point_2
-                else (point_2 + point_1 + self.wall_perimetr) / 2
-            )
-            if middle_point > self.wall_perimetr:
-                middle_point = middle_point - self.wall_perimetr
-            return convert_line_to_coordinates(middle_point)
-
-        elif "x" in free_space:
-            """
-
-            Args:
-
-            Returns:
-
-            """
-
-            point = self.convert_coordinates_to_line({"x": free_space["x"], "y": free_space["y"]})
-            if free_space["shift_method"] == "plus":
-                shifted_point = point + free_space["displacement_value"]
-            elif free_space["shift_method"] == "minus":
-                shifted_point = point - free_space["displacement_value"]
-            else:
-                raise Exception('Неправильно введенный метод')
-
-            if shifted_point < 0:
-                shifted_point = self.wall_perimetr - abs(shifted_point)
-            elif shifted_point > self.wall_perimetr:
-                shifted_point = abs(shifted_point) - self.wall_perimetr
-            # else:
-            #     raise Exception('Неправильно переменные')
-
-            return convert_line_to_coordinates(shifted_point)
 
     def placing_in_coordinates(
         self,
-        middle_point: dict,
+        data: dict,
         figure: dict,
         walls: dict,
         length_and_width: dict,
@@ -199,7 +86,7 @@ class FurnitureArrangement:
         """Функция проверки возможности резервирования места для мебели в комнате.
 
         Args:
-            middle_point (dict): {"middle_point": {"x": 0, "y": 0}}
+            data (dict):
             figure (dict): координаты для мебели. {"north_west": {"x": 0, "y": 0},
                    "north_east": {"x": 0, "y": 0}, "south_west": {"x": 0, "y": 0}, "south_east": {"x": 0, "y": 0}}
             walls (dict): стены комнаты начиная от левой {"first_wall": 0, "second_wall": 0, "third_wall": 0, "fourth_wall":0}
@@ -212,13 +99,13 @@ class FurnitureArrangement:
         def displacement():
             """
             """
-            nonlocal figure, middle_point, objects_counter, cycle_counter, cycle_border, displacement_start
-            displacement_start += middle_point["displacement_value"]
+            nonlocal figure, data, objects_counter, cycle_counter, cycle_border, displacement_start
+            displacement_start += data["displacement_value"]
 
 
-            middle_point["x"], middle_point["y"] = self.middle_and_shift(middle_point).values()
-            wall = self.wall_definition(middle_point)
-            figure = corner_markings(length_and_width, middle_point, wall)
+            data["x"], data["y"] = self.offset(data, self.wall_perimetr, self.walls_length).values()
+            wall = self.wall_definition(data)
+            figure = corner_markings(length_and_width, data, wall)
             objects_counter = 0
             cycle_counter += 1
 
@@ -230,18 +117,17 @@ class FurnitureArrangement:
 
         # Задаем данные для дальнейшей их отправки в функцию переноса объекта
         displacement_start = 0  # переменная необходима для обозначения стартовой точки, относительно которой будет смещение
-        middle_point["shift_method"] = "plus"  # указываем сторону для начального смещения
+        data["shift_method"] = "plus"  # указываем сторону для начального смещения
 
         # указываем значение на которое будет смещаться объект в зависимости от разрядности периметра
         if self.wall_perimetr < 100:
-
-            middle_point["displacement_value"] = 1
+            data["displacement_value"] = 1
         elif self.wall_perimetr < 1000:
-            middle_point["displacement_value"] = 10
+            data["displacement_value"] = 10
         elif self.wall_perimetr < 10000:
-            middle_point["displacement_value"] = 100
+            data["displacement_value"] = 100
         elif self.wall_perimetr < 100000:
-            middle_point["displacement_value"] = 1000
+            data["displacement_value"] = 1000
 
 
         # сам цикл, в котором мы пытаемся разметить объект заданное количество циклов и проверяем пересечения со всеми объектами
@@ -249,34 +135,31 @@ class FurnitureArrangement:
 
             figure_2 = self.coordinates[objects_counter]
             if checks(figure, figure_2, walls):
-                # добавляем значение, что с этим объектом все проверки прошли успешно
+                # добавляем единицу брейкеру за каждый прошедший проверки пересечения объект,
+                # чтобы организовать выход из цикла
                 breaker += 1
                 objects_counter += 1
             else:
                 displacement()
-            # выходим из цикла, если достигнут лимит циклов
-            if cycle_counter >= cycle_border:
-                return False
-
             # если пересечения со всеми объектами были проверены успешно, то выходим из цикла
             if breaker >= len(self.coordinates):
                 break
-
-            breaker = 1
-
             if cycle_counter >= cycle_border:
                 raise Exception("Превышено число попыток на размещение")
 
+            breaker = 1
+
+
         # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
-        final_point = self.convert_coordinates_to_line(middle_point)
+        final_point = self.convert_coordinates_to_line(data, self.walls_length)
         bisect.insort(self.sorted_points, final_point)
         self.coordinates.insert(self.sorted_points.index(final_point), figure)
         return True
 
-
     def data_preprocessing(self, room_size, doors_and_windows):
 
-        """
+        """Функция необходима для размещения данных в глобальных координатах
+        и подготовки их к дальнейшей обработке в функциях
 
         Args:
 
@@ -304,9 +187,29 @@ class FurnitureArrangement:
             middle_point = {"x": (item["north_east"]["x"] + item["north_west"]["x"]) / 2,
                             "y": (item["north_east"]["y"] + item["north_west"]["y"]) / 2}
             self.coordinates.append(item)
-            self.sorted_points.append(self.convert_coordinates_to_line(middle_point))
+            self.sorted_points.append(self.convert_coordinates_to_line(middle_point, self.walls_length))
 
         self.sorted_points.sort()
+
+
+    def wall_definition(self, dot: dict):
+        """
+
+        Args:
+
+        Returns:
+
+        """
+
+        if dot["y"] == 0:
+            return 4
+        elif dot["x"] == 0:
+            return 1
+        elif dot["y"] == self.room_coordinates["north_east"]["y"]:
+            return 2
+        elif dot["x"] == self.room_coordinates["north_east"]["x"]:
+            return 3
+        self.room_coordinates = 0
 
 
     def shuffle_furniture(self, furniture: list, mode: str) -> list:
