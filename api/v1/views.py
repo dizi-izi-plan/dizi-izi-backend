@@ -1,10 +1,12 @@
 from furniture.models import Door, Furniture, Placement, PowerSocket, Room, Window
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..utils import get_name
+from ..utils import get_name, send_pdf_file
 from .serializers import FurnitureSerializer, RoomSerializer
 
 
@@ -96,3 +98,17 @@ class RoomCopyView(APIView):
         instance.save()
         serializer = RoomSerializer(instance)
         return Response(serializer.data)
+
+
+class SendPDFView(APIView):
+    """Отправка pdf файла на почту"""
+
+    parser_classes = (MultiPartParser, )
+
+    def post(self, request, format='pdf'):
+        print(request.FILES)
+        up_file = request.FILES['file']
+        subj = 'План размещения мебели'
+        text = 'В приложении подготовленный план размещения мебели'
+        email = request.user.email
+        return send_pdf_file(subj, email, up_file, text)
