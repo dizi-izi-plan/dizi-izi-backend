@@ -1,6 +1,7 @@
-from main_functions import *
-from corner_markings import corner_markings
-from layout_algorithm import create_picture
+
+from .corner_markings import corner_markings
+from .main_functions import FurnitureArrangement
+from .create_picture import create_rectangles
 
 
 class Core(FurnitureArrangement):
@@ -25,5 +26,5 @@ class Core(FurnitureArrangement):
             self.placing_in_coordinates(result_middle_distance, result_corner_markings, room_size, item)
 
         # функции для возможности наглядного тестирования результата до отправки на фронт
-        create_picture.create_rectangles(self.coordinates, self.room_coordinates)
+        create_rectangles(self.coordinates, self.room_coordinates)
         print(self.coordinates)
