@@ -1,3 +1,4 @@
+import csv
 import logging
 import sys
 from csv import DictReader
@@ -53,7 +54,7 @@ class Command(BaseCommand):
         logger.info('Загрузка мебели в БД')
         furniture = []
         for row in DictReader(
-            open('furniture/data/furniture.csv', encoding='utf-8'),
+                open('furniture/data/furniture.csv', encoding='utf-8'),
         ):
             furniture.append(
                 Furniture(

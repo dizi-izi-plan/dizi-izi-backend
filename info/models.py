@@ -3,7 +3,6 @@ from datetime import timedelta
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.utils import timezone
 
 from users.models import CustomUser
 
@@ -91,8 +90,8 @@ class PossibleActionsTariff(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Возможности тарифа'
-        verbose_name_plural = 'Возможности тарифа'
+        verbose_name = 'Опции тарифа'
+        verbose_name_plural = 'Опции тарифа'
         constraints = [
             UniqueConstraint(
                 fields=['action', 'tariff'],

@@ -12,17 +12,19 @@ from furniture.models import (
     Placement,
     PowerSocket,
     Door,
-    Window, TypeOfRoom
+    Window,
+    TypeOfRoom,
     Coordinate
 )
+from info.models import Tariff, UsersTariffs
 from layout_algorithm import core
 
 FIELDS_COORDINATE = (
-            'north_west',
-            'north_east',
-            'south_west',
-            'south_east',
-        )
+    'north_west',
+    'north_east',
+    'south_west',
+    'south_east',
+)
 
 User = get_user_model()
 
@@ -255,7 +257,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
 class RoomCopySerializer(serializers.ModelSerializer):
     furniture_placement = PlacementSerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = Room
         fields = [
@@ -269,7 +271,7 @@ class RoomCopySerializer(serializers.ModelSerializer):
             'fourth_wall',
             'furniture_placement',
         ]
-        
+
 
 class TariffSerializer(serializers.ModelSerializer):
     is_active = serializers.IntegerField(default=0)
