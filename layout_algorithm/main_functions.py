@@ -2,20 +2,28 @@
 
 import bisect
 import random
-from .crossover_checks import checks
-from .corner_markings import corner_markings
-from .offset_finder_convert import MiddlePointAndShift
+from crossover_checks import checks
+from corner_markings import corner_markings
+from offset_finder_convert import MiddlePointAndShift
 
 
 class FurnitureArrangement(MiddlePointAndShift):
-    coordinates = []  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
-    free_space = []  # хранение расстояний между мебелью через запятую (в виде координат)
-    sorted_points = []  # хранения точек на прямой из сложенных сторон комнаты для правильной вставки получившихся координат в список
-    wall_perimetr = 0  # хранения периметра комнаты для удобства обращения из функций
 
-    room_coordinates = {}  # хранение координат комнаты для удобства обращения из функций
-    room_coordinates_tuple = ()  # хранение координаты комнаты для удобства вычислений
-    walls_length = ()  # хранение длин стен для удобства обращения
+    def __init__(self):
+
+        coordinates, free_space, sorted_points = [], [], []
+        wall_perimetr = 0
+        room_coordinates = {}
+        room_coordinates_tuple, walls_length = (), ()
+
+        self.coordinates = coordinates  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
+        self.free_space = free_space  # хранение расстояний между мебелью через запятую (в виде координат)
+        self.sorted_points = sorted_points  # хранения точек на прямой из сложенных сторон комнаты для правильной вставки получившихся координат в список
+        self.wall_perimetr = wall_perimetr  # хранения периметра комнаты для удобства обращения из функций
+
+        self.room_coordinates = room_coordinates  # хранение координат комнаты для удобства обращения из функций
+        self.room_coordinates_tuple = room_coordinates_tuple  # хранение координаты комнаты для удобства вычислений
+        self.walls_length = walls_length  # хранение длин стен для удобства обращения
 
 
     def free_space_algorithm(self, objects: list) -> dict:
