@@ -5,7 +5,7 @@ from csv import DictReader
 # from datetime import datetime
 from django.core.management import BaseCommand
 
-from furniture.models import Furniture
+from furniture.models import Furniture, TypeOfRoom
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -21,6 +21,35 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         logger.info('Удаление данных о мебели в БД')
         Furniture.objects.all().delete()
+
+        logger.info('Загрузка таблицы комнат')
+        type_of_rooms = (
+            (1, 'спальня', 'bedroom'),
+            (2, 'кухня', 'kitchen'),
+        )
+        result = []
+        try:
+            with open('data/rooms.csv', encoding='utf-8') as csvfile:
+                reader_obj = csv.reader(csvfile)
+                for type_of_rooms in reader_obj:
+                    result.append(type_of_rooms)
+        except Exception as error:
+            print(f'Ошибка {error}')
+        try:
+            if result:
+                type_of_rooms = result
+            for id_room, name, slug in type_of_rooms:
+                data, status = TypeOfRoom.objects.get_or_create(
+                    id=id_room,
+                    name=name,
+                    slug=slug,
+
+                )
+            logger.info('типы комнат загружены')
+        except Exception as error:
+            raise ImportError(
+                f'При импорте произошла ошибка {error}')
+
         logger.info('Загрузка мебели в БД')
         furniture = []
         for row in DictReader(
@@ -34,6 +63,9 @@ class Command(BaseCommand):
                     width=row['width'],
                     length_access=row['length_access'],
                     width_access=row['width_access'],
+                    type_of_rooms=TypeOfRoom.objects.get(
+                        id=row['type_of_rooms'],
+                    )
                 ),
             )
         Furniture.objects.bulk_create(furniture)

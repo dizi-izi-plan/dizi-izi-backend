@@ -1,13 +1,24 @@
-from furniture.models import Door, Furniture, Placement, PowerSocket, Room, Window
-from rest_framework import viewsets
+from django.db.models import Exists, OuterRef
+from django.shortcuts import get_object_or_404, redirect
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
+from rest_framework.generics import ListAPIView, UpdateAPIView
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+
+from furniture.models import Door, Furniture, Placement, PowerSocket, Room, Window
+from info.models import Tariff, UsersTariffs
+from .filters import FurnitureFilter
+from .serializers import (
+    FurnitureSerializer,
+    RoomSerializer,
+    TariffSerializer, ChangeTariffSerializer
+)
 from ..utils import get_name, send_pdf_file
-from .serializers import FurnitureSerializer, RoomSerializer
 
 
 class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
@@ -15,6 +26,8 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Furniture.objects.all()
     serializer_class = FurnitureSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = FurnitureFilter
 
 
 class RoomViewSet(viewsets.ModelViewSet):
@@ -112,3 +125,32 @@ class SendPDFView(APIView):
         text = 'В приложении подготовленный план размещения мебели'
         email = request.user.email
         return send_pdf_file(subj, email, up_file, text)
+
+      
+class APITariff(ListAPIView):
+    serializer_class = TariffSerializer
+
+    def get_queryset(self):
+        return Tariff.objects.annotate(
+            is_active=Exists(
+                UsersTariffs.objects.filter(
+                    user=self.request.user,
+                    tariff=OuterRef('pk')
+                )
+            )
+        )
+
+
+class APIChangeTariff(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk):
+        new_tariff = get_object_or_404(Tariff, pk=pk)
+        user_tariff = get_object_or_404(UsersTariffs, user=request.user)
+        serializer = ChangeTariffSerializer(
+            user_tariff,
+            data={'user': request.user.id, 'tariff': new_tariff.id},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user, tariff=new_tariff)
+        return Response(status=status.HTTP_205_RESET_CONTENT)

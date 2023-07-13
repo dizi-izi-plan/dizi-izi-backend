@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.utils.safestring import mark_safe
 
 from .models import (
     Door,
@@ -9,7 +10,8 @@ from .models import (
     PowerSocket,
     Room,
     Window,
-    Coordinate
+    Coordinate,
+    TypeOfRoom
 )
 
 admin.site.unregister(Group)
@@ -17,14 +19,19 @@ admin.site.register(get_user_model())
 
 
 @admin.register(Furniture)
-class FurnitureeAdmin(admin.ModelAdmin):
-    """Админка мебели."""
-    list_display = (
-        'id',
-        'name',
-        'length',
-        'width',
-    )
+class FurnitureAdmin(admin.ModelAdmin):
+    @admin.display(description='Фото')
+    def take_image(self, obj):
+        if obj.image:
+            return mark_safe(
+                f'<img src={obj.image.url} width="80" height="60">'
+            )
+        return None
+
+    list_display = ('id', 'name', 'length', 'width', 'take_image', 'type_of_rooms')
+    search_fields = ('type_of_rooms', 'name')
+    list_filter = ('type_of_rooms', )
+    empty_value_display = '-пусто-'
 
 
 class PlacementInline(admin.TabularInline):
@@ -76,3 +83,11 @@ class RoomAdmin(admin.ModelAdmin):
     )
     list_display_links = ('name',)
     inlines = (PlacementInline, PowerSocketInline, DoorInline, WindowInline)
+
+
+@admin.register(TypeOfRoom)
+class TypeOfRoomAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', 'slug')
+    search_fields = ('name',)
+    list_filter = ('slug',)
+    empty_value_display = '-пусто-'

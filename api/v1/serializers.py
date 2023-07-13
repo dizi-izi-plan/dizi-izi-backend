@@ -1,3 +1,6 @@
+from datetime import datetime, timezone
+
+from django.utils.timezone import utc
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -9,7 +12,7 @@ from furniture.models import (
     Placement,
     PowerSocket,
     Door,
-    Window,
+    Window, TypeOfRoom
     Coordinate
 )
 from layout_algorithm import core
@@ -24,8 +27,15 @@ FIELDS_COORDINATE = (
 User = get_user_model()
 
 
+class TypeOfRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TypeOfRoom
+        fields = ('name', 'slug')
+
+
 class FurnitureSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
+    type_of_rooms = TypeOfRoomSerializer()
 
     class Meta:
         fields = (
@@ -36,6 +46,7 @@ class FurnitureSerializer(serializers.ModelSerializer):
             'width',
             'length_access',
             'width_access',
+            'type_of_rooms'
         )
         model = Furniture
 
@@ -244,7 +255,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
 class RoomCopySerializer(serializers.ModelSerializer):
     furniture_placement = PlacementSerializer(many=True, read_only=True)
-
+    
     class Meta:
         model = Room
         fields = [
@@ -258,3 +269,46 @@ class RoomCopySerializer(serializers.ModelSerializer):
             'fourth_wall',
             'furniture_placement',
         ]
+        
+
+class TariffSerializer(serializers.ModelSerializer):
+    is_active = serializers.IntegerField(default=0)
+    start_day = serializers.SerializerMethodField()
+    period = serializers.SerializerMethodField()
+    next_day_of_payment = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Tariff
+        fields = '__all__'
+
+    def get_start_day(self, obj):
+        request = self.context.get('request')
+        if obj.is_active:
+            user_tariff = obj.user_tariff.get(user=request.user)
+            return user_tariff.start_date.strftime("%d.%m.%Y")
+
+    def get_next_day_of_payment(self, obj):
+        request = self.context.get('request')
+        if obj.is_active:
+            user_tariff = obj.user_tariff.get(user=request.user)
+            return (f'{user_tariff.start_date.strftime("%d")}.'
+                    f'{datetime.now(timezone.utc).strftime("%m")}')
+
+    def get_period(self, obj):
+        return f'{obj.period.days} дней'
+
+
+class ChangeTariffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsersTariffs
+        fields = ('user', 'tariff')
+        read_only_fields = ('user', 'tariff')
+
+    def validate(self, data):
+        tariff = self.initial_data.get('tariff')
+        user = self.initial_data.get('user')
+        if UsersTariffs.objects.filter(user=user, tariff=tariff).exists():
+            raise serializers.ValidationError(
+                'У вас уже этот тариф.'
+            )
+        return data

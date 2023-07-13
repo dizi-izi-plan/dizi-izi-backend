@@ -10,6 +10,26 @@ from furniture.validators import minimum_len_width_validator
 
 User = get_user_model()
 
+class TypeOfRoom(models.Model):
+    """ Типы комнат для мебели """
+    name = models.CharField(
+        verbose_name='Наименование комнаты',
+        unique=True,
+        max_length=128
+    )
+    slug = models.SlugField(
+        verbose_name='Слаг',
+        unique=True
+    )
+
+    class Meta:
+        verbose_name = 'Комната'
+        verbose_name_plural = 'Комнаты'
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.slug
+
 
 class Furniture(models.Model):
     """Модель мебели."""
@@ -49,6 +69,14 @@ class Furniture(models.Model):
         upload_to='furniture/',
         blank=True,
         null=True,
+    )
+    type_of_rooms = models.ForeignKey(
+        TypeOfRoom,
+        on_delete=models.CASCADE,
+        related_name='furniture',
+        verbose_name='Комната',
+        blank=False,
+        null=False
     )
 
     class Meta:
