@@ -78,6 +78,27 @@ class Furniture(models.Model):
         blank=False,
         null=False
     )
+    power_socket_type = models.CharField(
+        'Тип электроточки',
+        max_length=MAX_LENGTH_FURNITURE_NAME,
+        unique=False,
+    )
+    first_power_socket_height = models.IntegerField(
+        'Высота первой электроточки',
+        default=0
+    )
+    first_power_socket_place = models.IntegerField(
+        'Расположение электроточки относительно середины ширины объекта',
+        default=0
+    )
+    second_power_socket_height = models.IntegerField(
+        'Высота первой электроточки',
+        default=0
+    )
+    second_power_socket_place = models.IntegerField(
+        'Расположение электроточки относительно середины ширины объекта',
+        default=0
+    )
 
     class Meta:
         verbose_name = 'Мебель'
