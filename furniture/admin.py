@@ -29,8 +29,8 @@ class FurnitureAdmin(admin.ModelAdmin):
         return None
 
     list_display = ('id', 'name', 'length', 'width', 'take_image', 'type_of_rooms',
-                    'power_socket_type', 'first_power_socket_height', 'first_power_socket_place',
-                    'second_power_socket_height', 'second_power_socket_place')
+                    'power_socket_type', 'first_power_socket_height', 'first_power_socket_width',
+                    'second_power_socket_height', 'second_power_socket_width')
     search_fields = ('type_of_rooms', 'name')
     list_filter = ('type_of_rooms', )
     empty_value_display = '-пусто-'

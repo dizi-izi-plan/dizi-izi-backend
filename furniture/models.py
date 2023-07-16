@@ -87,7 +87,7 @@ class Furniture(models.Model):
         'Высота первой электроточки',
         default=0
     )
-    first_power_socket_place = models.IntegerField(
+    first_power_socket_width = models.IntegerField(
         'Расположение электроточки относительно середины ширины объекта',
         default=0
     )
@@ -95,9 +95,16 @@ class Furniture(models.Model):
         'Высота первой электроточки',
         default=0
     )
-    second_power_socket_place = models.IntegerField(
+    second_power_socket_width = models.IntegerField(
         'Расположение электроточки относительно середины ширины объекта',
         default=0
+    )
+
+    power_socket_image = models.ImageField(
+        verbose_name='Изображение мебели',
+        upload_to='furniture/',
+        blank=True,
+        null=True,
     )
 
     class Meta:
