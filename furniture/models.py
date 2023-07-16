@@ -198,6 +198,7 @@ class Room(models.Model):
         on_delete=models.CASCADE,
         related_name='rooms',
         verbose_name='Пользователь',
+        null=True
     )
     name = models.CharField(
         'Название планировки',
