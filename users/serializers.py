@@ -121,3 +121,9 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             raise serializers.ValidationError(
                 "Вы не можете изменять данные других пользователей."
             )
+
+    # def create(self, validated_data):
+    #     super().create(validated_data)
+    #
+    #
+    #     return user

@@ -31,7 +31,7 @@ class PossibleActions(models.Model):
 
 
 class Tariff(models.Model):
-    """Тариф"""
+    """Тариф."""
     name = models.CharField(
         verbose_name='Наименование тарифа',
         max_length=256,
@@ -65,6 +65,10 @@ class Tariff(models.Model):
         verbose_name='Действия',
         related_name='tariff'
     )
+    is_default = models.BooleanField(
+        default=False,
+        verbose_name='по умолчанию'
+    )
 
     class Meta:
         verbose_name = 'Тариф'
@@ -72,6 +76,11 @@ class Tariff(models.Model):
 
     def __str__(self) -> str:
         return f'{self.name}'
+
+    def save(self, *args, **kwargs):
+        if self.is_default:
+            Tariff.objects.exclude(pk=self.pk).update(is_default=False)
+        super().save(*args, **kwargs)
 
 
 class PossibleActionsTariff(models.Model):

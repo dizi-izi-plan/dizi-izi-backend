@@ -98,10 +98,10 @@ class RoomCopyView(APIView):
         [
             self._copy_object(obj, orig_room, new_room)
             for obj in [
-            Door,
-            Window,
-            PowerSocket,
-        ]
+                Door,
+                Window,
+                PowerSocket,
+            ]
         ]
 
         return Response(serializer.data)

@@ -4,15 +4,19 @@ from django.db import models
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None):
+        from info.models import UsersTariffs, Tariff
         if not email:
             raise ValueError('У пользователя должен быть email.')
-
+        print(email)
         email = self.normalize_email(email)
-        user = self.model(email=email)
-
+        user = self.model(email=email,)
         user.set_password(password)
+        # user.id = 6
         user.save()
-
+        UsersTariffs.objects.create(
+            user=user,
+            tariff=Tariff.objects.get(is_default=True)
+        )
         return user
 
     def create_superuser(self, email, password=None):
@@ -50,6 +54,6 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
-
-    def __str__(self):
-        return self.email
+    #
+    # def __str__(self):
+    #     return self.email

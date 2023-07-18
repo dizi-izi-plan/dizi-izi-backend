@@ -1,7 +1,11 @@
 from django.contrib import admin
 
-from info.models import Tariff, UsersTariffs, PossibleActionsTariff, \
-    PossibleActions
+from info.models import (
+    Tariff,
+    UsersTariffs,
+    PossibleActionsTariff,
+    PossibleActions,
+)
 
 
 class PossibleActionsTariffAdmin(admin.TabularInline):
@@ -17,7 +21,7 @@ class TariffAdmin(admin.ModelAdmin):
             return list(action for action in obj.actions.all())
         return None
 
-    list_display = ('id', 'name',  'cost', 'period', 'action_list')
+    list_display = ('id', 'name', 'is_default', 'cost', 'period', 'action_list')
     search_fields = ('name', 'cost', 'period')
     list_filter = ('cost', 'period',)
     empty_value_display = '-пусто-'
