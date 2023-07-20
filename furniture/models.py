@@ -10,8 +10,9 @@ from furniture.validators import minimum_len_width_validator
 
 User = get_user_model()
 
+
 class TypeOfRoom(models.Model):
-    """ Типы комнат для мебели """
+    """Типы комнат для мебели."""
     name = models.CharField(
         verbose_name='Наименование комнаты',
         unique=True,

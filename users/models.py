@@ -4,15 +4,18 @@ from django.db import models
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None):
+        from info.models import UsersTariffs, Tariff
         if not email:
             raise ValueError('У пользователя должен быть email.')
-
         email = self.normalize_email(email)
-        user = self.model(email=email)
-
+        user = self.model(email=email,)
         user.set_password(password)
         user.save()
-
+        if Tariff.objects.exists():
+            UsersTariffs.objects.get_or_create(
+                user=user,
+                tariff=Tariff.objects.get(is_default=True)
+            )
         return user
 
     def create_superuser(self, email, password=None):
@@ -37,12 +40,12 @@ class CustomUser(AbstractUser):
     )
     city = models.CharField('Город', max_length=50, null=True, blank=True)
     birthday = models.DateField(blank=True, null=True)
-    i_am_designer = models.BooleanField(default=False,)
+    i_am_designer = models.BooleanField(default=False, verbose_name='дизайнер',)
     password = models.CharField('Password', max_length=150)
     first_name = models.CharField('Имя', max_length=50, null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False, verbose_name='админ')
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
