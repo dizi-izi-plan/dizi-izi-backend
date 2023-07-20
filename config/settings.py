@@ -143,7 +143,6 @@ DJOSER = {
         'user_create': 'users.serializers.CustomUserCreateSerializer',
         'user': 'users.serializers.CustomUserCreateSerializer',
         'current_user': 'users.serializers.CustomUserCreateSerializer',
-        'user_registration': 'users.serializers.CustomUserCreateSerializer',
         'user_create_password_retype': 'users.serializers.CustomUserCreatePasswordRetypeSerializer',
     },
     'PERMISSIONS': {
