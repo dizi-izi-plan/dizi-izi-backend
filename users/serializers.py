@@ -69,7 +69,6 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             django_exceptions.ValidationError если валидация провалена.
 
         """
-        1/0
         user = User(**attrs)
         password = attrs.get("password")
         method = self.context["request"].method
