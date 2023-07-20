@@ -59,14 +59,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -82,7 +80,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 LANGUAGE_CODE = 'ru-ru'
 
@@ -146,6 +143,8 @@ DJOSER = {
         'user_create': 'users.serializers.CustomUserCreateSerializer',
         'user': 'users.serializers.CustomUserCreateSerializer',
         'current_user': 'users.serializers.CustomUserCreateSerializer',
+        'user_registration': 'users.serializers.CustomUserCreateSerializer',
+        'user_create_password_retype': 'users.serializers.CustomUserCreatePasswordRetypeSerializer',
     },
     'PERMISSIONS': {
         'user_delete': ['rest_framework.permissions.IsAdminUser'],

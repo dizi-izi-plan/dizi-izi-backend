@@ -2,9 +2,12 @@ from datetime import time
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from djoser.serializers import UserCreateSerializer
+from django.db import IntegrityError, transaction
+from djoser.serializers import UserCreateSerializer, \
+    UserCreatePasswordRetypeSerializer
 from django.core import exceptions as django_exceptions
 from rest_framework import serializers
+from djoser.conf import settings
 
 User = get_user_model()
 
@@ -66,9 +69,9 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             django_exceptions.ValidationError если валидация провалена.
 
         """
+        1/0
         user = User(**attrs)
         password = attrs.get("password")
-
         method = self.context["request"].method
         if method == "PATCH" and password or method != "PATCH":
             try:
@@ -122,8 +125,11 @@ class CustomUserCreateSerializer(UserCreateSerializer):
                 "Вы не можете изменять данные других пользователей."
             )
 
-    # def create(self, validated_data):
-    #     super().create(validated_data)
-    #
-    #
-    #     return user
+
+class CustomUserCreatePasswordRetypeSerializer(UserCreatePasswordRetypeSerializer):
+    def create(self, validated_data):
+        try:
+            user = self.perform_create(validated_data)
+        except IntegrityError:
+            self.fail("cannot_create_user")
+        return user
