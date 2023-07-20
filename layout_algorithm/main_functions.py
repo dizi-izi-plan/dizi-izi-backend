@@ -89,7 +89,7 @@ class FurnitureArrangement(MiddlePointAndShift):
         data: dict,
         figure: dict,
         walls: dict,
-        length_and_width: dict,
+        object_attributes: dict,
     ) -> bool:
         """Функция проверки возможности резервирования места для мебели в комнате.
 
@@ -113,7 +113,7 @@ class FurnitureArrangement(MiddlePointAndShift):
 
             data["x"], data["y"] = self.offset(data, self.wall_perimetr, self.walls_length).values()
             wall = self.wall_definition(data)
-            figure = corner_markings(length_and_width, data, wall)
+            figure = corner_markings(object_attributes, data, wall)
             objects_counter = 0
             cycle_counter += 1
 
@@ -160,9 +160,8 @@ class FurnitureArrangement(MiddlePointAndShift):
 
         # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
         final_point = self.convert_coordinates_to_line(data, self.walls_length)
-        bisect.insort(self.sorted_points, final_point)
-        self.coordinates.insert(self.sorted_points.index(final_point), figure)
-        return True
+
+        return self.convert_coordinates_to_line(data, self.walls_length), figure
 
     def data_preprocessing(self, room_size, doors_and_windows):
 

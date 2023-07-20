@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw, ImageOps
 
 
-def create_rectangles(data: list, borders: dict):
+def create_rectangles(data: list, borders: dict, powersocets: list):
     """Cоздание картинки с визуализированными прямоугольниками по
     координатам."""
 
@@ -65,12 +65,21 @@ def create_rectangles(data: list, borders: dict):
             width=10,
         )
 
+    # for item in powersocets:
+    for item in powersocets:
+        paint_brush.regular_polygon(
+            (item['x']+centering, 
+             item['y']+centering, 100
+            ), n_sides= 4, 
+            fill=(0, 100, 0)
+        )
+    print('hoVNJKSVSNDVS:UIDVNSDVUISDVSDV')
     canvas = canvas.rotate(180)
     canvas = ImageOps.mirror(canvas)
     # сохраняем готовое изображение
     canvas.save('canvas.png')
     # открыть результат
     canvas.show()
-    return
+
 
 

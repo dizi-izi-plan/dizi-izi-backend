@@ -236,8 +236,8 @@ class RoomSerializer(serializers.ModelSerializer):
                 furniture.append(
                     {
                         'name': one_furniture.name,
-                        'length': one_furniture.length,
-                        'width': one_furniture.width,
+                        'length': one_furniture.length_access,
+                        'width': one_furniture.width_access,
                         'power_socket_type': one_furniture.power_socket_type,
                         'first_power_socket_height': one_furniture.first_power_socket_height,
                         'first_power_socket_width': one_furniture.first_power_socket_width,
