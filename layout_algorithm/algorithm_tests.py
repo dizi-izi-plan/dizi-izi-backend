@@ -167,3 +167,59 @@ class TestFurnitureArrangement(unittest.TestCase):
                 "fourth_wall": 12000,
             },
         )
+
+    def test_algorithm_activation_7(self):
+        """Тест примагничивания к углам 1"""
+        self.calculator.algorithm_activation(
+            [
+                {
+                    "north_west": {"x": 0, "y": 3},
+                    "north_east": {"x": 0, "y": 7},
+                    "south_west": {"x": 1, "y": 3},
+                    "south_east": {"x": 1, "y": 7},
+                },
+                {
+                    "north_west": {"x": 14, "y": 7},
+                    "north_east": {"x": 14, "y": 3},
+                    "south_west": {"x": 13, "y": 7},
+                    "south_east": {"x": 13, "y": 3},
+                },
+            ],
+            [
+                {"width": 13, "length": 1},
+            ],
+            {
+                "first_wall": 10,
+                "second_wall": 14,
+                "third_wall": 10,
+                "fourth_wall": 14,
+            },
+        )
+
+    def test_algorithm_activation_8(self):
+        """Тест примагничивания к углам 2"""
+        self.calculator.algorithm_activation(
+            [
+                {
+                    "north_west": {"x": 0, "y": 3000},
+                    "north_east": {"x": 0, "y": 7000},
+                    "south_west": {"x": 1000, "y": 3000},
+                    "south_east": {"x": 1000, "y": 7000},
+                },
+                {
+                    "north_west": {"x": 14000, "y": 7000},
+                    "north_east": {"x": 14000, "y": 3000},
+                    "south_west": {"x": 13000, "y": 7000},
+                    "south_east": {"x": 13000, "y": 3000},
+                },
+            ],
+            [
+                {"width": 13000, "length": 1000},
+            ],
+            {
+                "first_wall": 10000,
+                "second_wall": 14000,
+                "third_wall": 10000,
+                "fourth_wall": 14000,
+            },
+        )
