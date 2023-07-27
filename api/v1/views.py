@@ -155,3 +155,12 @@ class APIChangeTariff(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(user=request.user, tariff=new_tariff)
         return Response(status=status.HTTP_205_RESET_CONTENT)
+    
+class DeleteAccountView(APIView):
+    def delete(self, request):
+        serializer = DeleteAccountSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user_email = serializer.delete_account()
+
+        return Response({'message': f'Аккаунт с email {user_email} успешно удален.'}, status=status.HTTP_204_NO_CONTENT)

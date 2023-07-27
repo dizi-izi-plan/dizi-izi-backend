@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+from users.models import CustomUser
 from django.utils.timezone import utc
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
@@ -314,3 +315,17 @@ class ChangeTariffSerializer(serializers.ModelSerializer):
                 'У вас уже этот тариф.'
             )
         return data
+
+class DeleteAccountSerializer(serializers.Serializer):
+    user_email = serializers.EmailField()
+
+    def delete_account(self):
+        user_email = self.validated_data['user_email']
+        try:
+            user = CustomUser.objects.get(email=user_email)
+            user.is_active = False
+            user.save(update_fields=['is_active'])
+        except CustomUser.DoesNotExist:
+            raise serializers.ValidationError('Пользователь с указанным email не найден.')
+
+        return user_email
