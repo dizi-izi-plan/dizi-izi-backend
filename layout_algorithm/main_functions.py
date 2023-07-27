@@ -2,9 +2,9 @@
 
 import bisect
 import random
-from .crossover_checks import checks
-from .corner_markings import corner_markings
-from .offset_finder_convert import MiddlePointAndShift
+from crossover_checks import checks
+from corner_markings import corner_markings
+from offset_finder_convert import MiddlePointAndShift
 
 
 class FurnitureArrangement(MiddlePointAndShift):
