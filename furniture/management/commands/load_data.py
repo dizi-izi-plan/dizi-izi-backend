@@ -64,6 +64,11 @@ class Command(BaseCommand):
                     width=row['width'],
                     length_access=row['length_access'],
                     width_access=row['width_access'],
+                    power_socket_type=row['power_socket_type'],
+                    first_power_socket_height=row['first_power_socket_height'],
+                    first_power_socket_width=row['first_power_socket_width'],
+                    second_power_socket_height=row['second_power_socket_height'],
+                    second_power_socket_width=row['second_power_socket_width'],
                     type_of_rooms=TypeOfRoom.objects.get(
                         id=row['type_of_rooms'],
                     )

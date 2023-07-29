@@ -45,7 +45,8 @@ class MiddlePointAndShift:
         elif sum(walls_length[:3]) < dot <= wall_perimetr:
             return {'x': wall_perimetr - dot, 'y': 0}
         raise Exception(
-            'Ошибка данных, нет возможности разместить среднюю точку на одной из стен комнаты.'
+            'Ошибка данных, нет возможности разместить среднюю точку на одной из стен комнаты.', 
+            'Входящие данные:', dot, walls_length, wall_perimetr
         )
 
     def middle_point_finder(self, points: dict, wall_perimetr, walls_length):

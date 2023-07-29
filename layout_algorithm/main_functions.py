@@ -8,14 +8,22 @@ from .offset_finder_convert import MiddlePointAndShift
 
 
 class FurnitureArrangement(MiddlePointAndShift):
-    coordinates = []  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
-    free_space = []  # хранение расстояний между мебелью через запятую (в виде координат)
-    sorted_points = []  # хранения точек на прямой из сложенных сторон комнаты для правильной вставки получившихся координат в список
-    wall_perimetr = 0  # хранения периметра комнаты для удобства обращения из функций
 
-    room_coordinates = {}  # хранение координат комнаты для удобства обращения из функций
-    room_coordinates_tuple = ()  # хранение координаты комнаты для удобства вычислений
-    walls_length = ()  # хранение длин стен для удобства обращения
+    def __init__(self):
+
+        coordinates, free_space, sorted_points = [], [], []
+        wall_perimetr = 0
+        room_coordinates = {}
+        room_coordinates_tuple, walls_length = (), ()
+
+        self.coordinates = coordinates  # хранение координат по схеме "ключ объекта: (координаты, маркеры углов, маркеры точек)
+        self.free_space = free_space  # хранение расстояний между мебелью через запятую (в виде координат)
+        self.sorted_points = sorted_points  # хранения точек на прямой из сложенных сторон комнаты для правильной вставки получившихся координат в список
+        self.wall_perimetr = wall_perimetr  # хранения периметра комнаты для удобства обращения из функций
+
+        self.room_coordinates = room_coordinates  # хранение координат комнаты для удобства обращения из функций
+        self.room_coordinates_tuple = room_coordinates_tuple  # хранение координаты комнаты для удобства вычислений
+        self.walls_length = walls_length  # хранение длин стен для удобства обращения
 
 
     def free_space_algorithm(self, objects: list) -> dict:
@@ -81,7 +89,7 @@ class FurnitureArrangement(MiddlePointAndShift):
         data: dict,
         figure: dict,
         walls: dict,
-        length_and_width: dict,
+        object_attributes: dict,
     ) -> bool:
         """Функция проверки возможности резервирования места для мебели в комнате.
 
@@ -105,7 +113,7 @@ class FurnitureArrangement(MiddlePointAndShift):
 
             data["x"], data["y"] = self.offset(data, self.wall_perimetr, self.walls_length).values()
             wall = self.wall_definition(data)
-            figure = corner_markings(length_and_width, data, wall)
+            figure = corner_markings(object_attributes, data, wall)
             objects_counter = 0
             cycle_counter += 1
 
@@ -152,9 +160,8 @@ class FurnitureArrangement(MiddlePointAndShift):
 
         # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
         final_point = self.convert_coordinates_to_line(data, self.walls_length)
-        bisect.insort(self.sorted_points, final_point)
-        self.coordinates.insert(self.sorted_points.index(final_point), figure)
-        return True
+
+        return self.convert_coordinates_to_line(data, self.walls_length), figure
 
     def data_preprocessing(self, room_size, doors_and_windows):
 
