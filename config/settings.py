@@ -192,7 +192,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SITE_ID = 1
+SITE_ID = 2
 # ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
@@ -212,9 +212,6 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     },
     'vk': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
         'APP': {
             'client_id': '51716655',
             'secret': 'xzK9MGL2HZTZABuaOu0m',
@@ -229,7 +226,8 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
-
+# ACCOUNT_SIGNUP_REDIRECT_URL = 'http://127.0.0.1/api/v1/auth/users/me/'
+LOGIN_REDIRECT_URL = 'http://127.0.0.1/api/v1/auth/users/me/'
 SOCIAL_AUTH_MAILRU_OAUTH2_REDIRECT_URI = 'https://oauth.mail.ru/login'
 # блок для авторизации через соцсети "allauth"
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
