@@ -3,7 +3,6 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (FurnitureViewSet, RoomCopyView, RoomViewSet, SendPDFView,
                     APITariff, APIChangeTariff)
-
 router = DefaultRouter()
 router.register('furniture', FurnitureViewSet, basename='furniture')
 router.register('rooms', RoomViewSet, basename='room')
@@ -16,4 +15,5 @@ urlpatterns = [
     path('tariffs/<pk>/', APIChangeTariff.as_view()),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+    path('accounts/', include('allauth.urls')),
 ]

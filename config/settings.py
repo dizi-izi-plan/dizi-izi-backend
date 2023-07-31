@@ -1,6 +1,10 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+import django
+from django.utils.encoding import force_str
+
+django.utils.encoding.force_text = force_str
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,14 +23,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'furniture',
-    'users',
+    'users.apps.UsersConfig',
     'rest_framework.authtoken',
     'djoser',
     'api',
-    'info',
+    'info.apps.InfoConfig',
     'drf_spectacular',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.vk',
+    'allauth.socialaccount.providers.mailru',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.twitter',
+    'allauth.socialaccount.providers.twitter_oauth2',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.yandex',
 ]
 
 MIDDLEWARE = [
@@ -114,7 +129,6 @@ REST_FRAMEWORK = {
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework_social_oauth2.authentication.SocialAuthentication'
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -172,3 +186,54 @@ MAX_LENGTH_PROJECT_NAME = 128
 MAX_LENGTH_ROOM_NAME = 128
 MAX_LENGTH_FURNITURE_NAME = 128
 PROJECT_NAME_BY_DEFAULT = 'Проект'
+
+AUTHENTICATION_BACKENDS = (
+    # 'allauth.account.auth_backends.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SITE_ID = 1
+# ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+        'APP': {
+            'client_id': '584826295640-jvvmg4td58vheu3rpk51fh6jh9iecitd.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        }
+    },
+    'vk': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '51716655',
+            'secret': 'xzK9MGL2HZTZABuaOu0m',
+            'key': 'bb2f3524bb2f3524bb2f352450b83a170bbbb2fbb2f3524dfecbfcda7d528a5c897b8fa'
+        }
+    },
+    'yandex': {
+        'APP': {
+            'client_id': 'd064451162e44b14ad9c90f2a268e15a',
+            'secret': 'fc8893e471f741baa1dab79b66393c94',
+            # 'key': 'fc8893e471f741baa1dab79b66393c94'
+        }
+    }
+}
+
+SOCIAL_AUTH_MAILRU_OAUTH2_REDIRECT_URI = 'https://oauth.mail.ru/login'
+# блок для авторизации через соцсети "allauth"
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
