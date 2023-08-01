@@ -2,9 +2,9 @@
 
 import bisect
 import random
-from crossover_checks import checks
-from corner_markings import corner_markings
-from offset_finder_convert import MiddlePointAndShift
+from .crossover_checks import checks
+from .corner_markings import check_distance_to_corners, corner_markings
+from .offset_finder_convert import MiddlePointAndShift
 
 
 class FurnitureArrangement(MiddlePointAndShift):
@@ -75,6 +75,53 @@ class FurnitureArrangement(MiddlePointAndShift):
 
         return length[max(length)]
 
+    def _check_digit_capacity(self):
+        """Проверяем разрядность периметра"""
+        if self.wall_perimetr < 100:  # метры
+            return 1
+        elif self.wall_perimetr < 1000:  # дециметры
+            return 10
+        elif self.wall_perimetr < 10000:  # сантиметры
+            return 100
+        elif self.wall_perimetr < 100000:  # миллиметры
+            return 1000
+        else:
+            raise ValueError('Неверное значение периметра')
+
+    def magnet_to_corners(
+            self,
+            corners_coordinates: dict,
+            center: dict,
+            walls_len: tuple,
+            wall_number: int,
+            digit_capacity: int
+    ) -> dict:
+        """
+        Метод для смещения мебели к углам,
+        если расстояние до угла менее max_shift.
+        Вывод функции - средняя точка размещения объекта мебели.
+        """
+
+        max_shift = digit_capacity / 2
+        new_center = center.copy()
+        distance = check_distance_to_corners(
+            wall_number,
+            walls_len[wall_number - 1],
+            corners_coordinates['north_west'],
+            corners_coordinates['north_east']
+        )
+        if abs(distance) <= max_shift:
+            new_center_in_line = self.convert_coordinates_to_line(
+                new_center,
+                self.walls_length
+            )
+            new_center_in_line -= distance
+            new_center = self.convert_line_to_coordinates(
+                new_center_in_line,
+                self.walls_length,
+                self.wall_perimetr
+            )
+        return new_center
 
     def placing_in_coordinates(
         self,
@@ -82,6 +129,7 @@ class FurnitureArrangement(MiddlePointAndShift):
         figure: dict,
         walls: dict,
         length_and_width: dict,
+        wall_definition: int
     ) -> bool:
         """Функция проверки возможности резервирования места для мебели в комнате.
 
@@ -91,6 +139,7 @@ class FurnitureArrangement(MiddlePointAndShift):
                    "north_east": {"x": 0, "y": 0}, "south_west": {"x": 0, "y": 0}, "south_east": {"x": 0, "y": 0}}
             walls (dict): стены комнаты начиная от левой {"first_wall": 0, "second_wall": 0, "third_wall": 0, "fourth_wall":0}
             length_and_width(dict): ширина и длина располагаемого объекта
+            wall_definition(int): числовой номер стены
 
         Returns:
             bool: True, если место зарезервировано, иначе False
@@ -120,15 +169,8 @@ class FurnitureArrangement(MiddlePointAndShift):
         data["shift_method"] = "plus"  # указываем сторону для начального смещения
 
         # указываем значение на которое будет смещаться объект в зависимости от разрядности периметра
-        if self.wall_perimetr < 100:
-            data["displacement_value"] = 1
-        elif self.wall_perimetr < 1000:
-            data["displacement_value"] = 10
-        elif self.wall_perimetr < 10000:
-            data["displacement_value"] = 100
-        elif self.wall_perimetr < 100000:
-            data["displacement_value"] = 1000
-
+        digit_capacity = self._check_digit_capacity()
+        data["displacement_value"] = digit_capacity
 
         # сам цикл, в котором мы пытаемся разметить объект заданное количество циклов и проверяем пересечения со всеми объектами
         while cycle_counter < cycle_border and objects_counter < len(self.coordinates):
@@ -146,9 +188,30 @@ class FurnitureArrangement(MiddlePointAndShift):
                 break
             if cycle_counter >= cycle_border:
                 raise Exception("Превышено число попыток на размещение")
-
             breaker = 1
 
+        # Если прошли проверки, то смотрим на смещение в угол
+        new_center = self.magnet_to_corners(
+                figure,
+                data,
+                self.walls_length,
+                wall_definition,
+                digit_capacity
+            )
+        # Если условие смещения выполнено, то сдвигаем объект в угол
+        if data['x'] != new_center['x'] or data['y'] != new_center['y']:
+            new_figure = corner_markings(
+                    length_and_width, new_center, wall_definition
+                )
+            # Запускаем проверки для смещенной фигуры
+            check = True
+            for obj in self.coordinates:
+                if not checks(new_figure, obj, walls):
+                    check = False
+                    break
+            # Если прошли, то меняем среднюю точку и координаты объекта
+            if check:
+                data, figure = new_center, new_figure
 
         # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
         final_point = self.convert_coordinates_to_line(data, self.walls_length)

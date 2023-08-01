@@ -201,16 +201,48 @@ class TestFurnitureArrangement(unittest.TestCase):
         self.calculator.algorithm_activation(
             [
                 {
-                    "north_west": {"x": 0, "y": 3000},
-                    "north_east": {"x": 0, "y": 7000},
-                    "south_west": {"x": 1000, "y": 3000},
-                    "south_east": {"x": 1000, "y": 7000},
+                    "north_west": {"x": 0, "y": 1200},
+                    "north_east": {"x": 0, "y": 8800},
+                    "south_west": {"x": 100, "y": 1200},
+                    "south_east": {"x": 100, "y": 8800},
                 },
                 {
-                    "north_west": {"x": 14000, "y": 7000},
-                    "north_east": {"x": 14000, "y": 3000},
-                    "south_west": {"x": 13000, "y": 7000},
-                    "south_east": {"x": 13000, "y": 3000},
+                    "north_west": {"x": 14000, "y": 8800},
+                    "north_east": {"x": 14000, "y": 1200},
+                    "south_west": {"x": 13800, "y": 8800},
+                    "south_east": {"x": 13800, "y": 1200},
+                },
+            ],
+            [
+                {"width": 13000, "length": 1000},
+            ],
+            {
+                "first_wall": 10000,
+                "second_wall": 14000,
+                "third_wall": 10000,
+                "fourth_wall": 14000,
+            },
+        )
+
+
+    def test_algorithm_activation_9(self):
+        """
+        Тест примагничивания к углам 3.
+        Отмена смещения к углу, если там уже что-то есть.
+        """
+        self.calculator.algorithm_activation(
+            [
+                {
+                    "north_west": {"x": 0, "y": 500},
+                    "north_east": {"x": 0, "y": 9500},
+                    "south_west": {"x": 100, "y": 500},
+                    "south_east": {"x": 100, "y": 9500},
+                },
+                {
+                    "north_west": {"x": 14000, "y": 9500},
+                    "north_east": {"x": 14000, "y": 500},
+                    "south_west": {"x": 13900, "y": 9500},
+                    "south_east": {"x": 13900, "y": 500},
                 },
             ],
             [

@@ -76,63 +76,17 @@ def corner_markings(length_and_width: dict, center: dict, wall_number: int) -> d
     return corners_coordinates
 
 
-def magnet_to_corners(
-        corners_coordinates: dict,
-        center: dict,
-        walls_len: tuple,
+def check_distance_to_corners(
         wall_number: int,
-        wall_perimetr: int
-) -> dict:
-    """
-    Функция для смещения мебели к углам,
-    если расстояние до угла менее max_shift.
-    """
-
-    new_center = center.copy()
-
-    # Переменная MAX_SHIFT меняет значение в зависимости от единиц измерения
-    if wall_perimetr < 100:
-        max_shift: float = 0.5  # метры
-    elif wall_perimetr < 10000:
-        max_shift: float = 50  # сантиметры
-    elif wall_perimetr < 100000:
-        max_shift: float = 500  # миллиметры
-    else:
-        raise ValueError('Размер стены указан неверно')
-
-    if wall_number == 1:
-        if corners_coordinates["north_west"]["y"] <= max_shift:
-            shift = corners_coordinates["north_west"]["y"]
-            new_center["y"] -= shift
-        elif walls_len[0] - corners_coordinates["north_east"]["y"] <= max_shift:
-            shift = walls_len[0] - corners_coordinates["north_east"]["y"]
-            new_center["y"] += shift
-
-    elif wall_number == 2:
-        if corners_coordinates["north_west"]["x"] <= max_shift:
-            shift = corners_coordinates["north_west"]["x"]
-            new_center["x"] -= shift
-        elif walls_len[1] - corners_coordinates["north_east"]["x"] <= max_shift:
-            shift = walls_len[1] - corners_coordinates["north_east"]["x"]
-            new_center["x"] += shift
-
-    elif wall_number == 3:
-        if walls_len[2] - corners_coordinates["north_west"]["y"] <= max_shift:
-            shift = walls_len[2] - corners_coordinates["north_west"]["y"]
-            new_center["y"] += shift
-        elif corners_coordinates["north_east"]["y"] <= max_shift:
-            shift = corners_coordinates["north_east"]["y"]
-            new_center["y"] -= shift
-
-    elif wall_number == 4:
-        if walls_len[3] - corners_coordinates["north_west"]["x"] <= max_shift:
-            shift = walls_len[3] - corners_coordinates["north_west"]["x"]
-            new_center["x"] += shift
-        elif corners_coordinates["north_east"]["x"] <= max_shift:
-            shift = corners_coordinates["north_east"]["x"]
-            new_center["x"] -= shift
-
-    else:
-        raise ValueError('Номер стены указан неверно')
-
-    return new_center
+        wall_len: int | float,
+        north_west: dict,
+        north_east: dict,
+) -> int | float:
+    distances_to_walls = {
+        1: (north_west['y'], north_east['y'] - wall_len),
+        2: (north_west['x'], north_east['x'] - wall_len),
+        3: (north_east['y'], north_west['y'] - wall_len),
+        4: (north_east['x'], north_west['x'] - wall_len),
+    }
+    distances = distances_to_walls[wall_number]
+    return distances[0] if distances[0] < abs(distances[1]) else distances[1]

@@ -120,7 +120,6 @@ class SendPDFView(APIView):
     parser_classes = (MultiPartParser,)
 
     def post(self, request, format='pdf'):
-        print(request.FILES)
         up_file = request.FILES['file']
         subj = 'План размещения мебели'
         text = 'В приложении подготовленный план размещения мебели'
