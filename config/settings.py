@@ -188,13 +188,13 @@ MAX_LENGTH_FURNITURE_NAME = 128
 PROJECT_NAME_BY_DEFAULT = 'Проект'
 
 AUTHENTICATION_BACKENDS = (
-    # 'allauth.account.auth_backends.AuthenticationBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 SITE_ID = 2
-# ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
-# Provider specific settings
+# Все внести в .env
+# В дальнейшем все данные нужно будет взять из аккаунтов организации, а не из моего личного.
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -222,12 +222,44 @@ SOCIALACCOUNT_PROVIDERS = {
         'APP': {
             'client_id': 'd064451162e44b14ad9c90f2a268e15a',
             'secret': 'fc8893e471f741baa1dab79b66393c94',
-            # 'key': 'fc8893e471f741baa1dab79b66393c94'
         }
-    }
+    },
+    'facebook': {
+        'APP': {
+            'client_id': '610415187748239',
+            'secret': '587b3f02f6b4fc80b0c9be93f560b3c1',
+        },
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'name',
+            'name_format',
+            'picture',
+            'short_name'
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v13.0',
+        'GRAPH_API_URL': 'https://graph.facebook.com/v13.0',
+    },
+    'twitter_oauth2': {
+        'APP': {
+            'client_id': 'ZmlxeHgyMlNhV3dqeWdXeThubkg6MTpjaQ',
+            'secret': 'fjxnKA-_uwAWuSi2XG06Zw93R0KezBcZQ8LVgzBHIY-POkHQc4',
+            # 'key': 'bb2f3524bb2f3524bb2f352450b83a170bbbb2fbb2f3524dfecbfcda7d528a5c897b8fa'
+        }
+    },
 }
-# ACCOUNT_SIGNUP_REDIRECT_URL = 'http://127.0.0.1/api/v1/auth/users/me/'
-LOGIN_REDIRECT_URL = 'http://127.0.0.1/api/v1/auth/users/me/'
+# изменяем редирект после авторизации через соцсеть
+LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/api/v1/auth/users/me/'
 SOCIAL_AUTH_MAILRU_OAUTH2_REDIRECT_URI = 'https://oauth.mail.ru/login'
 # блок для авторизации через соцсети "allauth"
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
