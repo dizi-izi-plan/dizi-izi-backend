@@ -188,7 +188,7 @@ MAX_LENGTH_FURNITURE_NAME = 128
 PROJECT_NAME_BY_DEFAULT = 'Проект'
 
 AUTHENTICATION_BACKENDS = (
-    'allauth.account.auth_backends.AuthenticationBackend',
+    # 'allauth.account.auth_backends.AuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 

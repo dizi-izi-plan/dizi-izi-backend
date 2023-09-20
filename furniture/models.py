@@ -193,7 +193,7 @@ class Placement(RoomCoordinates):
 
 
 class Room(models.Model):
-    """Модель помещения."""
+    """Модель планировки."""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -235,8 +235,8 @@ class Room(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Помещение'
-        verbose_name_plural = 'Помещения'
+        verbose_name = 'Планировка'
+        verbose_name_plural = 'Планировки'
 
     def __str__(self) -> str:
         return f"Проект {self.name} пользователя {self.user.email}"

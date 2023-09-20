@@ -32,7 +32,7 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RoomViewSet(viewsets.ModelViewSet):
-    """Получение и изменение помещения."""
+    """Получение и изменение планировки."""
 
     serializer_class = RoomSerializer
 
@@ -49,6 +49,45 @@ class RoomViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             user = self.request.user
         serializer.save(user=user)
+
+    def list(self, request, *args, **kwargs):
+        """Список комнат.
+
+        Получение списка комнат. Доступно всем пользователям.
+        """
+        return super().list(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        """Создание комнаты.
+
+        Создание новой комнаты. Доступно авторизованным пользователям.
+        """
+        return super().create(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        """Получение комнаты.
+
+        Получение информации о комнате по идентификатору.
+        """
+        return super().retrieve(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """Обновление комнаты.
+
+        Обновление информации о комнате. Доступно владельцу комнаты.
+        """
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        """Частичное обновление комнаты."""
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """Удаление комнаты.
+
+        Удаление существующей комнаты. Доступно владельцу комнаты.
+        """
+        return super().destroy(request, *args, **kwargs)
 
 
 class RoomCopyView(APIView):
@@ -70,11 +109,15 @@ class RoomCopyView(APIView):
             model.save()
 
     def get(self, request, pk):
+        """Получаем планировку с заданным `pk`."""
+
         orig_room = get_object_or_404(Room, pk=pk)
         serializer = RoomSerializer(orig_room)
         return Response(serializer.data)
 
     def post(self, request, pk):
+        """Создаем копию планировки с заданным `pk`."""
+
         orig_room = get_object_or_404(Room, pk=pk)
         new_room = orig_room.copy(request)
         new_room.save()
@@ -107,6 +150,8 @@ class RoomCopyView(APIView):
         return Response(serializer.data)
 
     def patch(self, request, pk):
+        """Изменяем планировку с заданным `pk`."""
+
         instance = get_object_or_404(Room, pk=pk)
         instance.name = request.data.get('name')
         instance.save()
@@ -120,7 +165,8 @@ class SendPDFView(APIView):
     parser_classes = (MultiPartParser,)
 
     def post(self, request, format='pdf'):
-        print(request.FILES)
+        """Загружаем планировку в формате PDF."""
+
         up_file = request.FILES['file']
         subj = 'План размещения мебели'
         text = 'В приложении подготовленный план размещения мебели'
@@ -129,6 +175,7 @@ class SendPDFView(APIView):
 
 
 class APITariff(ListAPIView):
+    """Список тарифов (наверное)."""
     serializer_class = TariffSerializer
 
     def get_queryset(self):
@@ -143,9 +190,13 @@ class APITariff(ListAPIView):
 
 
 class APIChangeTariff(APIView):
+    """Изменяем тариф."""
+
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
+        """Добавляем тариф."""
+
         new_tariff = get_object_or_404(Tariff, pk=pk)
         user_tariff = get_object_or_404(UsersTariffs, user=request.user)
         serializer = ChangeTariffSerializer(
