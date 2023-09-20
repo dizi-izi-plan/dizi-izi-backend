@@ -5,6 +5,7 @@ from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 
 class UserViewSet(DjoserUserViewSet):
     """Только для настройки троттлинга."""
+
     throttle_scope = 'low_request'
     authentication_classes = (TokenAuthentication,)
 
