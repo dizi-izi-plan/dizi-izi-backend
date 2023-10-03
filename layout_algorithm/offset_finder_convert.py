@@ -1,7 +1,10 @@
+from typing import Union
+
+
 class MiddlePointAndShift:
     """
-    Функция для нахождения средней точки в оставшемся пустом пространстве комнаты.
-    Получает на вход координаты точек и длины стен.
+    Функция для нахождения средней точки в оставшемся пустом пространстве
+    комнаты. Получает на вход координаты точек и длины стен.
     Возвращает координаты средней точки.
 
     Args:
@@ -10,7 +13,11 @@ class MiddlePointAndShift:
 
     """
 
-    def convert_coordinates_to_line(self, coordinates: dict, walls_length) -> float | int:
+    def convert_coordinates_to_line(
+            self,
+            coordinates: dict,
+            walls_length
+    ) -> Union[float, int]:
         """Функция преобразует координаты в точку на прямой.
 
         Args:
@@ -25,7 +32,8 @@ class MiddlePointAndShift:
             return sum(walls_length[:3]) - coordinates['y']
         return sum(walls_length) - coordinates['x']
 
-    def convert_line_to_coordinates(self, dot: float | int, walls_length, wall_perimetr) -> dict:
+    def convert_line_to_coordinates(
+            self, dot: Union[float, int], walls_length, wall_perimetr) -> dict:
         """Функция преобразует точку на прямой в координаты
 
     Args:
