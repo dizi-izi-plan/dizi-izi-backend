@@ -25,7 +25,6 @@ class FurnitureArrangement(MiddlePointAndShift):
         self.room_coordinates_tuple = room_coordinates_tuple  # хранение координаты комнаты для удобства вычислений
         self.walls_length = walls_length  # хранение длин стен для удобства обращения
 
-
     def free_space_algorithm(self, objects: list) -> dict:
         # На вход подается список с координатами углов объектов. Координаты между друг другом минусим, находим
         # по ближайшим неприлегающим углам расстояние по модулю в виде гипотенузы (вычитание по иксу -- это
@@ -58,19 +57,23 @@ class FurnitureArrangement(MiddlePointAndShift):
 
             if first_object["north_east"] in self.room_coordinates_tuple:
                 first_right_corner = "south_east"
-            if second_object[counter]["north_west"] in self.room_coordinates_tuple:
+            if second_object[counter][
+                "north_west"] in self.room_coordinates_tuple:
                 second_left_corner = "south_west"
 
-            first_point = self.convert_coordinates_to_line(first_object[first_right_corner], self.walls_length)
-            second_point = self.convert_coordinates_to_line(second_object[counter][second_left_corner], self.walls_length)
+            first_point = self.convert_coordinates_to_line(
+                first_object[first_right_corner], self.walls_length)
+            second_point = self.convert_coordinates_to_line(
+                second_object[counter][second_left_corner], self.walls_length)
             distance = 0
             if second_point >= first_point:
                 distance = second_point - first_point
             elif second_point < first_point:
                 distance = second_point + (self.wall_perimetr - first_point)
 
-            length[distance] = {"left_corner": first_object[first_right_corner],
-                                "right_corner": second_object[counter][second_left_corner]}
+            length[distance] = {
+                "left_corner": first_object[first_right_corner],
+                "right_corner": second_object[counter][second_left_corner]}
 
             # расстояния могут быть одинаковые, но нам по сути неважно какой из вариантов брать, а значит мы
             # можем просто перезаписать ключ словаря
@@ -83,13 +86,12 @@ class FurnitureArrangement(MiddlePointAndShift):
 
         return length[max(length)]
 
-
     def placing_in_coordinates(
-        self,
-        data: dict,
-        figure: dict,
-        walls: dict,
-        object_attributes: dict,
+            self,
+            data: dict,
+            figure: dict,
+            walls: dict,
+            object_attributes: dict,
     ) -> bool:
         """Функция проверки возможности резервирования места для мебели в комнате.
 
@@ -110,8 +112,8 @@ class FurnitureArrangement(MiddlePointAndShift):
             nonlocal figure, data, objects_counter, cycle_counter, cycle_border, displacement_start
             displacement_start += data["displacement_value"]
 
-
-            data["x"], data["y"] = self.offset(data, self.wall_perimetr, self.walls_length).values()
+            data["x"], data["y"] = self.offset(data, self.wall_perimetr,
+                                               self.walls_length).values()
             wall = self.wall_definition(data)
             figure = corner_markings(object_attributes, data, wall)
             objects_counter = 0
@@ -125,7 +127,8 @@ class FurnitureArrangement(MiddlePointAndShift):
 
         # Задаем данные для дальнейшей их отправки в функцию переноса объекта
         displacement_start = 0  # переменная необходима для обозначения стартовой точки, относительно которой будет смещение
-        data["shift_method"] = "plus"  # указываем сторону для начального смещения
+        data[
+            "shift_method"] = "plus"  # указываем сторону для начального смещения
 
         # указываем значение на которое будет смещаться объект в зависимости от разрядности периметра
         if self.wall_perimetr < 100:
@@ -137,9 +140,9 @@ class FurnitureArrangement(MiddlePointAndShift):
         elif self.wall_perimetr < 100000:
             data["displacement_value"] = 1000
 
-
         # сам цикл, в котором мы пытаемся разметить объект заданное количество циклов и проверяем пересечения со всеми объектами
-        while cycle_counter < cycle_border and objects_counter < len(self.coordinates):
+        while cycle_counter < cycle_border and objects_counter < len(
+                self.coordinates):
 
             figure_2 = self.coordinates[objects_counter]
             if checks(figure, figure_2, walls):
@@ -157,11 +160,11 @@ class FurnitureArrangement(MiddlePointAndShift):
 
             breaker = 1
 
-
         # Если все проверки прошли, добавляем координаты мебели в словарь coordinates
         final_point = self.convert_coordinates_to_line(data, self.walls_length)
 
-        return self.convert_coordinates_to_line(data, self.walls_length), figure
+        return self.convert_coordinates_to_line(data,
+                                                self.walls_length), figure
 
     def data_preprocessing(self, room_size, doors_and_windows):
 
@@ -191,13 +194,15 @@ class FurnitureArrangement(MiddlePointAndShift):
 
         # Функция определения стены по координатам для отправки ее в дальнейшем в corner_markings
         for item in doors_and_windows:
-            middle_point = {"x": (item["north_east"]["x"] + item["north_west"]["x"]) / 2,
-                            "y": (item["north_east"]["y"] + item["north_west"]["y"]) / 2}
+            middle_point = {
+                "x": (item["north_east"]["x"] + item["north_west"]["x"]) / 2,
+                "y": (item["north_east"]["y"] + item["north_west"]["y"]) / 2}
             self.coordinates.append(item)
-            self.sorted_points.append(self.convert_coordinates_to_line(middle_point, self.walls_length))
+            self.sorted_points.append(
+                self.convert_coordinates_to_line(middle_point,
+                                                 self.walls_length))
 
         self.sorted_points.sort()
-
 
     def wall_definition(self, dot: dict):
         """
@@ -217,7 +222,6 @@ class FurnitureArrangement(MiddlePointAndShift):
         elif dot["x"] == self.room_coordinates["north_east"]["x"]:
             return 3
         self.room_coordinates = 0
-
 
     def shuffle_furniture(self, furniture: list, mode: str) -> list:
         """Функция меняет позиции внутри списка мебели местами для предоставления пользователю других

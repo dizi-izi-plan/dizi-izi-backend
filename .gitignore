@@ -136,3 +136,6 @@ api/v1/algorithm.py
 api/v1/create_picture.py
 
 **canvas.png
+
+.env
+/infra/.env

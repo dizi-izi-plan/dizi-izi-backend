@@ -50,8 +50,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         super().validate_empty_values(data)
 
         if (
-            self.context["request"].method == "PATCH"
-            and data.get("password") == ""
+                self.context["request"].method == "PATCH"
+                and data.get("password") == ""
         ):
             return True, data
 
@@ -88,9 +88,9 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         return attrs
 
     def update(
-        self,
-        instance: User,
-        validated_data: Dict[str, Union[str, int, bool, time]],
+            self,
+            instance: User,
+            validated_data: Dict[str, Union[str, int, bool, time]],
     ):
         """Вносим изменения методом PATCH в данные пользователя.
 
