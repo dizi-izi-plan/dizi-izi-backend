@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 
 services:
 
@@ -18,8 +18,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - static_value:/opt/project/backend/static/
-      - media_value:/opt/project/backend/media/
+      - static:/app/static/
+      - media:/app/media/
     env_file:
       - .env
     depends_on:
@@ -31,13 +31,13 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - static_value:/var/html/static/
-      - media_value:/var/html/media/
+      - static:/var/html/static/
+      - media:/var/html/media/
     depends_on:
       - backend
     restart: always
 
 volumes:
-  static_value:
-  media_value:
+  static:
+  media:
   postgres_data:
