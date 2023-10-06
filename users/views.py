@@ -8,7 +8,5 @@ class UserViewSet(DjoserUserViewSet):
 
     def get_throttles(self):
         if self.action == "create":
-            self.throttle_classes = [AnonRateThrottle, UserRateThrottle,]
+            self.throttle_classes = [AnonRateThrottle, UserRateThrottle, ]
         return super().get_throttles()
-
-

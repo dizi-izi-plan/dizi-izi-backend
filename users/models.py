@@ -20,9 +20,11 @@ class CustomUserManager(BaseUserManager):
 
     def create_superuser(self, email, password=None):
         user = self.create_user(
-            email=self.normalize_email(email),
+            email,
             password=password,
         )
+        user.set_password(password)
+        user.is_active = True
         user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
@@ -40,7 +42,7 @@ class CustomUser(AbstractUser):
     )
     city = models.CharField('Город', max_length=50, null=True, blank=True)
     birthday = models.DateField(blank=True, null=True)
-    i_am_designer = models.BooleanField(default=False, verbose_name='дизайнер',)
+    i_am_designer = models.BooleanField(default=False, verbose_name='дизайнер')
     password = models.CharField('Password', max_length=150)
     first_name = models.CharField('Имя', max_length=50, null=True, blank=True)
 

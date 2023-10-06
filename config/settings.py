@@ -1,16 +1,17 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = (
-    'django-insecure-zc))j&u4h!-r1r!8#!a_8p9q1kkt#7+64$*amhm107m$k(c*sm'
-)
+SECRET_KEY = os.getenv('DJANGO_KEY', 'some_key')
 
-DEBUG = True
+DEBUG = DEBUG = os.getenv('DEBUG_KEY', 'False')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -59,12 +60,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# Postgres база данных
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    },
+        'ENGINE': os.getenv('DB_ENGINE'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT')
+    }
 }
+
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     },
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -89,7 +103,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -166,6 +180,7 @@ DJOSER = {
 }
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
 # константы проекта, если их будет много, то нужно будет их организовать в
 # отдельно файлике с разбивкой по тематике
 MAX_LENGTH_PROJECT_NAME = 128
