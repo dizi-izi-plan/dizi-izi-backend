@@ -13,17 +13,18 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
+
 schema_view = get_schema_view(
-    openapi.Info(
-        title="Dizi-izi API",
-        default_version='v1',
-        description="Документация для проекта Dizi-izi-backend",
-        # terms_of_service="URL страницы с пользовательским соглашением",
-        contact=openapi.Contact(email="dizi.izi.plan@gmail.com"),
-        license=openapi.License(name="MIT License"),
-    ),
-    public=True,
-    permission_classes=[permissions.AllowAny, ],
+   openapi.Info(
+      title="Dizi-izi API",
+      default_version='v1',
+      description="Документация для проекта Dizi-izi-backend",
+      # terms_of_service="URL страницы с пользовательским соглашением",
+      contact=openapi.Contact(email="dizi.izi.plan@gmail.com"),
+      license=openapi.License(name="MIT License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns += [
@@ -40,6 +41,7 @@ urlpatterns += [
          RedirectView.as_view(url='swagger/', permanent=False),
          name='index'),
 ]
+
 
 # urlpatterns += [
 #     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
