@@ -54,6 +54,10 @@ python manage.py createsuperuser
 ```
 docker exec <id_container> python manage.py collectstatic
 ```
+Можно запустить команды по имени контейнера.
+```
+docker exec backend python manage.py collectstatic
+```
 
 Бэкенд будет доступен по адресу `http://localhost`
 Админка будет доступена по адресу `http://localhost/admin`
