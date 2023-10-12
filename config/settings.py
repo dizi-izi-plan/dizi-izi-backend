@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_yasg',
     'furniture',
     'users',
     'rest_framework.authtoken',
@@ -177,6 +178,10 @@ DJOSER = {
         'activation': 'users.emails.CustomActivationEmail',
         'password_reset': 'users.emails.CustomPasswordResetEmail',
     },
+}
+
+SWAGGER_SETTINGS = {
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.inspectors.SwaggerAutoSchema',
 }
 
 AUTH_USER_MODEL = 'users.CustomUser'
