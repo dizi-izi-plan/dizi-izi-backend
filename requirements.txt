@@ -8,12 +8,14 @@ coreschema==0.0.4
 cryptography==40.0.2
 defusedxml==0.7.1
 Django==4.1.7
+django-dotenv==1.4.2
 django-filter==23.1
 django-templated-mail==1.1.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==4.7.2
 djoser==2.1.0
 drf-spectacular==0.26.3
+drf-yasg==1.21.7
 gunicorn==21.2.0
 idna==3.4
 inflection==0.5.1
