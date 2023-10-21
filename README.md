@@ -23,7 +23,7 @@ DB_ENGINE=django.db.backends.postgresql
 DB_NAME=postgres
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
-DB_HOST=localhost
+DB_HOST=db
 DB_PORT=5432
 ```
 3. Перейти в директорию проекта в папку `\infra` и выполнить команды:
