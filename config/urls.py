@@ -8,6 +8,7 @@ from django.views.generic import RedirectView
 
 from config import settings
 
+
 urlpatterns = [
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),

@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (FurnitureViewSet, RoomCopyView, RoomViewSet, SendPDFView,
-                    APITariff, APIChangeTariff)
+                    APITariff, APIChangeTariff, DeleteAccountView)
 
 router = DefaultRouter()
 router.register('furniture', FurnitureViewSet, basename='furniture')
@@ -16,4 +16,5 @@ urlpatterns = [
     path('tariffs/<pk>/', APIChangeTariff.as_view()),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+    path('auth/delete/', DeleteAccountView.as_view(), name='delete_account'),
 ]
