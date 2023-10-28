@@ -1,5 +1,5 @@
 import os
-from datetime import timedelta
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -11,7 +11,10 @@ SECRET_KEY = os.getenv('DJANGO_KEY', 'some_key')
 
 DEBUG = os.getenv('DEBUG_KEY', 'False')
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+if "test" in sys.argv:
+    ALLOWED_HOSTS = ["testserver"]
+else:
+    ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(", ")
 
 CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', 'https://*localhost',
                         'http://localhost', ]
@@ -64,17 +67,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Postgres база данных
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE'),
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT')
+if "test" in sys.argv:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE'),
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('POSTGRES_USER'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT')
+        }
+    }
 
 #
 # DATABASES = {
