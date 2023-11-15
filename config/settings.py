@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'furniture',
     'users',
     'rest_framework.authtoken',
+    'social_django',
     'djoser',
     'api',
     'info',
@@ -132,7 +133,7 @@ REST_FRAMEWORK = {
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework_social_oauth2.authentication.SocialAuthentication'
+
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -188,6 +189,18 @@ SWAGGER_SETTINGS = {
 }
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+AUTHENTICATION_BACKENDS = (
+    "social_core.backends.vk.VKOAuth2",
+    "social_core.backends.yandex.YandexOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+#Social auth keys
+SOCIAL_AUTH_VK_OAUTH2_KEY='51788997'
+SOCIAL_AUTH_VK_OAUTH2_SECRET='03jnhOQgeNVfU0HMdr2Y'
+SOCIAL_AUTH_YANDEX_OAUTH2_KEY='b57308fc10884dc5ab8e5f39d728c99d'
+SOCIAL_AUTH_YANDEX_OAUTH2_SECRET='60921ea4d2e94741888d5a9ba4009811'
 
 # константы проекта, если их будет много, то нужно будет их организовать в
 # отдельно файлике с разбивкой по тематике
