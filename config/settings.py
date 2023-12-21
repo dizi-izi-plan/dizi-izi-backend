@@ -1,20 +1,20 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-import django
-from django.utils.encoding import force_str
+from dotenv import load_dotenv
 
-django.utils.encoding.force_text = force_str
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = (
-    'django-insecure-zc))j&u4h!-r1r!8#!a_8p9q1kkt#7+64$*amhm107m$k(c*sm'
-)
+SECRET_KEY = os.getenv('DJANGO_KEY', 'some_key')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG_KEY', 'False')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+
+CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', 'https://*localhost',
+                        'http://localhost', ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -23,25 +23,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
     'rest_framework',
+    'drf_yasg',
     'furniture',
-    'users.apps.UsersConfig',
+    'users',
     'rest_framework.authtoken',
     'djoser',
     'api',
-    'info.apps.InfoConfig',
+    'info',
     'drf_spectacular',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.vk',
-    'allauth.socialaccount.providers.mailru',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.twitter',
-    'allauth.socialaccount.providers.twitter_oauth2',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.yandex',
 ]
 
 MIDDLEWARE = [
@@ -74,12 +64,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# Postgres база данных
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    },
+        'ENGINE': os.getenv('DB_ENGINE'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT')
+    }
 }
+
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     },
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -104,7 +107,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -129,6 +132,7 @@ REST_FRAMEWORK = {
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework_social_oauth2.authentication.SocialAuthentication'
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -179,91 +183,15 @@ DJOSER = {
     },
 }
 
+SWAGGER_SETTINGS = {
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.inspectors.SwaggerAutoSchema',
+}
+
 AUTH_USER_MODEL = 'users.CustomUser'
+
 # константы проекта, если их будет много, то нужно будет их организовать в
 # отдельно файлике с разбивкой по тематике
 MAX_LENGTH_PROJECT_NAME = 128
 MAX_LENGTH_ROOM_NAME = 128
 MAX_LENGTH_FURNITURE_NAME = 128
 PROJECT_NAME_BY_DEFAULT = 'Проект'
-
-AUTHENTICATION_BACKENDS = (
-    # 'allauth.account.auth_backends.AuthenticationBackend',
-    'django.contrib.auth.backends.ModelBackend',
-)
-
-SITE_ID = 2
-# Все внести в .env
-# В дальнейшем все данные нужно будет взять из аккаунтов организации, а не из моего личного.
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        },
-        'OAUTH_PKCE_ENABLED': True,
-        'APP': {
-            'client_id': '584826295640-jvvmg4td58vheu3rpk51fh6jh9iecitd.apps.googleusercontent.com',
-            'secret': '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',
-            'key': ''
-        }
-    },
-    'vk': {
-        'APP': {
-            'client_id': '51716655',
-            'secret': 'xzK9MGL2HZTZABuaOu0m',
-            'key': 'bb2f3524bb2f3524bb2f352450b83a170bbbb2fbb2f3524dfecbfcda7d528a5c897b8fa'
-        }
-    },
-    'yandex': {
-        'APP': {
-            'client_id': 'd064451162e44b14ad9c90f2a268e15a',
-            'secret': 'fc8893e471f741baa1dab79b66393c94',
-        }
-    },
-    'facebook': {
-        'APP': {
-            'client_id': '610415187748239',
-            'secret': '587b3f02f6b4fc80b0c9be93f560b3c1',
-        },
-        'METHOD': 'oauth2',
-        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'INIT_PARAMS': {'cookie': True},
-        'FIELDS': [
-            'id',
-            'first_name',
-            'last_name',
-            'middle_name',
-            'name',
-            'name_format',
-            'picture',
-            'short_name'
-        ],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': 'path.to.callable',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v13.0',
-        'GRAPH_API_URL': 'https://graph.facebook.com/v13.0',
-    },
-    'twitter_oauth2': {
-        'APP': {
-            'client_id': 'ZmlxeHgyMlNhV3dqeWdXeThubkg6MTpjaQ',
-            'secret': 'fjxnKA-_uwAWuSi2XG06Zw93R0KezBcZQ8LVgzBHIY-POkHQc4',
-            # 'key': 'bb2f3524bb2f3524bb2f352450b83a170bbbb2fbb2f3524dfecbfcda7d528a5c897b8fa'
-        }
-    },
-}
-# изменяем редирект после авторизации через соцсеть
-LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/api/v1/auth/users/me/'
-SOCIAL_AUTH_MAILRU_OAUTH2_REDIRECT_URI = 'https://oauth.mail.ru/login'
-# блок для авторизации через соцсети "allauth"
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_USERNAME_REQUIRED = False

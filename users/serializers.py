@@ -1,12 +1,16 @@
 from datetime import time
+from typing import Union, Dict
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.db import IntegrityError
-from djoser.serializers import UserCreateSerializer, \
-    UserCreatePasswordRetypeSerializer
+from django.db import IntegrityError, transaction
+from djoser.serializers import (
+    UserCreateSerializer,
+    UserCreatePasswordRetypeSerializer,
+)
 from django.core import exceptions as django_exceptions
 from rest_framework import serializers
+from djoser.conf import settings
 
 User = get_user_model()
 
@@ -29,7 +33,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             "password",
         )
 
-    def validate_empty_values(self, data: dict[str, str | int | bool | time]):
+    def validate_empty_values(
+            self, data: Dict[str, Union[str, int, bool, time]]):
         """Изменение в валидации пустого пароля.
 
         Пустой пароль при POST запросе теперь не вызывает ошибки валидации
@@ -45,14 +50,14 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         super().validate_empty_values(data)
 
         if (
-            self.context["request"].method == "PATCH"
-            and data.get("password") == ""
+                self.context["request"].method == "PATCH"
+                and data.get("password") == ""
         ):
             return True, data
 
         return False, data
 
-    def validate(self, attrs: dict[str, str | int | bool | time]):
+    def validate(self, attrs: Dict[str, Union[str, int, bool, time]]):
         """При PATCH запросе убираем валидацию, если пароль не задается.
 
         Необходимо для того, чтобы изменять данные без ввода пароля. Доступ
@@ -83,9 +88,9 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         return attrs
 
     def update(
-        self,
-        instance: User,
-        validated_data: dict[str, str | int | bool | time],
+            self,
+            instance: User,
+            validated_data: Dict[str, Union[str, int, bool, time]],
     ):
         """Вносим изменения методом PATCH в данные пользователя.
 
@@ -124,7 +129,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             )
 
 
-class CustomUserCreatePasswordRetypeSerializer(UserCreatePasswordRetypeSerializer):
+class CustomUserCreatePasswordRetypeSerializer(
+    UserCreatePasswordRetypeSerializer):
     def create(self, validated_data):
         try:
             user = self.perform_create(validated_data)
