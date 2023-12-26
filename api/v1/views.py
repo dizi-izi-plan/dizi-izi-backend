@@ -1,24 +1,32 @@
-from __future__ import annotations
-
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, QuerySet
+from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (
+    IsAuthenticated,
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from furniture.models import (Door, Furniture, Placement, PowerSocket, Room,
-                              Window)
+from furniture.models import (
+    Door,
+    Furniture,
+    Placement,
+    PowerSocket,
+    Room,
+    Window,
+)
 from info.models import Tariff, UsersTariffs
-from .filters import FurnitureFilter
-from .serializers import (
+from api.v1.filters import FurnitureFilter
+from api.v1.serializers import (
     FurnitureSerializer,
     RoomSerializer,
-    TariffSerializer, ChangeTariffSerializer
+    TariffSerializer,
+    ChangeTariffSerializer,
 )
+from api.permissions import IsSuperUserOrReadOnly, IsTariffAccepted
 from ..utils import send_pdf_file
 
 
@@ -36,18 +44,17 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     serializer_class = RoomSerializer
 
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAuthenticated, IsTariffAccepted)
 
     def get_queryset(self):
         """Получение данных о помещении только пользователя запроса."""
         if self.request.user.is_authenticated:
             return self.request.user.rooms.all()
+        return Room.objects.none()
 
     def perform_create(self, serializer):
         """Назначение данных для обработки запроса."""
-        user = None
-        if self.request.user.is_authenticated:
-            user = self.request.user
+        user = self.request.user
         serializer.save(user=user)
 
     def list(self, request, *args, **kwargs):
@@ -98,9 +105,9 @@ class RoomCopyView(APIView):
 
     @staticmethod
     def _copy_object(
-            model: [Door | Window | PowerSocket],
-            orig_room: Room,
-            new_room: Room,
+        model: [Door | Window | PowerSocket],
+        orig_room: Room,
+        new_room: Room,
     ):
         models = model.objects.filter(room=orig_room)
         for model in models:
@@ -137,7 +144,6 @@ class RoomCopyView(APIView):
                 sw_coordinate=placement.sw_coordinate,
                 se_coordinate=placement.se_coordinate,
             )
-
         [
             self._copy_object(obj, orig_room, new_room)
             for obj in [
@@ -153,7 +159,7 @@ class RoomCopyView(APIView):
         """Изменяем планировку с заданным `pk`."""
 
         instance = get_object_or_404(Room, pk=pk)
-        instance.name = request.data.get('name')
+        instance.name = request.data.get("name")
         instance.save()
         serializer = RoomSerializer(instance)
         return Response(serializer.data)
@@ -163,46 +169,70 @@ class SendPDFView(APIView):
     """Отправка pdf файла на почту"""
 
     parser_classes = (MultiPartParser,)
+    permission_classes = (
+        IsAuthenticated,
+        IsTariffAccepted,
+    )
 
-    def post(self, request, format='pdf'):
+    def post(self, request, format="pdf"):
         """Загружаем планировку в формате PDF."""
 
-        up_file = request.FILES['file']
-        subj = 'План размещения мебели'
-        text = 'В приложении подготовленный план размещения мебели'
+        up_file = request.FILES["file"]
+        subj = "План размещения мебели"
+        text = "В приложении подготовленный план размещения мебели"
         email = request.user.email
         return send_pdf_file(subj, email, up_file, text)
 
 
-class APITariff(ListAPIView):
-    """Список тарифов (наверное)."""
-    serializer_class = TariffSerializer
+class APITariff(ListAPIView, CreateAPIView):
+    """Список тарифов.
 
-    def get_queryset(self):
-        return Tariff.objects.annotate(
-            is_active=Exists(
-                UsersTariffs.objects.filter(
-                    user=self.request.user,
-                    tariff=OuterRef('pk')
+    Просмотр доступен для всех. Редактирование только для суперпользователя.
+    """
+
+    serializer_class = TariffSerializer
+    permission_classes = (IsSuperUserOrReadOnly,)
+
+    def get_queryset(self) -> QuerySet:
+        """Получение `queryset`а тарифов.
+
+        Текущий пользователь видит, какой тариф у него активен. Другие тарифы
+        маркируются, как неактивные. Для незарегистрированного пользователя
+        возвращаются все тарифы.
+
+        Returns:
+            Queryset: queryset с тарифами.
+        """
+        if self.request.user.is_authenticated:
+            return Tariff.objects.annotate(
+                is_active=Exists(
+                    UsersTariffs.objects.filter(
+                        user=self.request.user, tariff=OuterRef("pk")
+                    )
                 )
             )
-        )
+        return Tariff.objects.all()
 
 
 class APIChangeTariff(APIView):
     """Изменяем тариф."""
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [
+        IsAuthenticated,
+    ]
 
-    def patch(self, request, pk):
-        """Добавляем тариф."""
+    def patch(self, request: HttpRequest, name_english: str) -> Response:
+        """Добавляем тариф пользователю."""
 
-        new_tariff = get_object_or_404(Tariff, pk=pk)
+        new_tariff = get_object_or_404(Tariff, name_english=name_english)
         user_tariff = get_object_or_404(UsersTariffs, user=request.user)
         serializer = ChangeTariffSerializer(
             user_tariff,
-            data={'user': request.user.id, 'tariff': new_tariff.id},
+            data={"user": request.user.id, "tariff": new_tariff.id},
         )
         serializer.is_valid(raise_exception=True)
         serializer.save(user=request.user, tariff=new_tariff)
-        return Response(status=status.HTTP_205_RESET_CONTENT)
+        return Response(
+            status=status.HTTP_205_RESET_CONTENT,
+            data={"message": "Тариф изменен"},
+        )

@@ -12,7 +12,7 @@ urlpatterns = [
     path(r'rooms/<int:pk>/', RoomCopyView.as_view()),
     path('', include(router.urls)),
     path('tariffs/', APITariff.as_view()),
-    path('tariffs/<pk>/', APIChangeTariff.as_view()),
+    path('tariffs/<slug:name_english>/', APIChangeTariff.as_view()),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     # path('accounts/', include('allauth.urls')),

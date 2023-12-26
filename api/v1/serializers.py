@@ -151,7 +151,7 @@ class RoomSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Создание помещения с расстановкой."""
 
-        def create_get_coordinate_item(placement):
+        def _create_by_coordinate(placement):
             """Создать и вернуть координаты для элемента (мебель, окно,...)"""
             return {
                 'north_west': Coordinate.objects.create(
@@ -182,7 +182,7 @@ class RoomSerializer(serializers.ModelSerializer):
         furniture_placement = []
         for placement in room_placement:
             furniture = placement['furniture']
-            coordinates = create_get_coordinate_item(placement)
+            coordinates = _create_by_coordinate(placement)
             furniture_placement.append(
                 Placement(
                     furniture=furniture,
@@ -194,7 +194,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
         room_doors = []
         for door in doors:
-            coordinates = create_get_coordinate_item(door)
+            coordinates = _create_by_coordinate(door)
             room_doors.append(
                 Door(
                     width=door['width'],
@@ -207,7 +207,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
         room_windows = []
         for window in windows:
-            coordinates = create_get_coordinate_item(window)
+            coordinates = _create_by_coordinate(window)
             room_windows.append(
                 Window(
                     width=window['width'],
@@ -220,8 +220,12 @@ class RoomSerializer(serializers.ModelSerializer):
 
         room_powersocket = []
         for powersocket in power_sockets:
+            coordinates = _create_by_coordinate(powersocket)
             room_powersocket.append(
-                PowerSocket(**self._get_basic_parameters(powersocket, room)),
+                PowerSocket(
+                    room=room,
+                    **coordinates,
+                ),
             )
         PowerSocket.objects.bulk_create(room_powersocket)
 
@@ -280,24 +284,33 @@ class RoomCopySerializer(serializers.ModelSerializer):
 
 
 class TariffSerializer(serializers.ModelSerializer):
-    is_active = serializers.IntegerField(default=0)
+    # is_active = serializers.BooleanField(default=False, allow_null=True)
+    is_active = serializers.SerializerMethodField()
     start_day = serializers.SerializerMethodField()
     period = serializers.SerializerMethodField()
     next_day_of_payment = serializers.SerializerMethodField()
-
+    project_limit = serializers.IntegerField(default=0, allow_null=False)
+    rooms_limit = serializers.IntegerField(default=0, allow_null=False)
     class Meta:
         model = Tariff
         fields = '__all__'
 
+    def get_is_active(self, obj):
+
+        user = self.context['request'].user
+        if user.is_anonymous:
+            return False
+        return UsersTariffs.objects.filter(user=user, tariff=obj).exists()
+
     def get_start_day(self, obj):
         request = self.context.get('request')
-        if obj.is_active:
+        if not request.user.is_anonymous and not obj.is_active:
             user_tariff = obj.user_tariff.get(user=request.user)
             return user_tariff.start_date.strftime("%d.%m.%Y")
 
     def get_next_day_of_payment(self, obj):
         request = self.context.get('request')
-        if obj.is_active:
+        if not request.user.is_anonymous and not obj.is_active:
             user_tariff = obj.user_tariff.get(user=request.user)
             return (f'{user_tariff.start_date.strftime("%d")}.'
                     f'{datetime.now(timezone.utc).strftime("%m")}')

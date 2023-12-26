@@ -30,7 +30,6 @@ class Core(FurnitureArrangement, MiddlePointAndShift):
             
             # добавляем конечные значения в соответствии их расположением по стенам
             furniture[item]["adjacent_center_point"] = final_point 
-            # print(furniture[item])
             bisect.insort(self.sorted_points, final_point)
             self.coordinates.insert(self.sorted_points.index(final_point), figure)
         

@@ -4,16 +4,8 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
 
+from constants import Constants
 from users.models import CustomUser
-
-CHOICES = (
-    (timedelta(days=30), 'месяц'),
-    (timedelta(days=90), '3 месяца'),
-    (timedelta(days=180), '6 месяцев'),
-    (timedelta(days=270), '9 месяцев'),
-    (timedelta(days=365), 'год'),
-)
-
 
 class PossibleActions(models.Model):
     name = models.CharField(
@@ -37,9 +29,8 @@ class Tariff(models.Model):
         max_length=256,
         unique=True
     )
-    name_english = models.CharField(
+    name_english = models.SlugField(
         verbose_name='Наименование тарифа на английском языке',
-        max_length=256,
         unique=True
     )
     description = models.TextField(verbose_name='Описание тарифа')
@@ -55,15 +46,23 @@ class Tariff(models.Model):
     period = models.DurationField(
         default=timedelta(days=365),
         verbose_name='Период действия тарифа',
-        choices=CHOICES,
+        choices=Constants.CHOICES,
         help_text='Выберите период действия'
     )
-    actions = models.ManyToManyField(
-        PossibleActions,
-        blank=False,
-        through='PossibleActionsTariff',
-        verbose_name='Действия',
-        related_name='tariff'
+    # actions = models.ManyToManyField(
+    #     PossibleActions,
+    #     blank=True,
+    #     through='PossibleActionsTariff',
+    #     verbose_name='Действия',
+    #     related_name='tariff'
+    # )
+    project_limit = models.PositiveIntegerField(
+        verbose_name='Количество планировок',
+        default=0
+    )
+    rooms_limit = models.PositiveIntegerField(
+        verbose_name='Количество комнат',
+        default=0
     )
     is_default = models.BooleanField(
         default=False,
@@ -78,6 +77,12 @@ class Tariff(models.Model):
         return f'{self.name}'
 
     def save(self, *args, **kwargs):
+        """Сохранение тарифа по умолчанию.
+
+        Если назначается тариф по умолчанию, то в остальных тарифах он
+        становится не по умолчанию. (остаться должен только один!).
+
+        """
         if self.is_default:
             Tariff.objects.exclude(pk=self.pk).update(is_default=False)
         super().save(*args, **kwargs)
@@ -129,7 +134,6 @@ class UsersTariffs(models.Model):
     start_date = models.DateTimeField(
         verbose_name='Тариф приобретен',
         auto_now_add=True,
-
     )
 
     class Meta:

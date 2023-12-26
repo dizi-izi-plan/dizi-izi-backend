@@ -11,6 +11,7 @@ class CustomUserManager(BaseUserManager):
         user = self.model(email=email,)
         user.set_password(password)
         user.save()
+        # при регистрации пользователя создается тариф по умолчанию
         if Tariff.objects.exists():
             UsersTariffs.objects.get_or_create(
                 user=user,
