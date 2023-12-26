@@ -1,5 +1,6 @@
-from django.urls import include, path
+from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
+
 
 from .views import (FurnitureViewSet, RoomCopyView, RoomViewSet, SendPDFView,
                     APITariff, APIChangeTariff)
@@ -16,4 +17,5 @@ urlpatterns = [
     path('tariffs/<pk>/', APIChangeTariff.as_view()),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+    re_path("", include("social_django.urls", namespace="social")),
 ]
