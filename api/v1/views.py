@@ -98,9 +98,9 @@ class RoomViewSet(viewsets.ModelViewSet):
 
 
 class RoomCopyView(APIView):
-    """
-    Создаем копию объекта `Room` по произвольному пост запросу на url
-    /api/v1/rooms/pk/.
+    """Создаем копию объекта `Room`.
+
+    Выполняется по произвольному пост запросу на url /api/v1/rooms/pk/.
     """
 
     @staticmethod
@@ -117,14 +117,12 @@ class RoomCopyView(APIView):
 
     def get(self, request, pk):
         """Получаем планировку с заданным `pk`."""
-
         orig_room = get_object_or_404(Room, pk=pk)
         serializer = RoomSerializer(orig_room)
         return Response(serializer.data)
 
     def post(self, request, pk):
         """Создаем копию планировки с заданным `pk`."""
-
         orig_room = get_object_or_404(Room, pk=pk)
         new_room = orig_room.copy(request)
         new_room.save()
@@ -157,7 +155,6 @@ class RoomCopyView(APIView):
 
     def patch(self, request, pk):
         """Изменяем планировку с заданным `pk`."""
-
         instance = get_object_or_404(Room, pk=pk)
         instance.name = request.data.get("name")
         instance.save()
@@ -166,8 +163,7 @@ class RoomCopyView(APIView):
 
 
 class SendPDFView(APIView):
-    """Отправка pdf файла на почту"""
-
+    """Отправка pdf файла на почту."""
     parser_classes = (MultiPartParser,)
     permission_classes = (
         IsAuthenticated,
@@ -176,7 +172,6 @@ class SendPDFView(APIView):
 
     def post(self, request, format="pdf"):
         """Загружаем планировку в формате PDF."""
-
         up_file = request.FILES["file"]
         subj = "План размещения мебели"
         text = "В приложении подготовленный план размещения мебели"
@@ -207,9 +202,9 @@ class APITariff(ListAPIView, CreateAPIView):
             return Tariff.objects.annotate(
                 is_active=Exists(
                     UsersTariffs.objects.filter(
-                        user=self.request.user, tariff=OuterRef("pk")
-                    )
-                )
+                        user=self.request.user, tariff=OuterRef("pk"),
+                    ),
+                ),
             )
         return Tariff.objects.all()
 
@@ -223,7 +218,6 @@ class APIChangeTariff(APIView):
 
     def patch(self, request: HttpRequest, name_english: str) -> Response:
         """Добавляем тариф пользователю."""
-
         new_tariff = get_object_or_404(Tariff, name_english=name_english)
         user_tariff = get_object_or_404(UsersTariffs, user=request.user)
         serializer = ChangeTariffSerializer(

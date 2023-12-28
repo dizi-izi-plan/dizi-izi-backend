@@ -8,14 +8,14 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError('У пользователя должен быть email.')
         email = self.normalize_email(email)
-        user = self.model(email=email,)
+        user = self.model(email=email)
         user.set_password(password)
         user.save()
         # при регистрации пользователя создается тариф по умолчанию
         if Tariff.objects.exists():
             UsersTariffs.objects.get_or_create(
                 user=user,
-                tariff=Tariff.objects.get(is_default=True)
+                tariff=Tariff.objects.get(is_default=True),
             )
         return user
 

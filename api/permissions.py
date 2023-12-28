@@ -4,7 +4,9 @@ from django.contrib.auth import get_user_model
 from rest_framework import permissions
 from users.models import CustomUser
 
+
 User = get_user_model()
+
 
 class CustumPer(permissions.BasePermission):
     """Разрешает доступ только с правами администратора или для чтения."""
@@ -29,9 +31,10 @@ class CustumPer(permissions.BasePermission):
 
 
 class ReviewCommentPermission(permissions.BasePermission):
-    """Разрешает доступ для чтения или для редактирования пользователям
-    с правами администратора, модератора или автора.
+    """Права доступа.
 
+    Разрешает доступ для чтения или для редактирования пользователям
+    с правами администратора, модератора или автора.
     """
 
     def has_permission(
@@ -83,14 +86,17 @@ class IsTariffAccepted(permissions.BasePermission):
     def is_outdated(
         user: CustomUser,
     ):
+        """Проверка на `просроченность` тарифа по времени."""
         return user.user_tariff.tariff.period < (
             datetime.datetime.now(datetime.timezone.utc)
             - user.user_tariff.start_date
         )
+
     @staticmethod
     def is_rooms_limit_exceeded(
         user: User,
     ):
+        """Проверка на превышение лимита комнат."""
         return user.rooms.count() > user.user_tariff.tariff.rooms_limit
 
     def has_permission(
