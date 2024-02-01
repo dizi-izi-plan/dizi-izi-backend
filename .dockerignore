@@ -1,0 +1,12 @@
+Dockerfile
+.dockerignore
+.env
+.git
+.gitignore
+makefile
+venv/
+.vscode
+.sqlite3
+db.sqlite3
+build/
+backend_static/
