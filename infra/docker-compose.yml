@@ -2,10 +2,11 @@ version: '3.9'
 
 services:
 
-  db:
+  database:
+    container_name: dizi-izi-database
     image: postgres:15-alpine
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - dizi_izi_postgres_data:/var/lib/postgresql/data/
     env_file:
       - .env
     restart: always
@@ -25,7 +26,7 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      - database
 
   frontend:
     container_name: dizi-izi-frontend
@@ -54,5 +55,5 @@ volumes:
   static:
   media:
   frontend:
-  postgres_data:
+  dizi_izi_postgres_data:
     external: true
