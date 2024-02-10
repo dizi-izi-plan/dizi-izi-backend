@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+
+  database:
+    container_name: dizi-izi-database
+    image: postgres:15-alpine
+    volumes:
+      - diziizi_postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env.dev
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    container_name: dizi-izi-backend
+    image: diziizi/dizi-izi-backend:latest
+    build: .
+    restart: always
+    ports:
+      - "80:8000"
+    volumes:
+      - ./:/app
+    env_file:
+      - .env.dev
+    depends_on:
+      - database
+
+volumes:
+  diziizi_postgres_data:
+    external: true
