@@ -25,12 +25,13 @@ services:
     restart: always
     ports:
       - "80:8000"
-    volumes:
-      - ./:/app
     env_file:
       - .env.dev
     depends_on:
       - database
+#    uncomment for develop mode
+#    volumes:
+#      - ./:/app
 
 volumes:
   diziizi_postgres_data:
