@@ -21,7 +21,7 @@ Python 3.11, Django, DRF, Postgres, Docker, Nginx...
     ```bash
     docker volume create --name=diziizi_postgres_data
     ```
-3. Запуск проекта (доступно на http://localhost:80)
+3. Запуск проекта (доступно по адресу http://localhost:80)
     ```bash
     docker compose up -d
     ```
@@ -39,7 +39,7 @@ Swagger: http://localhost/swagger/
     ```bash
     docker volume rm diziizi_postgres_data
     ```
-2. Запуск только базы данных (доступно на localhost:5432)
+2. Запуск только базы данных (доступно по адресу localhost:5432)
     ```bash
     docker compose up -d database
     ```
@@ -60,16 +60,21 @@ Swagger: http://localhost/swagger/
     ```bash
     docker compose exec -it backend python manage.py createsuperuser
     ```
-7. Собрать новый образ (по умолчанию образ скачивается с Docker Hub)
+7. Собрать новый образ (по умолчанию образ скачивается с [DockerHub](https://hub.docker.com/u/diziizi))
     ```bash
     docker compose build
     ```
+8. Скачать все образы
+    ```bash
+    docker compose pull
+    ```
 
 ### Режим разработки
-Docker так же можно использовать и во время разработки.
-Для этого корневая папка проекта подключается как внешний том контейнера и все изменения в проекте мгновенно доступны в контейнере.
+Docker так же можно использовать во время разработки.
+Для этого корневая папка проекта подключается как внешний том контейнера, и все изменения в проекте мгновенно доступны в контейнере.
 Перезапуск сервера с новыми файлами происходит автоматически.
-`Для разблокировки функционала необходимо в файле docker-compose.yml раскомментировать поле volumes контейнера backend`
+`Для разблокировки функционала необходимо в файле docker-compose.yml раскомментировать поле volumes у контейнера backend`
+`В файле .env.dev DB_HOST заменить на localhost.`
 
 
 ### Установка зависимостей и запуск проекта
