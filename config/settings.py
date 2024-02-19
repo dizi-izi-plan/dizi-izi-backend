@@ -24,7 +24,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'drf_yasg',
     'furniture',
     'users',
     'rest_framework.authtoken',
@@ -153,10 +152,13 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Di-zi',
-    'DESCRIPTION': 'Super impa project',
-    'VERSION': '1.0.0',
+    'TITLE': 'Dizi-izi API',
+    'DESCRIPTION': 'Документация для проекта Dizi-izi-backend',
+    'VERSION': 'v1',
     'SERVE_INCLUDE_SCHEMA': False,
+    'SCHEMA_PATH_PREFIX': '/api/v1',
+    'CONTACT': {'email': 'dizi.izi.plan@gmail.com'},
+    'LICENSE': {'name': 'MIT License'},
 }
 
 DJOSER = {
@@ -182,10 +184,6 @@ DJOSER = {
         'activation': 'users.emails.CustomActivationEmail',
         'password_reset': 'users.emails.CustomPasswordResetEmail',
     },
-}
-
-SWAGGER_SETTINGS = {
-    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.inspectors.SwaggerAutoSchema',
 }
 
 AUTH_USER_MODEL = 'users.CustomUser'
