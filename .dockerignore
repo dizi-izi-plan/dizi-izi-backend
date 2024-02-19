@@ -1,3 +1,21 @@
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Git
+.git
+.gitignore
+.github
+
+# Deploy
+infra/
+
+README.md
+makefile
+
+# All exclusions from .gitignore have been added to .dockerignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -133,6 +151,7 @@ dmypy.json
 
 .idea
 idea/
+.vscode
 
 api/v1/algorithm.py
 api/v1/create_picture.py
