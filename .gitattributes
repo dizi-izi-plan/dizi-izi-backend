@@ -1,1 +1,2 @@
 docker-entrypoint.sh text eol=lf
+docker-install.sh text eol=lf
