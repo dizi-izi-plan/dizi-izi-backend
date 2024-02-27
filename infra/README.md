@@ -35,6 +35,11 @@
    docker-compose pull имя_сервиса
    docker-compose up -d --no-deps имя_сервиса
    ```
+* Создание внешнего тома для базы данных (необходим для хранения данных вне контейнера)
+    ```bash
+    docker volume create --name=dizi_postgres_data
+    ```
+
 #### TODO:
 1. [ ] Вывести логи контейнеров на хост машину
 
