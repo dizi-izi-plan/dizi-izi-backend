@@ -27,10 +27,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "drf_yasg",
     "furniture",
     "users",
     "rest_framework.authtoken",
+    "social_django",
     "djoser",
     "api",
     "info",
@@ -143,10 +143,13 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Di-zi",
-    "DESCRIPTION": "Super imba project",
-    "VERSION": "1.0.0",
+    "TITLE": "Dizi-izi API",
+    "DESCRIPTION": "Документация для проекта Dizi-izi-backend",
+    "VERSION": "v1",
     "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX": "/api/v1",
+    "CONTACT": {"email": "dizi.izi.plan@gmail.com"},
+    "LICENSE": {"name": "MIT License"},
 }
 
 DJOSER = {
@@ -174,11 +177,19 @@ DJOSER = {
     },
 }
 
-SWAGGER_SETTINGS = {
-    "DEFAULT_AUTO_SCHEMA_CLASS": "drf_yasg.inspectors.SwaggerAutoSchema",
-}
-
 AUTH_USER_MODEL = "users.CustomUser"
+
+AUTHENTICATION_BACKENDS = (
+    "social_core.backends.vk.VKOAuth2",
+    "social_core.backends.yandex.YandexOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+#Social auth keys
+SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_VK_OAUTH2_KEY')
+SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_VK_OAUTH2_SECRET')
+SOCIAL_AUTH_YANDEX_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_YANDEX_OAUTH2_KEY')
+SOCIAL_AUTH_YANDEX_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_YANDEX_OAUTH2_SECRET')
 
 # константы проекта, если их будет много, то нужно будет их организовать в
 # отдельно файлике с разбивкой по тематике
