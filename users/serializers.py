@@ -3,14 +3,13 @@ from typing import Union, Dict
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError
 from djoser.serializers import (
     UserCreateSerializer,
     UserCreatePasswordRetypeSerializer,
 )
 from django.core import exceptions as django_exceptions
 from rest_framework import serializers
-from djoser.conf import settings
 
 User = get_user_model()
 
@@ -34,7 +33,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         )
 
     def validate_empty_values(
-            self, data: Dict[str, Union[str, int, bool, time]]):
+        self, data: Dict[str, Union[str, int, bool, time]],
+    ):
         """Изменение в валидации пустого пароля.
 
         Пустой пароль при POST запросе теперь не вызывает ошибки валидации
@@ -50,8 +50,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         super().validate_empty_values(data)
 
         if (
-                self.context["request"].method == "PATCH"
-                and data.get("password") == ""
+            self.context["request"].method == "PATCH"
+            and data.get("password") == ""
         ):
             return True, data
 
@@ -82,15 +82,15 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             except django_exceptions.ValidationError as e:
                 serializer_error = serializers.as_serializer_error(e)
                 raise serializers.ValidationError(
-                    {"password": serializer_error["non_field_errors"]}
+                    {"password": serializer_error["non_field_errors"]},
                 )
             return attrs
         return attrs
 
     def update(
-            self,
-            instance: User,
-            validated_data: Dict[str, Union[str, int, bool, time]],
+        self,
+        instance: User,
+        validated_data: Dict[str, Union[str, int, bool, time]],
     ):
         """Вносим изменения методом PATCH в данные пользователя.
 
@@ -110,14 +110,14 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         if user.is_superuser or user == instance:
             instance.city = validated_data.get("city", instance.city)
             instance.first_name = validated_data.get(
-                "first_name", instance.first_name
+                "first_name", instance.first_name,
             )
             instance.email = validated_data.get("email", instance.email)
             instance.i_am_designer = validated_data.get(
-                "i_am_designer", instance.i_am_designer
+                "i_am_designer", instance.i_am_designer,
             )
             instance.birthday = validated_data.get(
-                "birthday", instance.birthday
+                "birthday", instance.birthday,
             )
             if validated_data.get("password"):
                 instance.set_password(validated_data["password"])
@@ -125,12 +125,13 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             return instance
         else:
             raise serializers.ValidationError(
-                "Вы не можете изменять данные других пользователей."
+                "Вы не можете изменять данные других пользователей.",
             )
 
 
 class CustomUserCreatePasswordRetypeSerializer(
-    UserCreatePasswordRetypeSerializer):
+    UserCreatePasswordRetypeSerializer,
+):
     def create(self, validated_data):
         try:
             user = self.perform_create(validated_data)

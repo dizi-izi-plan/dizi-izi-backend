@@ -13,14 +13,15 @@ User = get_user_model()
 
 class TypeOfRoom(models.Model):
     """Типы комнат для мебели."""
+
     name = models.CharField(
         verbose_name='Наименование комнаты',
         unique=True,
-        max_length=128
+        max_length=128,
     )
     slug = models.SlugField(
         verbose_name='Слаг',
-        unique=True
+        unique=True,
     )
 
     class Meta:
@@ -77,7 +78,7 @@ class Furniture(models.Model):
         related_name='furniture',
         verbose_name='Комната',
         blank=False,
-        null=False
+        null=False,
     )
     power_socket_type = models.CharField(
         'Тип электроточки',
@@ -87,22 +88,22 @@ class Furniture(models.Model):
     first_power_socket_height = models.IntegerField(
         'Высота первой электроточки',
         default=0,
-        null=False
+        null=False,
     )
     first_power_socket_width = models.IntegerField(
         'Расположение электроточки относительно середины ширины объекта',
         default=0,
-        null=False
+        null=False,
     )
     second_power_socket_height = models.IntegerField(
         'Высота первой электроточки',
         default=0,
-        null=False
+        null=False,
     )
     second_power_socket_width = models.IntegerField(
         'Расположение электроточки относительно середины ширины объекта',
         default=0,
-        null=False
+        null=False,
     )
 
     power_socket_image = models.ImageField(
@@ -123,10 +124,10 @@ class Furniture(models.Model):
 class Coordinate(models.Model):
     """Модель координаты."""
     x = models.PositiveIntegerField(
-        verbose_name='X'
+        verbose_name='X',
     )
     y = models.PositiveIntegerField(
-        verbose_name='Y'
+        verbose_name='Y',
     )
 
     def __str__(self):
@@ -146,28 +147,28 @@ class RoomCoordinates(models.Model):
         'Coordinate',
         verbose_name='Координата north-west',
         on_delete=models.PROTECT,
-        null=True
+        null=True,
     )
     north_east = models.OneToOneField(
         'Coordinate',
         verbose_name='Координата north-east',
         on_delete=models.PROTECT,
         null=True,
-        related_name='+'
+        related_name='+',
     )
     south_west = models.OneToOneField(
         'Coordinate',
         verbose_name='Координата south-west',
         on_delete=models.PROTECT,
         null=True,
-        related_name='+'
+        related_name='+',
     )
     south_east = models.OneToOneField(
         'Coordinate',
         verbose_name='Координата south-east',
         on_delete=models.PROTECT,
         null=True,
-        related_name='+'
+        related_name='+',
     )
 
     class Meta:
@@ -193,7 +194,7 @@ class Placement(RoomCoordinates):
 
 
 class Room(models.Model):
-    """Модель помещения."""
+    """Модель планировки."""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -235,18 +236,18 @@ class Room(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Помещение'
-        verbose_name_plural = 'Помещения'
+        verbose_name = 'Планировка'
+        verbose_name_plural = 'Планировки'
 
     def __str__(self) -> str:
         return f"Проект {self.name} пользователя {self.user.email}"
 
     def copy(self, request):
-        """
-        Returns a copy of the Room instance with a new primary key and the
-        same attribute values.
+        """Возвращает копию объекта комнаты.
 
-        M2M relations are not copied.
+        С новым первичным ключом, но теми же значениями атрибутов.
+
+        M2M отношения не копируются.
         """
         return Room.objects.create(
             user=self.user,

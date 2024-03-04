@@ -1,11 +1,19 @@
+def corner_markings(
+    length_and_width: dict,
+    center: dict,
+    wall_number: int,
+) -> dict:
+    """Вычисляем координаты углов объекта.
 
-def corner_markings(length_and_width: dict, center: dict, wall_number: int) -> dict:
-    """Эта функция необходима, чтобы, имея центр объекта и его размеры, относительно
-    конкретной стены обозначить его углы координатами.
+    Имея центр объекта и его размеры, относительно конкретной стены
+    обозначить его углы координатами.
+
     Args:
-        length_and_width: dict: ширина и длина объекта {length: 1, width: 1}
-        center (dict): центр стороны объекта, примыкающей к стене {"x": 0, "y": 0},
-        wall_number: сторона комнаты с учетом, что левая сторона первая, а дальнейшие нумеруются по часовой стрелке
+        length_and_width: ширина и длина объекта {length: 1, width: 1}
+        center: центр стороны объекта, примыкающей к стене {"x": 0, "y": 0},
+        wall_number: сторона комнаты с учетом, что левая сторона первая, а
+        дальнейшие нумеруются по часовой стрелке
+
     Returns:
         dict: словарь с координатами углов
                 {
@@ -15,7 +23,6 @@ def corner_markings(length_and_width: dict, center: dict, wall_number: int) -> d
                 "south_east": {"x": 0, "y": 0},
                 }
     """
-
     corners_coordinates = {
         "north_west": {"x": 0, "y": 0},
         "north_east": {"x": 0, "y": 0},
@@ -32,8 +39,8 @@ def corner_markings(length_and_width: dict, center: dict, wall_number: int) -> d
     length = length_and_width["length"]
     width = length_and_width["width"]
 
-    # так как примыкающая сторона объекта смещает внутренние стороны света углов, то относительно каждой
-    # стороны координаты вычисляются по-разному
+    # так как примыкающая сторона объекта смещает внутренние стороны света
+    # углов, то относительно каждой стороны координаты вычисляются по-разному
     if wall_number == 1:
         north_east["x"] = center["x"]
         north_east["y"] = center["y"] + (width / 2)
@@ -73,5 +80,6 @@ def corner_markings(length_and_width: dict, center: dict, wall_number: int) -> d
         south_east["y"] = center["y"] + length
         south_west["x"] = center["x"] + (width / 2)
         south_west["y"] = center["y"] + length
-
+    # вообще не понятно, ведь `corners_coordinates` просто инициализирован
+    # вначале!
     return corners_coordinates
