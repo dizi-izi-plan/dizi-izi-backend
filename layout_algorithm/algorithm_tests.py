@@ -7,8 +7,6 @@ class TestFurnitureArrangement(unittest.TestCase):
     def setUp(self):
         self.calculator = Core()
 
-
-
     def test_algorithm_activation_1(self):
         self.calculator.algorithm_activation(
             [
@@ -158,7 +156,7 @@ class TestFurnitureArrangement(unittest.TestCase):
 
             ],
             [{"width": 1800, "length": 2000},
-             {"width": 1200, "length": 1200}
+             {"width": 1200, "length": 1200},
              ],
             {
                 "first_wall": 10000,
