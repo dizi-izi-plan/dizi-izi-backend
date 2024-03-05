@@ -1,3 +1,4 @@
+"""Защита от троттлинга."""
 from rest_framework.throttling import AnonRateThrottle
 
 

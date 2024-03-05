@@ -13,8 +13,7 @@ django-filter==23.1
 django-templated-mail==1.1.1
 djangorestframework==3.14.0
 djoser==2.2.2
-drf-spectacular==0.26.3
-drf-yasg==1.21.7
+drf-spectacular==0.27.1
 gunicorn==21.2.0
 idna==3.4
 inflection==0.5.1
