@@ -31,5 +31,9 @@ jobs:
     name: Running flake8 check for code
     runs-on: ubuntu-22.04
     steps:
+
+      - name: Repository checkout
+        uses: actions/checkout@v4
+
       - name: Flake8 Code Check
         uses: ./.github/actions/flake8@ci-cd-pipelines

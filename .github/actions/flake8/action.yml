@@ -3,8 +3,6 @@ description: 'Run Flake8 to check Python code style and syntax'
 runs:
   using: 'composite'
   steps:
-    - name: Repository checkout
-      uses: actions/checkout@v4
     - name: Check Python version
       run: python --version
       shell: bash
