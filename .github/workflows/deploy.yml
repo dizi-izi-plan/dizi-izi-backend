@@ -1,21 +1,23 @@
 name: Deploy to server
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - develop
+    types:
+      - closed
+env:
+  workflow_path: dizi-izi-plan/dizi-izi-backend/.github/workflows
 
 jobs:
-  deploy:
-    name: Deploy to server
-    runs-on: ubuntu-22.04
-    steps:
+  flake8:
+    uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/check.yml@ci-cd-pipelines
 
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          script: |
-            cd /home/www/infra
-            
-            ./restart.sh all
+  docker:
+    needs: flake8
+    uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/docker.yml@ci-cd-pipelines
+
+  server:
+    needs: docker
+    uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/server_refresh.yml@ci-cd-pipelines

@@ -1,22 +1,16 @@
 name: Docker image build
 on:
+  workflow_call:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
-      - develop
-    types:
-      - closed
-  workflow_run:
-    workflows: [ "Check" ]
-    types:
-      - completed
 
 jobs:
   docker_image:
     if: github.event.pull_request.merged == true
     name: Create and push docker image
     runs-on: ubuntu-22.04
+    env:
+      docker_image_name: ${{ secrets.DOCKERHUB_USERNAME }}/${{ split(github.repository, '/')[1] }}
+
     steps:
 
       - name: Set up Docker Buildx
@@ -30,8 +24,9 @@ jobs:
 
       - name: Build and push image
         uses: docker/build-push-action@v5
+        run: echo "The name of the docker image is ${{ env.docker_image_name }}"
         with:
           push: true
           tags: |
-            diziizi/dizi-izi-backend:latest
-            diziizi/dizi-izi-backend:pull_${{ github.event.pull_request.number }}
+            ${{ env.docker_image_name }}:latest
+            ${{ env.docker_image_name }}:pull_${{ github.event.pull_request.number }}
