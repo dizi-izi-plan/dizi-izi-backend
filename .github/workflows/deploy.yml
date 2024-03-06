@@ -11,17 +11,11 @@ jobs:
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            cd /root/infra
-            touch .env
+            cd /home/www/infra
             
-            sudo docker compose pull backend
-            sudo docker compose stop
-            sudo docker compose rm -f backend
-            sudo docker image prune -f
-            sudo docker volume prune -f
-            sudo docker compose up -d
+            ./restart.sh all
