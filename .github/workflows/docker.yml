@@ -5,7 +5,6 @@ on:
 
 jobs:
   docker_image:
-    if: github.event.pull_request.merged == true
     name: Create and push docker image
     runs-on: ubuntu-22.04
     env:
@@ -22,9 +21,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - run: echo "The name of the docker image is ${{ env.docker_image_name }}"
+
       - name: Build and push image
         uses: docker/build-push-action@v5
-        run: echo "The name of the docker image is ${{ env.docker_image_name }}"
         with:
           push: true
           tags: |

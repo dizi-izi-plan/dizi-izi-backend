@@ -15,6 +15,7 @@ jobs:
     uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/check.yml@ci-cd-pipelines
 
   docker:
+    if: github.event.pull_request.merged == true
     needs: flake8
     uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/docker.yml@ci-cd-pipelines
 
