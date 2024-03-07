@@ -1,0 +1,32 @@
+name: Docker image build
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  docker_image:
+    name: Create and push docker image
+    runs-on: ubuntu-22.04
+    env:
+      docker_image_name: ${{ secrets.DOCKERHUB_USERNAME }}/${{ split(github.repository, '/')[1] }}
+
+    steps:
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - run: echo "The name of the docker image is ${{ env.docker_image_name }}"
+
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: |
+            ${{ env.docker_image_name }}:latest
+            ${{ env.docker_image_name }}:pull_${{ github.event.pull_request.number }}

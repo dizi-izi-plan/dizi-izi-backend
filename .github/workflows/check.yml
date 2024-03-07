@@ -1,0 +1,13 @@
+name: Check
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+
+jobs:
+  flake8:
+    name: Running flake8 check for code
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Flake8 Code Check
+        uses: dizi-izi-plan/dizi-izi-backend/.github/actions/flake8@ci-cd-pipelines
