@@ -1,11 +1,11 @@
-name: Restart and update server
+name: Update server
 on:
   workflow_call:
   workflow_dispatch:
 
 jobs:
   deploy:
-    name: Deploy to server
+    name: Restart and update server
     runs-on: ubuntu-22.04
     steps:
 
@@ -18,5 +18,4 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             cd /home/www/infra
-            
             ./restart.sh all
