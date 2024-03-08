@@ -1,0 +1,19 @@
+name: Deploy to server
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  flake8:
+    uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/check.yml@ci-cd-pipelines
+
+  docker:
+    needs: flake8
+    uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/docker.yml@ci-cd-pipelines
+
+  server:
+    needs: docker
+    uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/server_refresh.yml@ci-cd-pipelines
