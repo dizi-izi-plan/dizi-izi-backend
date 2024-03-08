@@ -1,21 +1,16 @@
 name: Deploy to server
 on:
   workflow_dispatch:
-  pull_request:
+  push:
     branches:
       - main
       - develop
-    types:
-      - closed
-env:
-  workflow_path: dizi-izi-plan/dizi-izi-backend/.github/workflows
 
 jobs:
   flake8:
     uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/check.yml@ci-cd-pipelines
 
   docker:
-    if: github.event.pull_request.merged == true
     needs: flake8
     uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/docker.yml@ci-cd-pipelines
 

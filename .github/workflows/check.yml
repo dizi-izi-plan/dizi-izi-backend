@@ -3,6 +3,13 @@ on:
   workflow_call:
   workflow_dispatch:
   push:
+    branches-ignore:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
 
 jobs:
   flake8:
@@ -11,3 +18,5 @@ jobs:
     steps:
       - name: Flake8 Code Check
         uses: dizi-izi-plan/dizi-izi-backend/.github/actions/flake8@ci-cd-pipelines
+
+      - run: echo "The name of the docker image is ${{ github.repository }}"

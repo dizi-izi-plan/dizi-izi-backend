@@ -7,8 +7,6 @@ jobs:
   docker_image:
     name: Create and push docker image
     runs-on: ubuntu-22.04
-    env:
-      docker_image_name: ${{ secrets.DOCKERHUB_USERNAME }}/${{ split(github.repository, '/')[1] }}
 
     steps:
 
@@ -21,12 +19,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - run: echo "The name of the docker image is ${{ env.docker_image_name }}"
+      - name: Create Docker Image Name
+        run: echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
+
+      - name: Set Commit SHA
+        run: echo "COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
           push: true
           tags: |
-            ${{ env.docker_image_name }}:latest
-            ${{ env.docker_image_name }}:pull_${{ github.event.pull_request.number }}
+            $IMAGE_NAME:latest
+            $IMAGE_NAME:$COMMIT_SHA
