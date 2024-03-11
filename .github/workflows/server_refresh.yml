@@ -1,6 +1,19 @@
 name: Update server
 on:
   workflow_call:
+    inputs:
+      server_host:
+        required: false
+        type: string
+      server_username:
+        required: false
+        type: string
+      server_ssh_key:
+        required: false
+        type: string
+      server_passphrase:
+        required: false
+        type: string
   workflow_dispatch:
 
 jobs:
@@ -12,10 +25,10 @@ jobs:
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          host: ${{ inputs.server_host || secrets.SERVER_HOST }}
+          username: ${{ inputs.server_username || secrets.SERVER_USERNAME }}
+          key: ${{ inputs.server_ssh_key || secrets.SSH_KEY }}
+          passphrase: ${{ inputs.server_passphrase || secrets.SSH_PASSPHRASE }}
           script: |
             cd /home/www/infra
             ./restart.sh all
