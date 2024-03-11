@@ -1,15 +1,24 @@
-name: Update server
+name: Server update & restart
 on:
-  workflow_call:
   workflow_dispatch:
+  workflow_call:
+    secrets:
+      SERVER_HOST:
+        required: true
+      SERVER_USERNAME:
+        required: true
+      SSH_KEY:
+        required: true
+      SSH_PASSPHRASE:
+        required: true
 
 jobs:
   deploy:
-    name: Restart and update server
+    name: Update & Restart Server
     runs-on: ubuntu-22.04
     steps:
 
-      - name: executing remote ssh commands using password
+      - name: Executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}

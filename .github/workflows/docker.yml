@@ -1,11 +1,15 @@
-name: Docker image build
+name: Docker build & push
 on:
   workflow_call:
-  workflow_dispatch:
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
 
 jobs:
   docker_image:
-    name: Create and push docker image
+    name: Build & Push Image
     runs-on: ubuntu-22.04
 
     steps:
@@ -22,7 +26,7 @@ jobs:
       - name: Create Docker Image Name
         run: echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
 
-      - name: Set Commit SHA
+      - name: Create Shorten Commit Hash
         run: echo "COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Build and push image
@@ -30,5 +34,5 @@ jobs:
         with:
           push: true
           tags: |
-            $IMAGE_NAME:latest
-            $IMAGE_NAME:$COMMIT_SHA
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ env.COMMIT_SHA }}
