@@ -17,4 +17,4 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Flake8 Code Check
-        uses: dizi-izi-plan/dizi-izi-backend/.github/actions/flake8@ci-cd-pipelines
+        uses: dizi-izi-plan/dizi-izi-backend/.github/actions/flake8@main
