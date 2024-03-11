@@ -1,4 +1,4 @@
-name: Check
+name: Tests
 on:
   workflow_call:
   workflow_dispatch:
@@ -13,10 +13,8 @@ on:
 
 jobs:
   flake8:
-    name: Running flake8 check for code
+    name: flake8 check
     runs-on: ubuntu-22.04
     steps:
       - name: Flake8 Code Check
         uses: dizi-izi-plan/dizi-izi-backend/.github/actions/flake8@ci-cd-pipelines
-
-      - run: echo "The name of the docker image is ${{ github.repository }}"

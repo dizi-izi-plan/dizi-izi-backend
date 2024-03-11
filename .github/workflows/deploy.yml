@@ -8,21 +8,24 @@ on:
 
 jobs:
   flake8:
+    name: Tests
     uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/check.yml@ci-cd-pipelines
 
   docker:
+    name: Docker
     needs: flake8
     uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/docker.yml@ci-cd-pipelines
-    with:
-      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
-      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   server:
+    name: Server
     needs: docker
     uses: dizi-izi-plan/dizi-izi-backend/.github/workflows/server_refresh.yml@ci-cd-pipelines
-    with:
-      server_host: ${{ secrets.SERVER_HOST }}
-      server_username: ${{ secrets.SERVER_USERNAME }}
-      server_ssh_key: ${{ secrets.SSH_KEY }}
-      server_passphrase: ${{ secrets.SSH_PASSPHRASE }}
+    secrets:
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
+      SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
 
