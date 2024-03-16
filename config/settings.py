@@ -11,13 +11,12 @@ SECRET_KEY = os.getenv("DJANGO_KEY", "some_key")
 
 DEBUG = os.getenv("DEBUG_KEY", "False")
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split()
+DOCKER_CONTAINER_NAME = os.getenv("DOCKER_CONTAINER_NAME")
+DOMAIN = os.getenv("DOMAIN")
+SERVER_IP = os.getenv("SERVER_IP")
+ALLOWED_HOSTS.extend([DOCKER_CONTAINER_NAME, DOMAIN, SERVER_IP])
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.127.0.0.1",
-    "https://*localhost",
-    "http://localhost",
-]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
