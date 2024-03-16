@@ -17,6 +17,9 @@ DOMAIN = os.getenv("DOMAIN")
 SERVER_IP = os.getenv("SERVER_IP")
 ALLOWED_HOSTS.extend([DOCKER_CONTAINER_NAME, DOMAIN, SERVER_IP])
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://" + DOMAIN,
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
