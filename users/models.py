@@ -1,22 +1,27 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.validators import EmailValidator
 from django.db import models
+
+from users.validators import PastDateValidator
+# TODO: раскомментировать после создания моделей тарифов
+# from users.services import initialize_basic_user_tariff
 
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None):
-        from info.models import UsersTariffs, Tariff
         if not email:
-            raise ValueError('У пользователя должен быть email.')
+            raise ValueError("У пользователя должен быть email.")
         email = self.normalize_email(email)
         user = self.model(email=email)
         user.set_password(password)
         user.save()
+
         # при регистрации пользователя создается тариф по умолчанию
-        if Tariff.objects.exists():
-            UsersTariffs.objects.get_or_create(
-                user=user,
-                tariff=Tariff.objects.get(is_default=True),
-            )
+        # TODO: раскомментировать после создания моделей тарифов
+        # initialize_basic_user_tariff(user)
+
         return user
 
     def create_superuser(self, email, password=None):
@@ -24,9 +29,7 @@ class CustomUserManager(BaseUserManager):
             email,
             password=password,
         )
-        user.set_password(password)
         user.is_active = True
-        user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
         user.save()
@@ -34,32 +37,41 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
+    # Присваивает каждому пользователю уникальный id с использованием uuid4 для обеспечения безопасности.
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = None
     email = models.EmailField(
-        'Email',
         db_index=True,
         max_length=254,
         unique=True,
+        validators=[EmailValidator()],
+        verbose_name="Email",
+        error_messages={
+            "unique": "Пользователь с таким email уже существует.",
+        },
     )
-    city = models.CharField('Город', max_length=50, null=True, blank=True)
-    birthday = models.DateField(blank=True, null=True)
-    i_am_designer = models.BooleanField(default=False, verbose_name='дизайнер')
-    password = models.CharField('Password', max_length=150)
-    first_name = models.CharField('Имя', max_length=50, null=True, blank=True)
-
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False, verbose_name='админ')
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
+    city = models.CharField(
+        verbose_name="Город",
+        max_length=50,
+        null=True,
+        blank=True
+    )
+    birthday = models.DateField(
+        blank=True,
+        null=True,
+        validators=[PastDateValidator()],  # ограничивает дату текущим днем
+        help_text="Введите дату в прошлом. Будущие даты не допустимы.",
+        verbose_name="дата рождения",
+    )
+    is_designer = models.BooleanField(
+        default=False,
+        verbose_name="дизайнер"
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
-
-    class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
 
     def __str__(self):
         return self.email

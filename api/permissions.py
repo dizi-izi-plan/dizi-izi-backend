@@ -18,7 +18,7 @@ class CustumPer(permissions.BasePermission):
     ):
         if request.user.is_anonymous:
             return False
-        return request.user.is_admin
+        return request.user.is_staff
 
     def has_object_permission(
         self,
@@ -55,7 +55,7 @@ class ReviewCommentPermission(permissions.BasePermission):
     ):
         return (
             request.method in permissions.SAFE_METHODS
-            or request.user.is_admin
+            or request.user.is_staff
             or request.user.is_moderator
             or request.user.username == obj.author.username
         )
@@ -73,7 +73,7 @@ class IsSuperUserOrReadOnly(permissions.BasePermission):
         view,
     ):
         return (
-            request.method in permissions.SAFE_METHODS or request.user.is_admin
+            request.method in permissions.SAFE_METHODS or request.user.is_staff
         )
 
 
