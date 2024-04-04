@@ -3,11 +3,7 @@ from typing import Union, Dict
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.db import IntegrityError
-from djoser.serializers import (
-    UserCreateSerializer,
-    UserCreatePasswordRetypeSerializer,
-)
+from djoser.serializers import UserCreateSerializer
 from django.core import exceptions as django_exceptions
 from rest_framework import serializers
 
@@ -15,10 +11,11 @@ User = get_user_model()
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
-    password = serializers.CharField(
-        style={"input_type": "password"},
-        write_only=True,
-    )
+    """
+    Сериализатор для создания пользователей. Расширяет стандартный сериализатор Djoser UserCreateSerializer.
+
+    Примечание: В настоящий момент изменения не активированы для использования в проекте.
+    """
 
     class Meta(UserCreateSerializer.Meta):
         model = User
@@ -28,7 +25,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             "email",
             "birthday",
             "city",
-            "i_am_designer",
+            "is_designer",
             "password",
         )
 
@@ -113,8 +110,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
                 "first_name", instance.first_name,
             )
             instance.email = validated_data.get("email", instance.email)
-            instance.i_am_designer = validated_data.get(
-                "i_am_designer", instance.i_am_designer,
+            instance.is_designer = validated_data.get(
+                "is_designer", instance.is_designer,
             )
             instance.birthday = validated_data.get(
                 "birthday", instance.birthday,
@@ -127,14 +124,3 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             raise serializers.ValidationError(
                 "Вы не можете изменять данные других пользователей.",
             )
-
-
-class CustomUserCreatePasswordRetypeSerializer(
-    UserCreatePasswordRetypeSerializer,
-):
-    def create(self, validated_data):
-        try:
-            user = self.perform_create(validated_data)
-        except IntegrityError:
-            self.fail("cannot_create_user")
-        return user
