@@ -10,13 +10,18 @@ from users.validators import PastDateValidator
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None):
+    def _create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError("У пользователя должен быть email.")
         email = self.normalize_email(email)
-        user = self.model(email=email)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()
+
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        user = self._create_user(email, password, **extra_fields)
 
         # при регистрации пользователя создается тариф по умолчанию
         # TODO: раскомментировать после создания моделей тарифов
@@ -24,10 +29,11 @@ class CustomUserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, email, password=None):
-        user = self.create_user(
+    def create_superuser(self, email, password=None, **extra_fields):
+        user = self._create_user(
             email,
             password=password,
+            **extra_fields,
         )
         user.is_active = True
         user.is_staff = True
@@ -69,7 +75,7 @@ class CustomUser(AbstractUser):
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["first_name", "city", "birthday", "is_designer"]
 
     objects = CustomUserManager()
 
