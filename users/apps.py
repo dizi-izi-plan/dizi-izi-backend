@@ -18,4 +18,5 @@ class UsersConfig(AppConfig):
             Пометка `# noqa: E402` используется для указания инструментам статического анализа
             (например, flake8), что данное правило (E402) не должно применяться к этой строке.
         """
-        import users.schema_djoser  # noqa: E402
+        import users.schema.schema_djoser
+        import users.schema.schema_djoser_authtoken
