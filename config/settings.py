@@ -164,6 +164,7 @@ DJOSER = {
     "LOGIN_FIELD": "email",
     # тут подключается фронт с отправкой на url: /api/v1/auth/users/reset_password_confirm/
     "PASSWORD_RESET_CONFIRM_URL": "api/v1/auth/users/password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "api/v1/auth/users/email/reset/confirm/{uid}/{token}",
     "PERMISSIONS": {
         "user_delete": ["rest_framework.permissions.IsAdminUser"],
     },
