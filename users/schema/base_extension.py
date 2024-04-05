@@ -1,6 +1,6 @@
-from drf_spectacular.extensions import OpenApiViewExtension
-from drf_spectacular.utils import extend_schema_view, extend_schema
 from djoser.conf import settings as djoser_settings
+from drf_spectacular.extensions import OpenApiViewExtension
+from drf_spectacular.utils import extend_schema, extend_schema_view
 
 
 class BaseExtension(OpenApiViewExtension):

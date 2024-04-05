@@ -1,10 +1,10 @@
 from datetime import time
-from typing import Union, Dict
+from typing import Dict, Union
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from djoser.serializers import UserCreateSerializer
 from django.core import exceptions as django_exceptions
+from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
 User = get_user_model()
@@ -46,10 +46,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         """
         super().validate_empty_values(data)
 
-        if (
-            self.context["request"].method == "PATCH"
-            and data.get("password") == ""
-        ):
+        if (self.context["request"].method == "PATCH"
+                and data.get("password") == ""):
             return True, data
 
         return False, data
@@ -120,7 +118,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
                 instance.set_password(validated_data["password"])
             instance.save()
             return instance
-        else:
-            raise serializers.ValidationError(
-                "Вы не можете изменять данные других пользователей.",
-            )
+
+        raise serializers.ValidationError(
+            "Вы не можете изменять данные других пользователей.",
+        )

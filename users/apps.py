@@ -19,4 +19,4 @@ class UsersConfig(AppConfig):
             (например, flake8), что данное правило (E402) не должно применяться к этой строке.
         """
         import users.schema.schema_djoser  # noqa: E402
-        import users.schema.schema_djoser_authtoken  # noqa: E402
+        import users.schema.schema_djoser_authtoken  # noqa: E402, F401

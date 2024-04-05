@@ -5,6 +5,7 @@ from django.core.validators import EmailValidator
 from django.db import models
 
 from users.validators import PastDateValidator
+
 # TODO: раскомментировать после создания моделей тарифов
 # from users.services import initialize_basic_user_tariff
 
@@ -27,7 +28,7 @@ class CustomUserManager(BaseUserManager):
         # TODO: раскомментировать после создания моделей тарифов
         # initialize_basic_user_tariff(user)
 
-        return user
+        return user  # noqa: R504
 
     def create_superuser(self, email, password=None, **extra_fields):
         user = self._create_user(
