@@ -1,3 +1,4 @@
+from django.conf import settings
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
@@ -8,7 +9,6 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.response import Response
 
-from config.settings import PROJECT_NAME_BY_DEFAULT
 
 User = get_user_model()
 
@@ -29,9 +29,9 @@ def get_name(user: User) -> str:
     if name in all_names:
         new_number = max(
             all_names,
-            key=lambda value: int(value[len(PROJECT_NAME_BY_DEFAULT):]),
+            key=lambda value: int(value[len(settings.PROJECT_NAME_BY_DEFAULT):]),
         )
-        return f"Проект{int(new_number[len(PROJECT_NAME_BY_DEFAULT) :]) + 1}"
+        return f"Проект{int(new_number[len(settings.PROJECT_NAME_BY_DEFAULT) :]) + 1}"
     else:
         return name
 

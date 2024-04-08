@@ -1,11 +1,8 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 
 from furniture.utils import get_name
-from config.settings import (
-    MAX_LENGTH_FURNITURE_NAME,
-    MAX_LENGTH_ROOM_NAME,
-)
 from furniture.validators import minimum_len_width_validator
 
 User = get_user_model()
@@ -38,7 +35,7 @@ class Furniture(models.Model):
 
     name = models.CharField(
         'Наименование мебели',
-        max_length=MAX_LENGTH_FURNITURE_NAME,
+        max_length=settings.MAX_LENGTH_FURNITURE_NAME,
         unique=True,
     )
     name_english = models.CharField(
@@ -82,7 +79,7 @@ class Furniture(models.Model):
     )
     power_socket_type = models.CharField(
         'Тип электроточки',
-        max_length=MAX_LENGTH_FURNITURE_NAME,
+        max_length=settings.MAX_LENGTH_FURNITURE_NAME,
         unique=False,
     )
     first_power_socket_height = models.IntegerField(
@@ -203,7 +200,7 @@ class Room(models.Model):
     )
     name = models.CharField(
         'Название планировки',
-        max_length=MAX_LENGTH_ROOM_NAME,
+        max_length=settings.MAX_LENGTH_ROOM_NAME,
     )
     created = models.DateTimeField(
         auto_now_add=True,
