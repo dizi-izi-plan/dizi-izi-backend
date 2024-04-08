@@ -15,7 +15,7 @@ from furniture.models import (
     TypeOfRoom,
     Coordinate,
 )
-from info.models import Tariff, UsersTariffs
+from tariff.models import Tariff, UsersTariffs
 from layout_algorithm import core
 
 FIELDS_COORDINATE = (

@@ -18,7 +18,7 @@ from furniture.models import (
     Room,
     Window,
 )
-from info.models import Tariff, UsersTariffs
+from tariff.models import Tariff, UsersTariffs
 from api.v1.filters import FurnitureFilter
 from api.v1.serializers import (
     FurnitureSerializer,

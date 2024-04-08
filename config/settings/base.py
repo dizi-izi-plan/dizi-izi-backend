@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     "social_django",
     "djoser",
     "api",
-    "info",
+    "tariff",
     "drf_spectacular",
 ]
 
