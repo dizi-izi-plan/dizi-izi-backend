@@ -11,12 +11,14 @@ SECRET_KEY = os.getenv("DJANGO_KEY", "some_key")
 
 DEBUG = os.getenv("DEBUG_KEY", "False")
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split()
+DOCKER_CONTAINER_NAME = os.getenv("DOCKER_CONTAINER_NAME")
+DOMAIN = os.getenv("DOMAIN")
+SERVER_IP = os.getenv("SERVER_IP")
+ALLOWED_HOSTS.extend([DOCKER_CONTAINER_NAME, DOMAIN, SERVER_IP])
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.127.0.0.1",
-    "https://*localhost",
-    "http://localhost",
+    f"https://{DOMAIN}",
 ]
 
 INSTALLED_APPS = [
@@ -70,7 +72,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("DB_ENGINE"),
-        "NAME": os.getenv("DB_NAME"),
+        "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("DB_HOST"),
@@ -113,11 +115,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 465
-EMAIL_HOST_USER = "dizi.izi.plan@gmail.com"
-DEFAULT_FROM_EMAIL = "dizi.izi.plan@gmail.com"
-EMAIL_HOST_PASSWORD = "tkttxsrnycqeijpw"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
@@ -155,19 +157,14 @@ SPECTACULAR_SETTINGS = {
 DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": True,
     "SEND_CONFIRMATION_EMAIL": True,
-    "ACTIVATION_URL": "api/v1/auth/users/activate/{uid}/{token}",
     # тут подключается фронт с активацией на url: /api/v1/auth/users/activation/
+    "ACTIVATION_URL": "api/v1/auth/users/activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
     "LOGIN_FIELD": "email",
-    "PASSWORD_RESET_CONFIRM_URL": "api/v1/auth/users/password/reset/confirm/{uid}/{token}",
     # тут подключается фронт с отправкой на url: /api/v1/auth/users/reset_password_confirm/
-    "SERIALIZERS": {
-        "user_create": "users.serializers.CustomUserCreateSerializer",
-        "user": "users.serializers.CustomUserCreateSerializer",
-        "current_user": "users.serializers.CustomUserCreateSerializer",
-        "user_create_password_retype": "users.serializers.CustomUserCreatePasswordRetypeSerializer",
-    },
+    "PASSWORD_RESET_CONFIRM_URL": "api/v1/auth/users/password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "api/v1/auth/users/email/reset/confirm/{uid}/{token}",
     "PERMISSIONS": {
         "user_delete": ["rest_framework.permissions.IsAdminUser"],
     },
