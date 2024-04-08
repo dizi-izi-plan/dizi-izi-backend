@@ -20,12 +20,11 @@ from furniture.models import (
 )
 from tariff.models import Tariff, UsersTariffs
 from furniture.filters import FurnitureFilter
-from api.v1.serializers import (
+from furniture.serializers import (
     FurnitureSerializer,
     RoomSerializer,
-    TariffSerializer,
-    ChangeTariffSerializer,
 )
+from tariff.serializers import TariffSerializer, ChangeTariffSerializer
 from api.permissions import IsSuperUserOrReadOnly, IsTariffAccepted
 from furniture.utils import send_pdf_file
 
