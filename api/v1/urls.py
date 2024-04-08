@@ -2,8 +2,9 @@ from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
 
-from .views import (FurnitureViewSet, RoomCopyView, RoomViewSet, SendPDFView,
-                    APITariff, APIChangeTariff)
+from furniture.views import (FurnitureViewSet, RoomCopyView, RoomViewSet, SendPDFView)
+from tariff.views import APITariff, APIChangeTariff
+
 router = DefaultRouter()
 router.register('furniture', FurnitureViewSet, basename='furniture')
 router.register('rooms', RoomViewSet, basename='room')

@@ -1,9 +1,6 @@
-from django.db.models import Exists, OuterRef, QuerySet
-from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, status
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import (
     IsAuthenticated,
@@ -18,14 +15,12 @@ from furniture.models import (
     Room,
     Window,
 )
-from tariff.models import Tariff, UsersTariffs
 from furniture.filters import FurnitureFilter
 from furniture.serializers import (
     FurnitureSerializer,
     RoomSerializer,
 )
-from tariff.serializers import TariffSerializer, ChangeTariffSerializer
-from api.permissions import IsSuperUserOrReadOnly, IsTariffAccepted
+from api.permissions import IsTariffAccepted
 from furniture.utils import send_pdf_file
 
 
@@ -178,54 +173,3 @@ class SendPDFView(APIView):
         return send_pdf_file(subj, email, up_file, text)
 
 
-class APITariff(ListAPIView, CreateAPIView):
-    """Список тарифов.
-
-    Просмотр доступен для всех. Редактирование только для суперпользователя.
-    """
-
-    serializer_class = TariffSerializer
-    permission_classes = (IsSuperUserOrReadOnly,)
-
-    def get_queryset(self) -> QuerySet:
-        """Получение `queryset`а тарифов.
-
-        Текущий пользователь видит, какой тариф у него активен. Другие тарифы
-        маркируются, как неактивные. Для незарегистрированного пользователя
-        возвращаются все тарифы.
-
-        Returns:
-            Queryset: queryset с тарифами.
-        """
-        if self.request.user.is_authenticated:
-            return Tariff.objects.annotate(
-                is_active=Exists(
-                    UsersTariffs.objects.filter(
-                        user=self.request.user, tariff=OuterRef("pk"),
-                    ),
-                ),
-            )
-        return Tariff.objects.all()
-
-
-class APIChangeTariff(APIView):
-    """Изменяем тариф."""
-
-    permission_classes = [
-        IsAuthenticated,
-    ]
-
-    def patch(self, request: HttpRequest, name_english: str) -> Response:
-        """Добавляем тариф пользователю."""
-        new_tariff = get_object_or_404(Tariff, name_english=name_english)
-        user_tariff = get_object_or_404(UsersTariffs, user=request.user)
-        serializer = ChangeTariffSerializer(
-            user_tariff,
-            data={"user": request.user.id, "tariff": new_tariff.id},
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user, tariff=new_tariff)
-        return Response(
-            status=status.HTTP_205_RESET_CONTENT,
-            data={"message": "Тариф изменен"},
-        )
