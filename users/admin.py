@@ -1,92 +1,29 @@
-from django import forms
 from django.contrib import admin
-from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UserCreationForm
 
-from users.models import CustomUser
-
-admin.site.unregister(CustomUser)
 User = get_user_model()
+# Отменяет регистрацию модели User для избежания конфликтов при кастомизации админ-панели.
+admin.site.unregister(User)
 
 
-class MyUserCreationForm(UserCreationForm):
-    password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
-    password2 = forms.CharField(
-        label="Password confirmation", widget=forms.PasswordInput,
-    )
-
-    class Meta:
-        model = CustomUser
-        fields = [
-            "email",
-            "is_admin",
-            "city",
-        ]
-
-    def clean_password2(self) -> str:
-        """Проверка на совпадения паролей.
-
-        Returns:
-            Возвращает пароль.
-        """
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
-            raise ValidationError("Passwords don't match")
-        return password2
-
-    def save(self, commit=True) -> User:
-        """Сохранение пароля в хеш формате.
-
-        Returns:
-            Возвращает пользователя.
-        """
-
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
-        if commit:
-            user.save()
-        return user
-
-
-@admin.register(CustomUser)
+@admin.register(User)
 class MyUserAdmin(UserAdmin):
-    add_form = MyUserCreationForm
-    list_display = ["email", "is_admin", "city", "i_am_designer"]
+    list_display = ["email", "is_active", "is_designer", "is_staff", "is_superuser",]
+    list_filter = ["is_active", "is_designer", "is_staff", "is_superuser",]
     ordering = [
         "email",
     ]
     add_fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "email",
-                    "first_name",
-                    "city",
-                    "birthday",
-                    "password1",
-                    "password2",
-                ),
-            },
-        ),
+        (None, {"fields": ("email", "password1", "password2",)}),
+        ("Персональная информация", {"fields": ("first_name", "city", "birthday",)}),
+        ("Права доступа", {"fields": ("is_active", "is_designer", "is_staff", "is_superuser")}),
+        ("Даты регистрации и последнего входа", {"fields": ("date_joined", "last_login",)}),
     )
     fieldsets = (
         (None, {"fields": ("email",)}),
-        ("Personal Info", {"fields": ("first_name",)}),
-        ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser")}),
-        ("Important dates", {"fields": ("last_login",)}),
+        ("Персональная информация", {"fields": ("first_name", "city", "birthday",)}),
+        ("Права доступа", {"fields": ("is_active", "is_designer", "is_staff", "is_superuser")}),
+        ("Даты регистрации и последнего входа", {"fields": ("date_joined", "last_login",)}),
+        ("Разрешения пользователя", {"fields": ("user_permissions",)})
     )
-
-    def save_model(self, request, obj, form, change):
-        email = form.cleaned_data["email"]
-        if not change:
-            obj = CustomUser.objects.create_user(
-                email=email,
-            )
-            obj.set_password(form.cleaned_data["password1"])
-            obj.save()
-
-        return super().save_model(request, obj, form, change)
