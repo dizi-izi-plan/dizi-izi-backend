@@ -19,7 +19,7 @@ from furniture.models import (
     Window,
 )
 from tariff.models import Tariff, UsersTariffs
-from api.v1.filters import FurnitureFilter
+from furniture.filters import FurnitureFilter
 from api.v1.serializers import (
     FurnitureSerializer,
     RoomSerializer,
@@ -27,7 +27,7 @@ from api.v1.serializers import (
     ChangeTariffSerializer,
 )
 from api.permissions import IsSuperUserOrReadOnly, IsTariffAccepted
-from ..utils import send_pdf_file
+from furniture.utils import send_pdf_file
 
 
 class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):

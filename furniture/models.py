@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from api.utils import get_name
+from furniture.utils import get_name
 from config.settings import (
     MAX_LENGTH_FURNITURE_NAME,
     MAX_LENGTH_ROOM_NAME,
