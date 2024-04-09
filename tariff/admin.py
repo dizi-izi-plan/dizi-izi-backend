@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from info.models import (
+from tariff.models import (
     Tariff,
     UsersTariffs,
     PossibleActionsTariff,

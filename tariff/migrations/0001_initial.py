@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('start_date', models.DateTimeField(auto_now_add=True, verbose_name='Тариф приобретен')),
-                ('tariff', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_tariff', to='info.tariff', verbose_name='Тариф Пользователя')),
+                ('tariff', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_tariff', to='tariff.tariff', verbose_name='Тариф Пользователя')),
             ],
             options={
                 'verbose_name': 'Пользователь: Тариф',
