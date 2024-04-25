@@ -8,7 +8,7 @@ from furniture.validators import minimum_len_width_validator
 User = get_user_model()
 
 
-class TypeOfRoom(models.Model):
+class RoomType(models.Model):
     """Типы комнат для мебели."""
 
     name = models.CharField(
@@ -70,7 +70,7 @@ class Furniture(models.Model):
         null=True,
     )
     type_of_rooms = models.ForeignKey(
-        TypeOfRoom,
+        "RoomType",
         on_delete=models.CASCADE,
         related_name='furniture',
         verbose_name='Комната',
@@ -120,6 +120,7 @@ class Furniture(models.Model):
 
 class Coordinate(models.Model):
     """Модель координаты."""
+
     x = models.PositiveIntegerField(
         verbose_name='X',
     )
@@ -131,11 +132,11 @@ class Coordinate(models.Model):
         return f'x={self.x}, y={self.y}'
 
 
-class RoomCoordinates(models.Model):
+class PlacementCoordinates(models.Model):
     """Абстрактная модель с указателем на помещение и координаты."""
 
     room = models.ForeignKey(
-        'Room',
+        "RoomLayout",
         on_delete=models.CASCADE,
         verbose_name='Комната',
         related_name='%(class)ss',
@@ -172,7 +173,7 @@ class RoomCoordinates(models.Model):
         abstract = True
 
 
-class Placement(RoomCoordinates):
+class FurniturePlacement(PlacementCoordinates):
     """Размещение мебели в помещении."""
 
     furniture = models.ForeignKey(
@@ -190,8 +191,9 @@ class Placement(RoomCoordinates):
         return f'{self.furniture.name} расположена в {self.room}'
 
 
-class Room(models.Model):
+class RoomLayout(models.Model):
     """Модель планировки."""
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -229,7 +231,7 @@ class Room(models.Model):
     )
     furniture_placement = models.ManyToManyField(
         'Furniture',
-        through='Placement',
+        through='FurniturePlacement',
     )
 
     class Meta:
@@ -246,7 +248,7 @@ class Room(models.Model):
 
         M2M отношения не копируются.
         """
-        return Room.objects.create(
+        return RoomLayout.objects.create(
             user=self.user,
             name=get_name(self.user),
             first_wall=self.first_wall,
@@ -256,7 +258,7 @@ class Room(models.Model):
         )
 
 
-class PowerSocket(RoomCoordinates):
+class PowerSocketPlacement(PlacementCoordinates):
     """Модель размещения розетки в помещении."""
 
     class Meta:
@@ -267,7 +269,7 @@ class PowerSocket(RoomCoordinates):
         return f'Розетка расположена в {self.room}'
 
 
-class Door(RoomCoordinates):
+class DoorPlacement(PlacementCoordinates):
     """Модель размещения двери в помещении."""
 
     width = models.PositiveIntegerField(
@@ -288,7 +290,7 @@ class Door(RoomCoordinates):
         return f'Дверь расположена в {self.room}'
 
 
-class Window(RoomCoordinates):
+class WindowPlacement(PlacementCoordinates):
     """Модель размещения окна в помещении."""
 
     length = models.PositiveIntegerField(

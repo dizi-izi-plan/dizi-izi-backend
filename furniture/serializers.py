@@ -5,12 +5,12 @@ from django.db import transaction
 
 from furniture.models import (
     Furniture,
-    Room,
-    Placement,
-    PowerSocket,
-    Door,
-    Window,
-    TypeOfRoom,
+    RoomLayout,
+    FurniturePlacement,
+    PowerSocketPlacement,
+    DoorPlacement,
+    WindowPlacement,
+    RoomType,
     Coordinate,
 )
 from layout_algorithm import core
@@ -27,7 +27,7 @@ User = get_user_model()
 
 class TypeOfRoomSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TypeOfRoom
+        model = RoomType
         fields = ("name", "slug")
 
 
@@ -78,7 +78,7 @@ class PlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
 
     class Meta:
         fields = ("furniture",) + FIELDS_COORDINATE
-        model = Placement
+        model = FurniturePlacement
 
 
 class PowerSocketSerializer(serializers.ModelSerializer, AbstractCoordinates):
@@ -86,7 +86,7 @@ class PowerSocketSerializer(serializers.ModelSerializer, AbstractCoordinates):
 
     class Meta:
         fields = FIELDS_COORDINATE
-        model = PowerSocket
+        model = PowerSocketPlacement
 
 
 class DoorSerializer(serializers.ModelSerializer, AbstractCoordinates):
@@ -97,7 +97,7 @@ class DoorSerializer(serializers.ModelSerializer, AbstractCoordinates):
             "width",
             "open_inside",
         ) + FIELDS_COORDINATE
-        model = Door
+        model = DoorPlacement
 
 
 class WindowSerializer(serializers.ModelSerializer, AbstractCoordinates):
@@ -108,7 +108,7 @@ class WindowSerializer(serializers.ModelSerializer, AbstractCoordinates):
             "length",
             "width",
         ) + FIELDS_COORDINATE
-        model = Window
+        model = WindowPlacement
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -147,7 +147,7 @@ class RoomSerializer(serializers.ModelSerializer):
             "windows",
             "user",
         )
-        model = Room
+        model = RoomLayout
         read_only = ("id",)
 
     @transaction.atomic
@@ -180,57 +180,57 @@ class RoomSerializer(serializers.ModelSerializer):
         doors = validated_data.pop("doors")
         windows = validated_data.pop("windows")
         power_sockets = validated_data.pop("powersockets")
-        room = Room.objects.create(**validated_data)
+        room = RoomLayout.objects.create(**validated_data)
 
         furniture_placement = []
         for placement in room_placement:
             furniture = placement["furniture"]
             coordinates = _create_by_coordinate(placement)
             furniture_placement.append(
-                Placement(
+                FurniturePlacement(
                     furniture=furniture,
                     room=room,
                     **coordinates,
                 ),
             )
-        Placement.objects.bulk_create(furniture_placement)
+        FurniturePlacement.objects.bulk_create(furniture_placement)
 
         room_doors = []
         for door in doors:
             coordinates = _create_by_coordinate(door)
             room_doors.append(
-                Door(
+                DoorPlacement(
                     width=door["width"],
                     open_inside=door["open_inside"],
                     room=room,
                     **coordinates,
                 ),
             )
-        Door.objects.bulk_create(room_doors)
+        DoorPlacement.objects.bulk_create(room_doors)
 
         room_windows = []
         for window in windows:
             coordinates = _create_by_coordinate(window)
             room_windows.append(
-                Window(
+                WindowPlacement(
                     width=window["width"],
                     length=window["length"],
                     room=room,
                     **coordinates,
                 ),
             )
-        Window.objects.bulk_create(room_windows)
+        WindowPlacement.objects.bulk_create(room_windows)
 
         room_powersocket = []
         for powersocket in power_sockets:
             coordinates = _create_by_coordinate(powersocket)
             room_powersocket.append(
-                PowerSocket(
+                PowerSocketPlacement(
                     room=room,
                     **coordinates,
                 ),
             )
-        PowerSocket.objects.bulk_create(room_powersocket)
+        PowerSocketPlacement.objects.bulk_create(room_powersocket)
 
         furniture_placement = []
         if selected_furniture:
@@ -274,7 +274,7 @@ class RoomCopySerializer(serializers.ModelSerializer):
     furniture_placement = PlacementSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Room
+        model = RoomLayout
         fields = [
             "id",
             "user",

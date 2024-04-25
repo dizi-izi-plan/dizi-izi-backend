@@ -3,16 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
 
-from .models import (
-    Door,
-    Furniture,
-    Placement,
-    PowerSocket,
-    Room,
-    Window,
-    Coordinate,
-    TypeOfRoom,
-)
+from .models import (Coordinate, DoorPlacement, Furniture, FurniturePlacement, PowerSocketPlacement, RoomLayout,
+                     RoomType, WindowPlacement)
 
 admin.site.unregister(Group)
 admin.site.register(get_user_model())
@@ -49,25 +41,25 @@ class FurnitureAdmin(admin.ModelAdmin):
 class PlacementInline(admin.TabularInline):
     """Настройка для размещения мебели в комнате."""
 
-    model = Placement
+    model = FurniturePlacement
 
 
 class PowerSocketInline(admin.TabularInline):
     """Настройка для размещения розеток в комнате."""
 
-    model = PowerSocket
+    model = PowerSocketPlacement
 
 
 class DoorInline(admin.TabularInline):
     """Настройка для размещения дверей в комнате."""
 
-    model = Door
+    model = DoorPlacement
 
 
 class WindowInline(admin.TabularInline):
     """Настройка для размещения окон в комнате."""
 
-    model = Window
+    model = WindowPlacement
 
 
 @admin.register(Coordinate)
@@ -81,7 +73,7 @@ class CoordinateAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(Room)
+@admin.register(RoomLayout)
 class RoomAdmin(admin.ModelAdmin):
     """Админка комнаты."""
 
@@ -98,7 +90,7 @@ class RoomAdmin(admin.ModelAdmin):
     inlines = (PlacementInline, PowerSocketInline, DoorInline, WindowInline)
 
 
-@admin.register(TypeOfRoom)
+@admin.register(RoomType)
 class TypeOfRoomAdmin(admin.ModelAdmin):
     list_display = ("pk", "name", "slug")
     search_fields = ("name",)
