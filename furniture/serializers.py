@@ -25,7 +25,7 @@ FIELDS_COORDINATE = (
 User = get_user_model()
 
 
-class TypeOfRoomSerializer(serializers.ModelSerializer):
+class RoomTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomType
         fields = ("name", "slug")
@@ -34,7 +34,7 @@ class TypeOfRoomSerializer(serializers.ModelSerializer):
 class FurnitureSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
 
-    type_of_rooms = TypeOfRoomSerializer()
+    type_of_rooms = RoomTypeSerializer()
 
     class Meta:
         fields = (
@@ -51,7 +51,7 @@ class FurnitureSerializer(serializers.ModelSerializer):
 
 
 class CoordinateSerializer(serializers.ModelSerializer):
-    """Сериализатор для координат x,y."""
+    """Сериализатор для координат x, y."""
 
     class Meta:
         fields = (
@@ -73,7 +73,7 @@ class AbstractCoordinates(serializers.Serializer):
         abstract = True
 
 
-class PlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
+class FurniturePlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
     """Сериализатор для размещения мебели в комнате."""
 
     class Meta:
@@ -81,7 +81,7 @@ class PlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
         model = FurniturePlacement
 
 
-class PowerSocketSerializer(serializers.ModelSerializer, AbstractCoordinates):
+class PowerSocketPlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
     """Сериализатор для размещения розеток в помещении."""
 
     class Meta:
@@ -89,7 +89,7 @@ class PowerSocketSerializer(serializers.ModelSerializer, AbstractCoordinates):
         model = PowerSocketPlacement
 
 
-class DoorSerializer(serializers.ModelSerializer, AbstractCoordinates):
+class DoorPlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
     """Сериализатор для размещения розеток в помещении."""
 
     class Meta:
@@ -100,7 +100,7 @@ class DoorSerializer(serializers.ModelSerializer, AbstractCoordinates):
         model = DoorPlacement
 
 
-class WindowSerializer(serializers.ModelSerializer, AbstractCoordinates):
+class WindowPlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
     """Сериализатор для размещения окон в помещении."""
 
     class Meta:
@@ -111,26 +111,26 @@ class WindowSerializer(serializers.ModelSerializer, AbstractCoordinates):
         model = WindowPlacement
 
 
-class RoomSerializer(serializers.ModelSerializer):
+class RoomLayoutSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
 
     user = UserCreateSerializer(read_only=True)
-    furniture_placement = PlacementSerializer(many=True, source="placements")
+    furniture_placement = FurniturePlacementSerializer(many=True, source="placements")
     selected_furniture = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Furniture.objects.all(),
         write_only=True,
         allow_empty=True,
     )
-    power_sockets = PowerSocketSerializer(
+    power_sockets = PowerSocketPlacementSerializer(
         many=True,
         # read_only=True,
         source="powersockets",
     )
-    doors = DoorSerializer(
+    doors = DoorPlacementSerializer(
         many=True,
     )
-    windows = WindowSerializer(many=True)
+    windows = WindowPlacementSerializer(many=True)
 
     class Meta:
         fields = (
@@ -155,7 +155,7 @@ class RoomSerializer(serializers.ModelSerializer):
         """Создание помещения с расстановкой."""
 
         def _create_by_coordinate(placement):
-            """Создать и вернуть координаты для элемента (мебель, окно,...)"""
+            """Создать и вернуть координаты для элемента (мебель, окно, ...)"""
             return {
                 "north_west": Coordinate.objects.create(
                     x=placement["north_west"]["x"],
@@ -270,8 +270,8 @@ class RoomSerializer(serializers.ModelSerializer):
         return room
 
 
-class RoomCopySerializer(serializers.ModelSerializer):
-    furniture_placement = PlacementSerializer(many=True, read_only=True)
+class RoomLayoutCopySerializer(serializers.ModelSerializer):
+    furniture_placement = FurniturePlacementSerializer(many=True, read_only=True)
 
     class Meta:
         model = RoomLayout

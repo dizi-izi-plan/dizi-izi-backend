@@ -18,7 +18,7 @@ from furniture.models import (
 from furniture.filters import FurnitureFilter
 from furniture.serializers import (
     FurnitureSerializer,
-    RoomSerializer,
+    RoomLayoutSerializer,
 )
 from api.permissions import IsTariffAccepted
 from furniture.utils import send_pdf_file
@@ -36,7 +36,7 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
 class RoomViewSet(viewsets.ModelViewSet):
     """Получение и изменение планировки."""
 
-    serializer_class = RoomSerializer
+    serializer_class = RoomLayoutSerializer
 
     permission_classes = (IsAuthenticated, IsTariffAccepted)
 
@@ -112,7 +112,7 @@ class RoomCopyView(APIView):
     def get(self, request, pk):
         """Получаем планировку с заданным `pk`."""
         orig_room = get_object_or_404(RoomLayout, pk=pk)
-        serializer = RoomSerializer(orig_room)
+        serializer = RoomLayoutSerializer(orig_room)
         return Response(serializer.data)
 
     def post(self, request, pk):
@@ -120,7 +120,7 @@ class RoomCopyView(APIView):
         orig_room = get_object_or_404(RoomLayout, pk=pk)
         new_room = orig_room.copy(request)
         new_room.save()
-        serializer = RoomSerializer(new_room)
+        serializer = RoomLayoutSerializer(new_room)
         furniture = Furniture.objects.filter(room=orig_room)
 
         for furn in furniture:
@@ -152,7 +152,7 @@ class RoomCopyView(APIView):
         instance = get_object_or_404(RoomLayout, pk=pk)
         instance.name = request.data.get("name")
         instance.save()
-        serializer = RoomSerializer(instance)
+        serializer = RoomLayoutSerializer(instance)
         return Response(serializer.data)
 
 
