@@ -3,14 +3,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
 
-from .models import (Coordinate, DoorPlacement, Furniture, FurniturePlacement, PowerSocketPlacement, RoomLayout,
-                     RoomType, WindowPlacement)
+from furniture import models
 
 admin.site.unregister(Group)
 admin.site.register(get_user_model())
 
 
-@admin.register(Furniture)
+@admin.register(models.Furniture)
 class FurnitureAdmin(admin.ModelAdmin):
     @admin.display(description="Фото")
     def take_image(self, obj):
@@ -38,31 +37,31 @@ class FurnitureAdmin(admin.ModelAdmin):
     empty_value_display = "-пусто-"
 
 
-class PlacementInline(admin.TabularInline):
+class FurniturePlacementInline(admin.TabularInline):
     """Настройка для размещения мебели в комнате."""
 
-    model = FurniturePlacement
+    model = models.FurniturePlacement
 
 
-class PowerSocketInline(admin.TabularInline):
+class PowerSocketPlacementInline(admin.TabularInline):
     """Настройка для размещения розеток в комнате."""
 
-    model = PowerSocketPlacement
+    model = models.PowerSocketPlacement
 
 
-class DoorInline(admin.TabularInline):
+class DoorPlacementInline(admin.TabularInline):
     """Настройка для размещения дверей в комнате."""
 
-    model = DoorPlacement
+    model = models.DoorPlacement
 
 
-class WindowInline(admin.TabularInline):
+class WindowPlacementInline(admin.TabularInline):
     """Настройка для размещения окон в комнате."""
 
-    model = WindowPlacement
+    model = models.WindowPlacement
 
 
-@admin.register(Coordinate)
+@admin.register(models.Coordinate)
 class CoordinateAdmin(admin.ModelAdmin):
     """Админка Coordinate."""
 
@@ -73,8 +72,8 @@ class CoordinateAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(RoomLayout)
-class RoomAdmin(admin.ModelAdmin):
+@admin.register(models.RoomLayout)
+class RoomLayoutAdmin(admin.ModelAdmin):
     """Админка комнаты."""
 
     list_display = (
@@ -87,11 +86,11 @@ class RoomAdmin(admin.ModelAdmin):
         "created",
     )
     list_display_links = ("name",)
-    inlines = (PlacementInline, PowerSocketInline, DoorInline, WindowInline)
+    inlines = (FurniturePlacementInline, PowerSocketPlacementInline, DoorPlacementInline, WindowPlacementInline)
 
 
-@admin.register(RoomType)
-class TypeOfRoomAdmin(admin.ModelAdmin):
+@admin.register(models.RoomType)
+class RoomTypeAdmin(admin.ModelAdmin):
     list_display = ("pk", "name", "slug")
     search_fields = ("name",)
     list_filter = ("slug",)
