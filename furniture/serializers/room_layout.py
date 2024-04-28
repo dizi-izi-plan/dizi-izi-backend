@@ -1,114 +1,18 @@
-from djoser.serializers import UserCreateSerializer
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from djoser.serializers import UserCreateSerializer
+from rest_framework import serializers
 
-from furniture.models import (
-    Furniture,
-    RoomLayout,
-    FurniturePlacement,
-    PowerSocketPlacement,
-    DoorPlacement,
-    WindowPlacement,
-    RoomType,
-    Coordinate,
-)
+from furniture.models import (Coordinate, DoorPlacement, Furniture,
+                              FurniturePlacement, PowerSocketPlacement,
+                              RoomLayout, WindowPlacement)
+from furniture.serializers import (DoorPlacementSerializer,
+                                   FurniturePlacementSerializer,
+                                   PowerSocketPlacementSerializer,
+                                   WindowPlacementSerializer)
 from layout_algorithm import core
 
-FIELDS_COORDINATE = (
-    "north_west",
-    "north_east",
-    "south_west",
-    "south_east",
-)
-
 User = get_user_model()
-
-
-class RoomTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RoomType
-        fields = ("name", "slug")
-
-
-class FurnitureSerializer(serializers.ModelSerializer):
-    """Сериализатор для мебели."""
-
-    type_of_rooms = RoomTypeSerializer()
-
-    class Meta:
-        fields = (
-            "id",
-            "name",
-            "name_english",
-            "length",
-            "width",
-            "length_access",
-            "width_access",
-            "type_of_rooms",
-        )
-        model = Furniture
-
-
-class CoordinateSerializer(serializers.ModelSerializer):
-    """Сериализатор для координат x, y."""
-
-    class Meta:
-        fields = (
-            "x",
-            "y",
-        )
-        model = Coordinate
-
-
-class AbstractCoordinates(serializers.Serializer):
-    """Абстрактная модель для координат в сериализаторах."""
-
-    north_west = CoordinateSerializer()
-    north_east = CoordinateSerializer()
-    south_west = CoordinateSerializer()
-    south_east = CoordinateSerializer()
-
-    class Meta:
-        abstract = True
-
-
-class FurniturePlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
-    """Сериализатор для размещения мебели в комнате."""
-
-    class Meta:
-        fields = ("furniture",) + FIELDS_COORDINATE
-        model = FurniturePlacement
-
-
-class PowerSocketPlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
-    """Сериализатор для размещения розеток в помещении."""
-
-    class Meta:
-        fields = FIELDS_COORDINATE
-        model = PowerSocketPlacement
-
-
-class DoorPlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
-    """Сериализатор для размещения розеток в помещении."""
-
-    class Meta:
-        fields = (
-            "width",
-            "open_inside",
-        ) + FIELDS_COORDINATE
-        model = DoorPlacement
-
-
-class WindowPlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
-    """Сериализатор для размещения окон в помещении."""
-
-    class Meta:
-        fields = (
-            "length",
-            "width",
-        ) + FIELDS_COORDINATE
-        model = WindowPlacement
 
 
 class RoomLayoutSerializer(serializers.ModelSerializer):
