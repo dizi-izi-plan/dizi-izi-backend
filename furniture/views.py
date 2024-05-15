@@ -2,25 +2,16 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import (
-    IsAuthenticated,
-)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from furniture.models import (
-    DoorPlacement,
-    Furniture,
-    FurniturePlacement,
-    PowerSocketPlacement,
-    RoomLayout,
-    WindowPlacement,
-)
-from furniture.filters import FurnitureFilter
-from furniture.serializers import (
-    FurnitureSerializer,
-    RoomLayoutSerializer,
-)
+
 from api.permissions import IsTariffAccepted
+from furniture.filters import FurnitureFilter
+from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
+                              PowerSocketPlacement, RoomLayout,
+                              WindowPlacement)
+from furniture.serializers import FurnitureSerializer, RoomLayoutSerializer
 from furniture.utils import send_pdf_file
 
 
@@ -50,45 +41,6 @@ class RoomViewSet(viewsets.ModelViewSet):
         """Назначение данных для обработки запроса."""
         user = self.request.user
         serializer.save(user=user)
-
-    def list(self, request, *args, **kwargs):
-        """Список комнат.
-
-        Получение списка комнат. Доступно всем пользователям.
-        """
-        return super().list(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        """Создание комнаты.
-
-        Создание новой комнаты. Доступно авторизованным пользователям.
-        """
-        return super().create(request, *args, **kwargs)
-
-    def retrieve(self, request, *args, **kwargs):
-        """Получение комнаты.
-
-        Получение информации о комнате по идентификатору.
-        """
-        return super().retrieve(request, *args, **kwargs)
-
-    def update(self, request, *args, **kwargs):
-        """Обновление комнаты.
-
-        Обновление информации о комнате. Доступно владельцу комнаты.
-        """
-        return super().update(request, *args, **kwargs)
-
-    def partial_update(self, request, *args, **kwargs):
-        """Частичное обновление комнаты."""
-        return super().partial_update(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
-        """Удаление комнаты.
-
-        Удаление существующей комнаты. Доступно владельцу комнаты.
-        """
-        return super().destroy(request, *args, **kwargs)
 
 
 class RoomCopyView(APIView):
@@ -171,5 +123,3 @@ class SendPDFView(APIView):
         text = "В приложении подготовленный план размещения мебели"
         email = request.user.email
         return send_pdf_file(subj, email, up_file, text)
-
-
