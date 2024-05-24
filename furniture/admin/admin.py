@@ -3,7 +3,6 @@ from django.utils.safestring import mark_safe
 from import_export.admin import ImportExportActionModelAdmin
 
 from furniture import models
-
 from furniture.admin import resources
 
 

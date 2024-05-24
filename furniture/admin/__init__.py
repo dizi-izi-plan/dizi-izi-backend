@@ -1,1 +1,1 @@
-from furniture.admin.admin import *
+from furniture.admin import admin
