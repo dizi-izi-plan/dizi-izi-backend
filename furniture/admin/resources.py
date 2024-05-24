@@ -1,6 +1,6 @@
 from import_export import resources
 
-from . import room_items
+from furniture.models import room_items
 
 
 class FurnitureResource(resources.ModelResource):

@@ -4,7 +4,7 @@ from import_export.admin import ImportExportActionModelAdmin
 
 from furniture import models
 
-from .models import resources
+from furniture.admin import resources
 
 
 @admin.register(models.Furniture)
