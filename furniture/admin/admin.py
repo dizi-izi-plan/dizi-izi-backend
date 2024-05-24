@@ -1,11 +1,13 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+from import_export.admin import ImportExportActionModelAdmin
 
 from furniture import models
+from furniture.admin import resources
 
 
 @admin.register(models.Furniture)
-class FurnitureAdmin(admin.ModelAdmin):
+class FurnitureAdmin(ImportExportActionModelAdmin):
     @admin.display(description="Фото")
     def take_image(self, obj):
         if obj.image:
@@ -30,6 +32,7 @@ class FurnitureAdmin(admin.ModelAdmin):
     search_fields = ("type_of_rooms", "name")
     list_filter = ("type_of_rooms",)
     empty_value_display = "-пусто-"
+    resource_class = resources.FurnitureResource
 
 
 class FurniturePlacementInline(admin.TabularInline):
@@ -81,12 +84,18 @@ class RoomLayoutAdmin(admin.ModelAdmin):
         "created",
     )
     list_display_links = ("name",)
-    inlines = (FurniturePlacementInline, PowerSocketPlacementInline, DoorPlacementInline, WindowPlacementInline)
+    inlines = (
+        FurniturePlacementInline,
+        PowerSocketPlacementInline,
+        DoorPlacementInline,
+        WindowPlacementInline,
+    )
 
 
 @admin.register(models.RoomType)
-class RoomTypeAdmin(admin.ModelAdmin):
+class RoomTypeAdmin(ImportExportActionModelAdmin):
     list_display = ("pk", "name", "slug")
     search_fields = ("name",)
     list_filter = ("slug",)
     empty_value_display = "-пусто-"
+    resource_class = resources.RoomTypeResource
