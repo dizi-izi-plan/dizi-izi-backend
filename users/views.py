@@ -1,25 +1,38 @@
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
+from rest_framework import status
+from rest_framework.response import Response
+
+from users.services.logout_user import logout_user
 
 
 class UserViewSet(DjoserUserViewSet):
     """
-    Расширяет Djoser UserViewSet для настройки троттлинга и аутентификации.
-
-    Этот класс предназначен для тонкой настройки механизмов контроля частоты запросов (троттлинга) и аутентификации
-    для пользовательских запросов в API. В основе его работы лежит расширение стандартного класса UserViewSet от Djoser.
-
-    Примечание: В настоящий момент изменения не активированы для использования в проекте.
+    Расширяет базовый Djoser UserViewSet для более тонкой настройки
     """
 
-    throttle_scope = 'low_request'
-    authentication_classes = (TokenAuthentication,)
+    # TODO: настроить троттлинг
 
-    def get_throttles(self):
-        """
-        Устанавливает классы троттлинга для действия создания пользователя "create".
-        """
-        if self.action == "create":
-            self.throttle_classes = [AnonRateThrottle, UserRateThrottle]
-        return super().get_throttles()
+    # throttle_scope = "low_request"
+
+    # def get_throttles(self):
+    #     """
+    #     Устанавливает классы троттлинга для действия создания пользователя "create".
+    #     """
+    #     if self.action == "create":
+    #         self.throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    #     return super().get_throttles()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        user = request.user
+        if user == instance:
+            serializer = self.get_serializer(instance, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            instance = user
+
+        logout_user(instance)
+
+        instance.is_active = False
+
+        instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -130,17 +130,18 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_THROTTLE_CLASSES": [
-        "rest_framework.throttling.UserRateThrottle",
-        "rest_framework.throttling.AnonRateThrottle",
-        "rest_framework.throttling.ScopedRateThrottle",
-        "users.throttling.SustainedRateThrottle",
-    ],
-    "DEFAULT_THROTTLE_RATES": {
-        "anon": "2/second",  # Лимит для AnonRateThrottle
-        "user": "5/second",
-        "long_time": "10/minute",
-    },
+    # TODO: настроить троттлинг
+    # "throttle_scope": [
+    #     "rest_framework.throttling.UserRateThrottle",
+    #     "rest_framework.throttling.AnonRateThrottle",
+    #     "rest_framework.throttling.ScopedRateThrottle",
+    #     "users.throttling.SustainedRateThrottle",
+    # ],
+    # "DEFAULT_THROTTLE_RATES": {
+    #     "anon": "2/second",  # Лимит для AnonRateThrottle
+    #     "user": "5/second",
+    #     "long_time": "10/minute",
+    # },
 }
 
 SPECTACULAR_SETTINGS = {
@@ -164,9 +165,6 @@ DJOSER = {
     # тут подключается фронт с отправкой на url: /api/v1/auth/users/reset_password_confirm/
     "PASSWORD_RESET_CONFIRM_URL": "api/v1/auth/users/password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": "api/v1/auth/users/email/reset/confirm/{uid}/{token}",
-    "PERMISSIONS": {
-        "user_delete": ["rest_framework.permissions.IsAdminUser"],
-    },
     "EMAIL": {
         "activation": "users.emails.CustomActivationEmail",
         "password_reset": "users.emails.CustomPasswordResetEmail",
