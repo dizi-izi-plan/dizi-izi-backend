@@ -1,8 +1,8 @@
-from djoser.views import UserViewSet
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 
 from users.schema.base_extension import BaseExtension
+from users.views import UserViewSet
 
 
 class GenerateSwaggerDocForDjoser(BaseExtension):
