@@ -2,6 +2,7 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status
 from rest_framework.response import Response
 
+from users.serializers import CustomUserCreateSerializer
 from users.services.logout_user import logout_user
 
 
@@ -9,6 +10,8 @@ class UserViewSet(DjoserUserViewSet):
     """
     Расширяет базовый Djoser UserViewSet для более тонкой настройки
     """
+
+    serializer_class = CustomUserCreateSerializer
 
     # TODO: настроить троттлинг
 
