@@ -9,8 +9,8 @@ admin.site.unregister(Group)
 
 @admin.register(User)
 class MyUserAdmin(UserAdmin):
-    list_display = ["email", "is_active", "is_designer", "is_staff", "is_superuser", ]
-    list_filter = ["is_active", "is_designer", "is_staff", "is_superuser", ]
+    list_display = ["email", "is_active", "is_designer", "is_staff", "is_superuser",]
+    list_filter = ["is_active", "is_designer", "is_staff", "is_superuser",]
     ordering = [
         "email",
     ]

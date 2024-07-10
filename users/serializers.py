@@ -22,11 +22,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         model = User
         fields = (
             "id",
-            # "first_name",
             "email",
-            # "birthday",
-            # "city",
-            # "is_designer",
             "password",
         )
 
