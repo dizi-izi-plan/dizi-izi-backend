@@ -81,3 +81,10 @@ Docker так же можно использовать во время разр�
    python manage.py migrate
    python manage.py runserver
    ```
+
+### Запуск тестов
+   ```
+   pip install -r req_dev.txt
+   python -m flake8
+   python manage.py test
+   ```

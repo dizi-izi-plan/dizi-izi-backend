@@ -1,4 +1,4 @@
-from info.models import Tariff, UsersTariffs
+from tariff.models import Tariff, UsersTariffs
 from users.models import CustomUser
 
 

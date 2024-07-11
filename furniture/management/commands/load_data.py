@@ -6,7 +6,7 @@ from csv import DictReader
 # from datetime import datetime
 from django.core.management import BaseCommand
 
-from furniture.models import Furniture, TypeOfRoom
+from furniture.models import Furniture, RoomType
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -40,7 +40,7 @@ class Command(BaseCommand):
             if result:
                 type_of_rooms = result
             for id_room, name, slug in type_of_rooms:
-                data, status = TypeOfRoom.objects.get_or_create(
+                data, status = RoomType.objects.get_or_create(
                     id=id_room,
                     name=name,
                     slug=slug,
@@ -69,7 +69,7 @@ class Command(BaseCommand):
                         "second_power_socket_height"
                     ],
                     second_power_socket_width=row["second_power_socket_width"],
-                    type_of_rooms=TypeOfRoom.objects.get(
+                    type_of_rooms=RoomType.objects.get(
                         id=row["type_of_rooms"],
                     ),
                 ),

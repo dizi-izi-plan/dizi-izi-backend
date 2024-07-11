@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('info', '0001_initial'),
+        ('tariff', '0001_initial'),
     ]
 
     operations = [
@@ -23,12 +23,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='possibleactionstariff',
             name='action',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='action_tariff', to='info.possibleactions', verbose_name='Действия'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='action_tariff', to='tariff.possibleactions', verbose_name='Действия'),
         ),
         migrations.AddField(
             model_name='possibleactionstariff',
             name='tariff',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='action_tariff', to='info.tariff'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='action_tariff', to='tariff.tariff'),
         ),
         migrations.AddConstraint(
             model_name='possibleactionstariff',
