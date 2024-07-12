@@ -18,8 +18,8 @@ services:
 
   backend:
     container_name: dizi-izi-backend
-    image: diziizi/dizi-izi-backend:latest
-    build: .
+    # image: diziizi/dizi-izi-backend:latest
+    build: ./
     restart: always
     ports:
       - "80:8000"
