@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "tariff",
     "drf_spectacular",
     "import_export",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -48,7 +49,16 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    f"https://{DOMAIN}",
+]
+CORS_ALLOW_ALL_HEADERS = True
+CORS_ALLOW_CREDENTIALS = True
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "config.urls"
 
