@@ -1,9 +1,14 @@
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework import status
+from rest_framework import status, mixins, viewsets
+from rest_framework.authtoken.models import Token
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from rest_framework.views import View
+from django.http import JsonResponse
 
 from users.services.logout_user import logout_user
 
+from .models import CustomUser
 
 class UserViewSet(DjoserUserViewSet):
     """
@@ -36,3 +41,13 @@ class UserViewSet(DjoserUserViewSet):
 
         instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class RegisterView(View):
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, *args, **kwargs):
+        code, state = str(request.GET['code']), str(request.GET['state'])
+        json_obj = {'code': code, 'state': state}
+        print(json_obj)
+        return JsonResponse(json_obj)

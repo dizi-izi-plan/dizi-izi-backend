@@ -169,6 +169,7 @@ DJOSER = {
         "activation": "users.emails.CustomActivationEmail",
         "password_reset": "users.emails.CustomPasswordResetEmail",
     },
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": ['http://127.0.0.1:80/api/v1/auth/social/o/yandex-oauth2/'],
 }
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -184,6 +185,11 @@ SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_VK_OAUTH2_KEY")
 SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_VK_OAUTH2_SECRET")
 SOCIAL_AUTH_YANDEX_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_YANDEX_OAUTH2_KEY")
 SOCIAL_AUTH_YANDEX_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_YANDEX_OAUTH2_SECRET")
+
+# Social auth for Postgres
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+SOCIAL_AUTH_USER_MODEL = "users.CustomUser"
 
 # константы проекта, если их будет много, то нужно будет их организовать в отдельном файле с разбивкой по тематике
 MAX_LENGTH_PROJECT_NAME = 128
