@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import View
 from django.http import JsonResponse
 
+from users.serializers import CustomUserCreateSerializer
 from users.services.logout_user import logout_user
 
 from .models import CustomUser
@@ -14,6 +15,8 @@ class UserViewSet(DjoserUserViewSet):
     """
     Расширяет базовый Djoser UserViewSet для более тонкой настройки
     """
+
+    serializer_class = CustomUserCreateSerializer
 
     # TODO: настроить троттлинг
 
