@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_KEY", "some_key")
 
@@ -117,7 +117,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATIC_ROOT = os.path.join(BASE_DIR.parent, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
 
@@ -179,6 +179,9 @@ DJOSER = {
         "activation": "users.emails.CustomActivationEmail",
         "password_reset": "users.emails.CustomPasswordResetEmail",
     },
+    'SERIALIZERS': {
+         'user_create': 'users.serializers.CustomUserCreateSerializer'
+    },
 }
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -200,3 +203,4 @@ MAX_LENGTH_PROJECT_NAME = 128
 MAX_LENGTH_ROOM_NAME = 128
 MAX_LENGTH_FURNITURE_NAME = 128
 PROJECT_NAME_BY_DEFAULT = "Проект"
+TOKEN_EXPIRY_TIME = 72
