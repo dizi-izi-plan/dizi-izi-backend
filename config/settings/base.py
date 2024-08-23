@@ -167,14 +167,12 @@ SPECTACULAR_SETTINGS = {
 DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": True,
     "SEND_CONFIRMATION_EMAIL": True,
-    # тут подключается фронт с активацией на url: /api/v1/auth/users/activation/
-    "ACTIVATION_URL": "api/v1/auth/users/activate/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
     "LOGIN_FIELD": "email",
-    # тут подключается фронт с отправкой на url: /api/v1/auth/users/reset_password_confirm/
-    "PASSWORD_RESET_CONFIRM_URL": "api/v1/auth/users/password/reset/confirm/{uid}/{token}",
-    "USERNAME_RESET_CONFIRM_URL": "api/v1/auth/users/email/reset/confirm/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "reset-password/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "reset-username/{uid}/{token}",
     "EMAIL": {
         "activation": "users.emails.CustomActivationEmail",
         "password_reset": "users.emails.CustomPasswordResetEmail",
