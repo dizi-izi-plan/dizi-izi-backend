@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_KEY", "some_key")
 
-DEBUG = os.getenv("DEBUG_KEY", "False")
+DEBUG = os.getenv("DEBUG_KEY", False) in ('True', 'true', 'TRUE', '1')
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split()
 DOCKER_CONTAINER_NAME = os.getenv("DOCKER_CONTAINER_NAME")
