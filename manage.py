@@ -9,7 +9,8 @@ load_dotenv()
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.base')
+    # Checking the value of a variable has been replaced by an explicit definition of the value
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'config.settings.settings'
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
