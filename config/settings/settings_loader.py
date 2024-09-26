@@ -18,12 +18,13 @@ import os
 
 from dotenv import load_dotenv
 
-# Loading environment variables and checking the variable PATH_TO_SETTINGS_MODULE
 load_dotenv()
-setting_module = os.getenv('PATH_TO_SETTINGS_MODULE', 'config.settings.base')
+
+from .base import *  # noqa: F403, F401, E402
+
+setting_module = os.getenv('PATH_TO_SETTINGS_MODULE', 'config.settings.prod')
 
 try:
-    # Dynamic import of the settings module
     import_settings_module = importlib.import_module(setting_module)
 except ModuleNotFoundError as e:
     raise ImportError(
@@ -31,5 +32,4 @@ except ModuleNotFoundError as e:
         "is correctly set and the module is available for import."
     ) from e
 
-# Adding all variables from the imported module to the global viewport
 globals().update(vars(import_settings_module))

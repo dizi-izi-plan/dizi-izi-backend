@@ -3,15 +3,11 @@
 import os
 import sys
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
 
 def main():
     """Run administrative tasks."""
     # Checking the value of a variable has been replaced by an explicit definition of the value
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'config.settings.settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'config.settings.settings_loader'
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

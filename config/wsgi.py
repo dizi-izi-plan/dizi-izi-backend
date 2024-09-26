@@ -12,6 +12,6 @@ import os
 from django.core.wsgi import get_wsgi_application
 
 # Checking the value of a variable has been replaced by an explicit definition of the value
-os.environ['DJANGO_SETTINGS_MODULE'] = 'config.settings.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'config.settings.settings_loader'
 
 application = get_wsgi_application()
