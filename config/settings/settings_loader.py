@@ -22,7 +22,7 @@ load_dotenv()
 
 from .base import *  # noqa: F403, F401, E402
 
-setting_module = os.getenv('PATH_TO_SETTINGS_MODULE', 'config.settings.prod')
+setting_module = os.getenv('PATH_TO_SETTINGS_MODULE', 'config.settings.production')
 
 try:
     import_settings_module = importlib.import_module(setting_module)
