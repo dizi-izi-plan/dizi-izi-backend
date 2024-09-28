@@ -23,7 +23,7 @@ CSRF_TRUSTED_ORIGINS = [
     f"https://{DOMAIN}",
 ]
 
-#default packeges
+"""default packeges"""
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -34,7 +34,7 @@ INSTALLED_APPS = [
 
 ]
 
-# packages
+"""packages"""
 INSTALLED_APPS += [
     "rest_framework",
     "rest_framework.authtoken",
@@ -45,7 +45,7 @@ INSTALLED_APPS += [
     "corsheaders",
 ]
 
-# apps
+"""apps"""
 INSTALLED_APPS += [
     "furniture",
     "users",
