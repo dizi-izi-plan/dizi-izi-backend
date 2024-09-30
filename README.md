@@ -102,7 +102,7 @@ Docker так же можно использовать во время разр�
 **Тестовые пользователи**
 
    ```
-   python manage.py loaddata fixtures/users.json
+   python manage.py loaddata users.json
    ```
 
 ### Запуск тестов
