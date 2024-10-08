@@ -105,7 +105,13 @@ class FurnitureArrangement(MiddlePointAndShift):
                 self.room.walls_length,
             ).values()
             wall = self.room.wall_definition(data)
-            figure = Furniture.corner_markings(object_attributes, data, wall)
+            furniture_obj = Furniture(
+                length=object_attributes["length"],
+                width=object_attributes["width"],
+                center=data,
+                wall_number=wall,
+            )
+            figure = furniture_obj.corners_coordinates
             objects_counter = 0
             cycle_counter += 1
 

@@ -35,9 +35,13 @@ class Core(MiddlePointAndShift):
             result_wall_definition = room.wall_definition(
                 result_middle_distance,
             )
-            result_corner_markings = Furniture.corner_markings(
-                item2, result_middle_distance, result_wall_definition,
+            furniture_obj = Furniture(
+                length=item2["length"],
+                width=item2["width"],
+                center=result_middle_distance,
+                wall_number=result_wall_definition,
             )
+            result_corner_markings = furniture_obj.corners_coordinates
             final_point, figure = algorithm.placing_in_coordinates(
                 result_middle_distance,
                 result_corner_markings,
