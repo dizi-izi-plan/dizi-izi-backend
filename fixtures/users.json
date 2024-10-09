@@ -1,0 +1,102 @@
+[
+  {
+    "model": "users.customuser",
+    "pk": "224081a8-900d-4c80-bd73-4486791cf2e2",
+    "fields": {
+      "password": "pbkdf2_sha256$720000$BioAHwUMmzPdiQr53k4IXK$6V05o45HrRzip2ZDM+c8pP5SAq6S4zMFBOO05odq+As=",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "Андрей",
+      "last_name": "Петров",
+      "is_staff": false,
+      "is_active": false,
+      "date_joined": "2024-09-26T13:52:50.609Z",
+      "email": "user3@mail.ru",
+      "city": "Москва",
+      "birthday": null,
+      "is_designer": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": "6ce46b3c-4073-4905-86f7-8de07ff8df49",
+    "fields": {
+      "password": "pbkdf2_sha256$720000$IfAwPRBFGnB539DXD6hGkR$+j7/idIRkSI7leozFdQmyijeOj8cp2GSTG4hNu66YBE=",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "Сергей",
+      "last_name": "Бадулин",
+      "is_staff": false,
+      "is_active": false,
+      "date_joined": "2024-09-26T13:52:17.238Z",
+      "email": "user2@mail.ru",
+      "city": "Екатеринбург",
+      "birthday": null,
+      "is_designer": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": "ac8cf8d2-a32d-41c0-9bc8-1a80260838cd",
+    "fields": {
+      "password": "pbkdf2_sha256$720000$T1CZPRhzLBSad5l1Se8aSa$jhAYrG8CIdlOWZeajBTi/pYambr1xZDWUGxoYZLVEJ0=",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "Виктория",
+      "last_name": "Морозова",
+      "is_staff": false,
+      "is_active": false,
+      "date_joined": "2024-09-26T13:53:16.321Z",
+      "email": "user4@mail.ru",
+      "city": "Санкт-Петербург",
+      "birthday": null,
+      "is_designer": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": "d810e52a-3761-4687-a0c5-49c762aafe4f",
+    "fields": {
+      "password": "pbkdf2_sha256$720000$VdiRN93jdQnSQDmeEIZRel$9bhxW+bLmCLTH0GtGe/LZJ7iCYG6q7YQSyHC7a0lH6Y=",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "Алла",
+      "last_name": "Кукушкина",
+      "is_staff": false,
+      "is_active": false,
+      "date_joined": "2024-09-26T13:50:55.856Z",
+      "email": "user1@mail.ru",
+      "city": "Курск",
+      "birthday": null,
+      "is_designer": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": "ed9a9fea-8ae5-4569-bd38-9fcbb106a333",
+    "fields": {
+      "password": "pbkdf2_sha256$720000$rFmxf0iQ8hdK4rvwpCU85h$R+8NgBkAwSOmIw01XdwMbno1KnEwoUyQlXBAAhXVMw0=",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "Петр",
+      "last_name": "Малых",
+      "is_staff": false,
+      "is_active": false,
+      "date_joined": "2024-09-26T13:53:36.463Z",
+      "email": "user5@mail.ru",
+      "city": "Самара",
+      "birthday": null,
+      "is_designer": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

@@ -3,6 +3,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+
+FIXTURE_DIRS = [
+    os.path.join(BASE_DIR, 'fixtures'),
+]
+
 SECRET_KEY = os.getenv("DJANGO_KEY", "some_key")
 
 DEBUG = os.getenv("DEBUG_KEY", False) in ('True', 'true', 'TRUE', '1')
@@ -17,6 +22,7 @@ CSRF_TRUSTED_ORIGINS = [
     f"https://{DOMAIN}",
 ]
 
+"""default packeges"""
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -24,17 +30,26 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+]
+
+"""packages"""
+INSTALLED_APPS += [
     "rest_framework",
-    "furniture",
-    "users",
     "rest_framework.authtoken",
     "social_django",
     "djoser",
-    "api",
-    "tariff",
     "drf_spectacular",
     "import_export",
     "corsheaders",
+]
+
+"""apps"""
+INSTALLED_APPS += [
+    "furniture",
+    "users",
+    "api",
+    "tariff",
 ]
 
 MIDDLEWARE = [
