@@ -105,6 +105,12 @@ Docker так же можно использовать во время разр�
    python manage.py loaddata users.json
    ```
 
+**Тестовые тарифы**
+
+```
+    python manage.py loaddata tariffs.json
+```
+
 ### Запуск тестов
    ```
    pip install -r req_dev.txt
