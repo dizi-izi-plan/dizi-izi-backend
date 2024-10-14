@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import EmailValidator
 from django.db import models
 
-from users.validators import PastDateValidator
+from users.validators import PastDateValidator, CustomEmailValidator
+
 
 # TODO: раскомментировать после создания моделей тарифов
 # from users.services import initialize_basic_user_tariff
@@ -51,7 +52,7 @@ class CustomUser(AbstractUser):
         db_index=True,
         max_length=254,
         unique=True,
-        validators=[EmailValidator()],
+        validators=[CustomEmailValidator()],
         verbose_name="Email",
         error_messages={
             "unique": "Пользователь с таким email уже существует.",
