@@ -1,8 +1,10 @@
 import uuid
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.core.validators import EmailValidator
 from django.db import models
+
+from django.core.exceptions import ValidationError
+from rest_framework import serializers
 
 from users.validators import PastDateValidator, CustomEmailValidator
 
@@ -55,7 +57,7 @@ class CustomUser(AbstractUser):
         validators=[CustomEmailValidator()],
         verbose_name="Email",
         error_messages={
-            "unique": "Пользователь с таким email уже существует.",
+            "unique": "Данный пользователь уже зарегистрирован",
         },
     )
     city = models.CharField(
@@ -83,3 +85,14 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def clean(self):
+        super().clean()
+        self.email = self.email.lower()
+
+    def save(self, *args, **kwargs):
+        try:
+            self.full_clean()
+        except ValidationError as e:
+            raise serializers.ValidationError(e.message_dict)
+        super().save(*args, **kwargs)

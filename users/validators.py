@@ -22,10 +22,10 @@ class CustomEmailValidator(EmailValidator):
         re.IGNORECASE,
     )
 
-    domain_regex = _lazy_re_compile(
-        r"((?:[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])?\.)+)(?:[a-z]{2,63})\Z",
-        re.IGNORECASE,
-    )
+    # domain_regex = _lazy_re_compile(
+    #     r"((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+)(?:[a-z]{2,63}(?<!-))\Z",
+    #     re.IGNORECASE,
+    # )
 
     def __call__(self, value):
         value = value.lower()
