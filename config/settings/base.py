@@ -116,6 +116,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
+    {
+        "NAME": "users.validators.SpecialCharsValidator",
+    },
+    {
+        "NAME": "users.validators.MaximumLengthValidator" ,
+        "OPTIONS": {
+            "max_length": 40,
+        },
+    },
 ]
 
 LANGUAGE_CODE = "ru-ru"
