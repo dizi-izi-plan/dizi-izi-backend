@@ -1,15 +1,16 @@
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-load_dotenv()
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+FIXTURE_DIRS = [
+    os.path.join(BASE_DIR, 'fixtures'),
+]
 
 SECRET_KEY = os.getenv("DJANGO_KEY", "some_key")
 
-DEBUG = os.getenv("DEBUG_KEY", "False")
+DEBUG = os.getenv("DEBUG_KEY", False) in ('True', 'true', 'TRUE', '1')
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split()
 DOCKER_CONTAINER_NAME = os.getenv("DOCKER_CONTAINER_NAME")
@@ -21,6 +22,7 @@ CSRF_TRUSTED_ORIGINS = [
     f"https://{DOMAIN}",
 ]
 
+"""default packeges"""
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -28,17 +30,26 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+]
+
+"""packages"""
+INSTALLED_APPS += [
     "rest_framework",
-    "furniture",
-    "users",
     "rest_framework.authtoken",
     "social_django",
     "djoser",
-    "api",
-    "tariff",
     "drf_spectacular",
     "import_export",
     "corsheaders",
+]
+
+"""apps"""
+INSTALLED_APPS += [
+    "furniture",
+    "users",
+    "api",
+    "tariff",
 ]
 
 MIDDLEWARE = [
@@ -125,15 +136,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = os.getenv("EMAIL_PORT")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
@@ -167,14 +169,12 @@ SPECTACULAR_SETTINGS = {
 DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": True,
     "SEND_CONFIRMATION_EMAIL": True,
-    # тут подключается фронт с активацией на url: /api/v1/auth/users/activation/
-    "ACTIVATION_URL": "api/v1/auth/users/activate/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
     "LOGIN_FIELD": "email",
-    # тут подключается фронт с отправкой на url: /api/v1/auth/users/reset_password_confirm/
-    "PASSWORD_RESET_CONFIRM_URL": "api/v1/auth/users/password/reset/confirm/{uid}/{token}",
-    "USERNAME_RESET_CONFIRM_URL": "api/v1/auth/users/email/reset/confirm/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "reset-password/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "reset-username/{uid}/{token}",
     "EMAIL": {
         "activation": "users.emails.CustomActivationEmail",
         "password_reset": "users.emails.CustomPasswordResetEmail",
