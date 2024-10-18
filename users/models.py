@@ -6,7 +6,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
-from users.validators import PastDateValidator, CustomEmailValidator
+from users.validators.field_validators import PastDateValidator, CustomEmailValidator
 
 
 # TODO: раскомментировать после создания моделей тарифов
