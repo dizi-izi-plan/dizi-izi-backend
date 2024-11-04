@@ -23,12 +23,11 @@ class Core(MiddlePointAndShift):
         """
 
         print(furniture)
-        room = Room()
-        room.data_preprocessing(room_size, doors_and_windows)
+        room = Room(room_size, doors_and_windows)
         algorithm = FurnitureArrangement(room)
 
         for item, item2 in enumerate(furniture):
-            result_free_space = algorithm.free_space_algorithm(room.coordinates)
+            result_free_space = algorithm.free_space_algorithm(room.room_objects_coordinates)
             result_middle_distance = self.middle_point_finder(
                 result_free_space, room.wall_perimetr, room.walls_length,
             )
@@ -52,7 +51,7 @@ class Core(MiddlePointAndShift):
             # добавляем конечные значения в соответствии их расположением по стенам
             furniture[item]["adjacent_center_point"] = final_point
             bisect.insort(room.sorted_points, final_point)
-            room.coordinates.insert(
+            room.room_objects_coordinates.insert(
                 room.sorted_points.index(final_point), figure,
             )
 
@@ -86,4 +85,4 @@ class Core(MiddlePointAndShift):
 
         # функции для возможности наглядного тестирования результата до
         # отправки на фронт
-        create_rectangles(room.coordinates, room.room_coordinates, powersocets)
+        create_rectangles(room.room_objects_coordinates, room.room_coordinates, powersocets)

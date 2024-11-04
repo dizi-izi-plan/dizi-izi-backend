@@ -149,9 +149,9 @@ class FurnitureArrangement(MiddlePointAndShift):
         # сам цикл, в котором мы пытаемся разметить объект заданное количество
         # циклов и проверяем пересечения со всеми объектами
         while cycle_counter < cycle_border and objects_counter < len(
-            self.room.coordinates,
+            self.room.room_objects_coordinates,
         ):
-            figure_2 = self.room.coordinates[objects_counter]
+            figure_2 = self.room.room_objects_coordinates[objects_counter]
             if checks(figure, figure_2, walls):
                 # добавляем единицу брейкеру за каждый прошедший проверки
                 # пересечения объект, чтобы организовать выход из цикла
@@ -161,7 +161,7 @@ class FurnitureArrangement(MiddlePointAndShift):
                 displacement()
             # если пересечения со всеми объектами были проверены успешно, то
             # выходим из цикла
-            if breaker >= len(self.room.coordinates):
+            if breaker >= len(self.room.room_objects_coordinates):
                 break
             if cycle_counter >= cycle_border:
                 raise Exception("Превышено число попыток на размещение")
