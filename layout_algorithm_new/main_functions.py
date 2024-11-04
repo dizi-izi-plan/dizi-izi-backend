@@ -24,48 +24,48 @@ class FurnitureArrangement(MiddlePointAndShift):
         "walls_length": {"first_wall": 1, "second_wall": 2, "third_wall": 1,
         "fourth_wall": 2}
         """
-        length = {}
+        distances = {}
         counter = 1
-
-        def core_and_output(first_object, second_object):
-
-            first_right_corner = "north_east"
-            second_left_corner = "north_west"
-
-            if first_object["north_east"] in self.room.room_coordinates_tuple:
-                first_right_corner = "south_east"
-            if (
-                second_object[counter]["north_west"]
-                in self.room.room_coordinates_tuple
-            ):
-                second_left_corner = "south_west"
-
-            first_point = self.convert_coordinates_to_line(
-                first_object[first_right_corner], self.room.walls_length,
-            )
-            second_point = self.convert_coordinates_to_line(
-                second_object[counter][second_left_corner], self.room.walls_length,
-            )
-            distance = 0
-            if second_point >= first_point:
-                distance = second_point - first_point
-            elif second_point < first_point:
-                distance = second_point + (self.room.wall_perimetr - first_point)
-
-            length[distance] = {
-                "left_corner": first_object[first_right_corner],
-                "right_corner": second_object[counter][second_left_corner],
-            }
-            # расстояния могут быть одинаковые, но нам по сути неважно какой
-            # из вариантов брать, а значит мы можем просто перезаписать ключ
-            # словаря
 
         for item in objects:
             if counter == len(objects):
                 counter = 0
-            core_and_output(item, objects)
+            self._calculate_and_store_distance(item, objects[counter], distances)
             counter += 1
-        return length[max(length)]
+        return distances[max(distances)]
+
+    def _calculate_and_store_distance(self, first_object, second_object, distances):
+
+        first_right_corner = "north_east"
+        second_left_corner = "north_west"
+
+        if first_object["north_east"] in self.room.room_coordinates_tuple:
+            first_right_corner = "south_east"
+        if (
+            second_object["north_west"]
+            in self.room.room_coordinates_tuple
+        ):
+            second_left_corner = "south_west"
+
+        first_point = self.convert_coordinates_to_line(
+            first_object[first_right_corner], self.room.walls_length,
+        )
+        second_point = self.convert_coordinates_to_line(
+            second_object[second_left_corner], self.room.walls_length,
+        )
+        distance = 0
+        if second_point >= first_point:
+            distance = second_point - first_point
+        elif second_point < first_point:
+            distance = second_point + (self.room.wall_perimetr - first_point)
+
+        distances[distance] = {
+            "left_corner": first_object[first_right_corner],
+            "right_corner": second_object[second_left_corner],
+        }
+        # расстояния могут быть одинаковые, но нам по сути неважно какой
+        # из вариантов брать, а значит мы можем просто перезаписать ключ
+        # словаря
 
     def placing_in_coordinates(
         self,
