@@ -56,10 +56,6 @@ msgstr "Пароль может содержать только латински
 msgid "Password can contain only Latin letters, numbers, special chars: %s"
 msgstr "Пароль может содержать только латинские буквы, цифры и специальные символы: %s"
 
-#: users/validators/password_validators.py:99
-msgid "The password must contain at least one special character, one upper and lower case letter, one number"
-msgstr "Пароль должен содержать как минимум один специальный символ, одну заглавную и одну строчную букву, одну цифру"
-
 #: users/validators/password_validators.py:113
 msgid "The password must contain at least one capital letter."
 msgstr "Пароль должен содержать хотя бы одну заглавную букву."
@@ -71,3 +67,16 @@ msgstr "Пароль должен содержать хотя бы одну ст
 #: users/validators/password_validators.py:136
 msgid "The password must contain at least one digit"
 msgstr "Пароль должен содержать как минимум одну цифру"
+
+#: users/validators/password_validators.py:128
+msgid "Your password must contain at least one capital letter and one lowercase letter."
+msgstr "Ваш пароль должен содержать как минимум одну заглавную и одну строчную букву."
+
+#: users/validators/password_validators.py:144
+msgid "Your password must contain at least one digit"
+msgstr "Ваш пароль должен содержать как минимум одну цифру"
+
+#: users/validators/password_validators.py:44
+#, python-format
+msgid "Your password must contain at least one special character: %s"
+msgstr "Ваш пароль должен содержать хотя бы один специальный символ: %s"

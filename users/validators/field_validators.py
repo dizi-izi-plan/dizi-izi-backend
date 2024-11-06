@@ -29,6 +29,10 @@ class CustomEmailValidator(EmailValidator):
     message = [basic_message, length_message, chars_include_message]
 
     user_regex = _lazy_re_compile(
+        # Length from 1 to 63
+        # Can only contain the characters a-z, digits 0-9, special characters _ - .
+        # Begins and ends with a number or letter
+        # Can't have two or more special characters in a row
         r"^(?!.*[._-]{2})[a-z0-9]([a-z0-9._-]{0,61}[a-z0-9])?\Z",
         re.IGNORECASE,
     )

@@ -13,6 +13,7 @@ COPY requirements.txt .
 RUN apt-get update && \
     python -m pip install --upgrade pip && \
     pip install -r requirements.txt --no-cache-dir && \
+    apt-get install -y gettext && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

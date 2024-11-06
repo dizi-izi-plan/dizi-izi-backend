@@ -1,12 +1,13 @@
 import uuid
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import models
-from rest_framework import exceptions
+from rest_framework.exceptions import ValidationError as DRFValidationError
 
-from users.validators.field_validators import PastDateValidator, CustomEmailValidator  # noqa: I001
-# noqa: I005, I003
+from users.validators.field_validators import (CustomEmailValidator,
+                                               PastDateValidator)
+
 # TODO: раскомментировать после создания моделей тарифов
 # from users.services import initialize_basic_user_tariff
 
@@ -91,6 +92,6 @@ class CustomUser(AbstractUser):
     def save(self, *args, **kwargs):
         try:
             self.full_clean()
-        except ValidationError as e:
-            raise exceptions.ValidationError(e.message_dict)
+        except DjangoValidationError as e:
+            raise DRFValidationError(e.message_dict)
         super().save(*args, **kwargs)

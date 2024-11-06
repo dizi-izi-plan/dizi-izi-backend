@@ -15,7 +15,6 @@ import re
 
 from django.contrib.auth.password_validation import MinimumLengthValidator
 from django.core.exceptions import ValidationError
-from django.utils.html import format_html
 from django.utils.translation import gettext as _
 
 
@@ -41,7 +40,7 @@ class SpecialCharsValidator:
             )
 
     def get_help_text(self):
-        return ""
+        return _("Your password must contain at least one special character: %s") % ''.join(self.special_chars)
 
 
 class LengthValidator(MinimumLengthValidator):
@@ -97,11 +96,7 @@ class AllowedCharsValidator:
             )
 
     def get_help_text(self):
-        basic_help_text = _("Password can contain only Latin letters, numbers, special chars: %s") % self.special_chars
-        additional_help_text = _(
-            "The password must contain at least one special character, one upper and lower case letter, one number"
-        )
-        return format_html("{}<br>{}", basic_help_text, additional_help_text)
+        return _("Password can contain only Latin letters, numbers, special chars: %s") % self.special_chars
 
 
 class HasUpperAndLowerCaseValidator:
@@ -125,7 +120,7 @@ class HasUpperAndLowerCaseValidator:
             raise ValidationError(errors)
 
     def get_help_text(self):
-        return ""
+        return _("Your password must contain at least one capital letter and one lowercase letter.")
 
 
 class HasDigitValidator:
@@ -141,4 +136,4 @@ class HasDigitValidator:
             )
 
     def get_help_text(self):
-        return ""
+        return _("Your password must contain at least one digit")
