@@ -24,5 +24,6 @@ urlpatterns = [
     path("auth/", include(users.urls)),
     path("auth/", include("djoser.urls.authtoken")),
     path("", include(router.urls)),
-    re_path("", include("social_django.urls", namespace="social")),
+    re_path(r'^social_auth/', include('drf_social_oauth2.urls', namespace='drf')),
+
 ]
