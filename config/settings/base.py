@@ -42,6 +42,8 @@ INSTALLED_APPS += [
     "drf_spectacular",
     "import_export",
     "corsheaders",
+    "oauth2_provider",
+    "drf_social_oauth2",
 ]
 
 """apps"""
@@ -139,6 +141,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
+        "drf_social_oauth2.authentication.SocialAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -186,6 +190,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 AUTHENTICATION_BACKENDS = (
     "social_core.backends.vk.VKOAuth2",
     "social_core.backends.yandex.YandexOAuth2",
+    "drf_social_oauth2.backends.DjangoOAuth2",
     "django.contrib.auth.backends.ModelBackend",
 )
 
