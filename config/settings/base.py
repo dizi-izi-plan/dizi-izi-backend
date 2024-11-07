@@ -55,6 +55,7 @@ INSTALLED_APPS += [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -108,13 +109,25 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "users.validators.password_validators.LengthValidator",
+        "OPTIONS": {
+            "max_length": 40,
+        },
+    },
+    {
+        "NAME": "users.validators.password_validators.SpecialCharsValidator",
+    },
+    {
+        "NAME": "users.validators.password_validators.AllowedCharsValidator",
+    },
+    {
+        "NAME": "users.validators.password_validators.HasUpperAndLowerCaseValidator",
+    },
+    {
+        "NAME": "users.validators.password_validators.HasDigitValidator",
     },
 ]
 
@@ -133,6 +146,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = "/media/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

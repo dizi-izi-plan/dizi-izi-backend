@@ -1,10 +1,12 @@
 import uuid
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.core.validators import EmailValidator
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import models
+from rest_framework.exceptions import ValidationError as DRFValidationError
 
-from users.validators import PastDateValidator
+from users.validators.field_validators import (CustomEmailValidator,
+                                               PastDateValidator)
 
 # TODO: раскомментировать после создания моделей тарифов
 # from users.services import initialize_basic_user_tariff
@@ -49,12 +51,12 @@ class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(
         db_index=True,
-        max_length=254,
+        max_length=256,
         unique=True,
-        validators=[EmailValidator()],
+        validators=[CustomEmailValidator()],
         verbose_name="Email",
         error_messages={
-            "unique": "Пользователь с таким email уже существует.",
+            "unique": "Данный пользователь уже зарегистрирован",
         },
     )
     city = models.CharField(
@@ -82,3 +84,14 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def clean(self):
+        super().clean()
+        self.email = self.email.lower()
+
+    def save(self, *args, **kwargs):
+        try:
+            self.full_clean()
+        except DjangoValidationError as e:
+            raise DRFValidationError(e.message_dict)
+        super().save(*args, **kwargs)
