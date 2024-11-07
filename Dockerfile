@@ -23,6 +23,9 @@ COPY . .
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
+# Compilation of translation binary file
+RUN python manage.py compilemessages
+
 RUN chmod +x docker-entrypoint.sh
 
 # Switch from 'root' to 'doc_user' for more safety
