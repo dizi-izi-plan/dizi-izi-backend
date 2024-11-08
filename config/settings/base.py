@@ -5,12 +5,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 FIXTURE_DIRS = [
-    os.path.join(BASE_DIR, 'fixtures'),
+    os.path.join(BASE_DIR, "fixtures"),
 ]
 
 SECRET_KEY = os.getenv("DJANGO_KEY", "some_key")
 
-DEBUG = os.getenv("DEBUG_KEY", False) in ('True', 'true', 'TRUE', '1')
+DEBUG = os.getenv("DEBUG_KEY", False) in ("True", "true", "TRUE", "1")
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split()
 DOCKER_CONTAINER_NAME = os.getenv("DOCKER_CONTAINER_NAME")
@@ -103,7 +103,6 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT", default="5433"),
     },
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
