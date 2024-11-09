@@ -5,12 +5,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 FIXTURE_DIRS = [
-    os.path.join(BASE_DIR, 'fixtures'),
+    os.path.join(BASE_DIR, "fixtures"),
 ]
 
 SECRET_KEY = os.getenv("DJANGO_KEY", "some_key")
 
-DEBUG = os.getenv("DEBUG_KEY", False) in ('True', 'true', 'TRUE', '1')
+DEBUG = os.getenv("DEBUG_KEY", False) in ("True", "true", "TRUE", "1")
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split()
 DOCKER_CONTAINER_NAME = os.getenv("DOCKER_CONTAINER_NAME")
@@ -42,6 +42,8 @@ INSTALLED_APPS += [
     "drf_spectacular",
     "import_export",
     "corsheaders",
+    "oauth2_provider",
+    "drf_social_oauth2",
 ]
 
 """apps"""
@@ -103,7 +105,6 @@ DATABASES = {
     },
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -156,6 +157,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
+        "drf_social_oauth2.authentication.SocialAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -203,6 +206,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 AUTHENTICATION_BACKENDS = (
     "social_core.backends.vk.VKOAuth2",
     "social_core.backends.yandex.YandexOAuth2",
+    "drf_social_oauth2.backends.DjangoOAuth2",
     "django.contrib.auth.backends.ModelBackend",
 )
 
