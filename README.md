@@ -111,6 +111,37 @@ Docker так же можно использовать во время разр�
     python manage.py loaddata tariffs.json
 ```
 
+**Тестовые тарифы привязанные к пользователям**
+
+```
+    python manage.py loaddata tariff_userstariffs.json
+```
+
+**Тестовые типы комнат**
+
+```
+    python manage.py loaddata furniture_roomtype.json
+```
+
+**Тестовая мебель**
+
+```
+    python manage.py loaddata furniture_furniture.json
+```
+
+**Тестовые планировки**
+
+```
+    python manage.py loaddata furniture_roomlayout.json
+```
+
+**Загрузка сразу всех тестовых фикстур с моделями**
+```
+    python manage.py loaddata users.json tariffs.json
+     tariff_userstariffs.json furniture_roomtype.json
+     furniture_furniture.json furniture_roomlayout.json
+```
+
 ### Запуск тестов
    ```
    pip install -r req_dev.txt
