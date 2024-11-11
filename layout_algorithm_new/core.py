@@ -1,5 +1,5 @@
 import bisect
-from .main_functions import FurnitureArrangement
+from .main_functions import FurniturePlacer, FreeSpaceCalculator
 from .create_picture import create_rectangles
 from .offset_finder_convert import MiddlePointAndShift
 
@@ -24,10 +24,11 @@ class Core(MiddlePointAndShift):
 
         print(furniture)
         room = Room(room_size, doors_and_windows)
-        algorithm = FurnitureArrangement(room)
+        free_space_calculator = FreeSpaceCalculator(room)
+        furniture_placer = FurniturePlacer(room)
 
         for item, item2 in enumerate(furniture):
-            result_free_space = algorithm.free_space_algorithm(room.room_objects_coordinates)
+            result_free_space = free_space_calculator.free_space_algorithm(room.room_objects_coordinates)
             result_middle_distance = self.middle_point_finder(
                 result_free_space, room.wall_perimetr, room.walls_length,
             )
@@ -41,7 +42,7 @@ class Core(MiddlePointAndShift):
                 wall_number=result_wall_definition,
             )
             result_corner_markings = furniture_obj.corners_coordinates
-            final_point, figure = algorithm.placing_in_coordinates(
+            final_point, figure = furniture_placer.placing_in_coordinates(
                 result_middle_distance,
                 result_corner_markings,
                 room_size,

@@ -5,11 +5,8 @@ from .offset_finder_convert import MiddlePointAndShift
 from .furniture import Furniture
 
 
-class FurnitureArrangement(MiddlePointAndShift):
+class FreeSpaceCalculator(MiddlePointAndShift):
     def __init__(self, room):
-        free_space = []
-        # хранение расстояний между мебелью через запятую (в виде координат)
-        self.free_space = free_space
         self.room = room
 
     def free_space_algorithm(self, objects: list) -> dict:
@@ -74,6 +71,11 @@ class FurnitureArrangement(MiddlePointAndShift):
         else:
             distance = second_point + (wall_perimeter - first_point)
         return distance
+
+
+class FurniturePlacer(MiddlePointAndShift):
+    def __init__(self, room):
+        self.room = room
 
     def placing_in_coordinates(
         self,
@@ -160,7 +162,10 @@ class FurnitureArrangement(MiddlePointAndShift):
 
         return data, figure
 
-    def shuffle_furniture(self, furniture: list, mode: str) -> list:
+
+class FurnitureShuffler:
+    @staticmethod
+    def shuffle_furniture(furniture: list, mode: str) -> list:
         """Функция меняет позиции внутри списка мебели местами для
         предоставления пользователю других результатов при повторной генерации
 
