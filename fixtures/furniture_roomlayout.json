@@ -1,0 +1,754 @@
+[
+  {
+    "model": "furniture.coordinate",
+    "pk": 1,
+    "fields": {
+      "x": 300,
+      "y": 0
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 2,
+    "fields": {
+      "x": 2500,
+      "y": 150
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 3,
+    "fields": {
+      "x": 800,
+      "y": 0
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 4,
+    "fields": {
+      "x": 2000,
+      "y": 0
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 5,
+    "fields": {
+      "x": 1500,
+      "y": 600
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 6,
+    "fields": {
+      "x": 750,
+      "y": 300
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 7,
+    "fields": {
+      "x": 600,
+      "y": 300
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 8,
+    "fields": {
+      "x": 1250,
+      "y": 650
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 9,
+    "fields": {
+      "x": 900,
+      "y": 300
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 10,
+    "fields": {
+      "x": 350,
+      "y": 0
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 11,
+    "fields": {
+      "x": 850,
+      "y": 0
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 12,
+    "fields": {
+      "x": 2100,
+      "y": 0
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 13,
+    "fields": {
+      "x": 350,
+      "y": 150
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 14,
+    "fields": {
+      "x": 2550,
+      "y": 200
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 15,
+    "fields": {
+      "x": 1600,
+      "y": 500
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 16,
+    "fields": {
+      "x": 400,
+      "y": 0
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 17,
+    "fields": {
+      "x": 900,
+      "y": 100
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 18,
+    "fields": {
+      "x": 1900,
+      "y": 0
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 19,
+    "fields": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 20,
+    "fields": {
+      "x": 100,
+      "y": 100
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 21,
+    "fields": {
+      "x": 1200,
+      "y": 500
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 22,
+    "fields": {
+      "x": 1450,
+      "y": 500
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 23,
+    "fields": {
+      "x": 0,
+      "y": 800
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 24,
+    "fields": {
+      "x": 200,
+      "y": 600
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 25,
+    "fields": {
+      "x": 600,
+      "y": 200
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 26,
+    "fields": {
+      "x": 1100,
+      "y": 800
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 27,
+    "fields": {
+      "x": 950,
+      "y": 350
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 28,
+    "fields": {
+      "x": 250,
+      "y": 680
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 29,
+    "fields": {
+      "x": 1150,
+      "y": 450
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 30,
+    "fields": {
+      "x": 650,
+      "y": 650
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 31,
+    "fields": {
+      "x": 300,
+      "y": 300
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 32,
+    "fields": {
+      "x": 300,
+      "y": 900
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 33,
+    "fields": {
+      "x": 250,
+      "y": 2500
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 34,
+    "fields": {
+      "x": 1000,
+      "y": 3000
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 35,
+    "fields": {
+      "x": 3900,
+      "y": 3000
+    }
+  },
+  {
+    "model": "furniture.coordinate",
+    "pk": 36,
+    "fields": {
+      "x": 2150,
+      "y": 920
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 1,
+    "fields": {
+      "room": 1,
+      "north_west": 1,
+      "north_east": 1,
+      "south_west": 1,
+      "south_east": 1,
+      "furniture": 1
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 2,
+    "fields": {
+      "room": 1,
+      "north_west": 3,
+      "north_east": 3,
+      "south_west": 3,
+      "south_east": 3,
+      "furniture": 4
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 3,
+    "fields": {
+      "room": 1,
+      "north_west": 4,
+      "north_east": 4,
+      "south_west": 4,
+      "south_east": 4,
+      "furniture": 5
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 4,
+    "fields": {
+      "room": 2,
+      "north_west": 10,
+      "north_east": 10,
+      "south_west": 10,
+      "south_east": 10,
+      "furniture": 2
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 5,
+    "fields": {
+      "room": 2,
+      "north_west": 11,
+      "north_east": 11,
+      "south_west": 11,
+      "south_east": 11,
+      "furniture": 5
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 6,
+    "fields": {
+      "room": 2,
+      "north_west": 12,
+      "north_east": 12,
+      "south_west": 12,
+      "south_east": 12,
+      "furniture": 6
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 7,
+    "fields": {
+      "room": 3,
+      "north_west": 16,
+      "north_east": 16,
+      "south_west": 16,
+      "south_east": 16,
+      "furniture": 2
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 8,
+    "fields": {
+      "room": 3,
+      "north_west": 17,
+      "north_east": 17,
+      "south_west": 17,
+      "south_east": 17,
+      "furniture": 4
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 9,
+    "fields": {
+      "room": 3,
+      "north_west": 18,
+      "north_east": 18,
+      "south_west": 18,
+      "south_east": 18,
+      "furniture": 6
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 10,
+    "fields": {
+      "room": 4,
+      "north_west": 23,
+      "north_east": 23,
+      "south_west": 23,
+      "south_east": 23,
+      "furniture": 1
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 11,
+    "fields": {
+      "room": 4,
+      "north_west": 24,
+      "north_east": 24,
+      "south_west": 24,
+      "south_east": 24,
+      "furniture": 4
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 12,
+    "fields": {
+      "room": 4,
+      "north_west": 25,
+      "north_east": 25,
+      "south_west": 25,
+      "south_east": 25,
+      "furniture": 4
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 13,
+    "fields": {
+      "room": 5,
+      "north_west": 26,
+      "north_east": 26,
+      "south_west": 26,
+      "south_east": 26,
+      "furniture": 2
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 14,
+    "fields": {
+      "room": 5,
+      "north_west": 27,
+      "north_east": 27,
+      "south_west": 27,
+      "south_east": 27,
+      "furniture": 3
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 15,
+    "fields": {
+      "room": 5,
+      "north_west": 28,
+      "north_east": 28,
+      "south_west": 28,
+      "south_east": 28,
+      "furniture": 6
+    }
+  },
+  {
+    "model": "furniture.furnitureplacement",
+    "pk": 16,
+    "fields": {
+      "room": 5,
+      "north_west": 29,
+      "north_east": 29,
+      "south_west": 29,
+      "south_east": 29,
+      "furniture": 6
+    }
+  },
+  {
+    "model": "furniture.powersocketplacement",
+    "pk": 1,
+    "fields": {
+      "room": 1,
+      "north_west": 1,
+      "north_east": 1,
+      "south_west": 1,
+      "south_east": 1
+    }
+  },
+  {
+    "model": "furniture.powersocketplacement",
+    "pk": 2,
+    "fields": {
+      "room": 2,
+      "north_west": 13,
+      "north_east": 13,
+      "south_west": 13,
+      "south_east": 13
+    }
+  },
+  {
+    "model": "furniture.powersocketplacement",
+    "pk": 3,
+    "fields": {
+      "room": 3,
+      "north_west": 19,
+      "north_east": 19,
+      "south_west": 19,
+      "south_east": 19
+    }
+  },
+  {
+    "model": "furniture.powersocketplacement",
+    "pk": 4,
+    "fields": {
+      "room": 3,
+      "north_west": 20,
+      "north_east": 20,
+      "south_west": 20,
+      "south_east": 20
+    }
+  },
+  {
+    "model": "furniture.powersocketplacement",
+    "pk": 5,
+    "fields": {
+      "room": 5,
+      "north_west": 30,
+      "north_east": 30,
+      "south_west": 30,
+      "south_east": 30
+    }
+  },
+  {
+    "model": "furniture.powersocketplacement",
+    "pk": 6,
+    "fields": {
+      "room": 5,
+      "north_west": 31,
+      "north_east": 31,
+      "south_west": 31,
+      "south_east": 31
+    }
+  },
+  {
+    "model": "furniture.powersocketplacement",
+    "pk": 7,
+    "fields": {
+      "room": 5,
+      "north_west": 32,
+      "north_east": 32,
+      "south_west": 32,
+      "south_east": 32
+    }
+  },
+  {
+    "model": "furniture.doorplacement",
+    "pk": 1,
+    "fields": {
+      "room": 1,
+      "north_west": 2,
+      "north_east": 2,
+      "south_west": 2,
+      "south_east": 2,
+      "width": 900,
+      "open_inside": false
+    }
+  },
+  {
+    "model": "furniture.doorplacement",
+    "pk": 2,
+    "fields": {
+      "room": 2,
+      "north_west": 14,
+      "north_east": 14,
+      "south_west": 14,
+      "south_east": 14,
+      "width": 900,
+      "open_inside": false
+    }
+  },
+  {
+    "model": "furniture.doorplacement",
+    "pk": 3,
+    "fields": {
+      "room": 3,
+      "north_west": 21,
+      "north_east": 21,
+      "south_west": 21,
+      "south_east": 21,
+      "width": 900,
+      "open_inside": false
+    }
+  },
+  {
+    "model": "furniture.doorplacement",
+    "pk": 4,
+    "fields": {
+      "room": 5,
+      "north_west": 33,
+      "north_east": 33,
+      "south_west": 33,
+      "south_east": 33,
+      "width": 900,
+      "open_inside": false
+    }
+  },
+  {
+    "model": "furniture.doorplacement",
+    "pk": 5,
+    "fields": {
+      "room": 5,
+      "north_west": 34,
+      "north_east": 34,
+      "south_west": 34,
+      "south_east": 34,
+      "width": 900,
+      "open_inside": false
+    }
+  },
+  {
+    "model": "furniture.windowplacement",
+    "pk": 1,
+    "fields": {
+      "room": 1,
+      "north_west": 5,
+      "north_east": 5,
+      "south_west": 5,
+      "south_east": 5,
+      "length": 2400,
+      "width": 2100
+    }
+  },
+  {
+    "model": "furniture.windowplacement",
+    "pk": 2,
+    "fields": {
+      "room": 2,
+      "north_west": 15,
+      "north_east": 15,
+      "south_west": 15,
+      "south_east": 15,
+      "length": 2400,
+      "width": 2100
+    }
+  },
+  {
+    "model": "furniture.windowplacement",
+    "pk": 3,
+    "fields": {
+      "room": 3,
+      "north_west": 22,
+      "north_east": 22,
+      "south_west": 22,
+      "south_east": 22,
+      "length": 2400,
+      "width": 2100
+    }
+  },
+  {
+    "model": "furniture.windowplacement",
+    "pk": 4,
+    "fields": {
+      "room": 5,
+      "north_west": 35,
+      "north_east": 35,
+      "south_west": 35,
+      "south_east": 35,
+      "length": 2100,
+      "width": 2400
+    }
+  },
+  {
+    "model": "furniture.windowplacement",
+    "pk": 5,
+    "fields": {
+      "room": 5,
+      "north_west": 36,
+      "north_east": 36,
+      "south_west": 36,
+      "south_east": 36,
+      "length": 1150,
+      "width": 1500
+    }
+  },
+  {
+    "model": "furniture.roomlayout",
+    "pk": 1,
+    "fields": {
+      "user": "d810e52a-3761-4687-a0c5-49c762aafe4f",
+      "name": "Моя планировка1",
+      "created": "2024-11-09T10:01:57.129Z",
+      "first_wall": 6000,
+      "second_wall": 8000,
+      "third_wall": 6000,
+      "fourth_wall": 8000
+    }
+  },
+  {
+    "model": "furniture.roomlayout",
+    "pk": 2,
+    "fields": {
+      "user": "6ce46b3c-4073-4905-86f7-8de07ff8df49",
+      "name": "Планоровочка",
+      "created": "2024-11-09T10:54:08.431Z",
+      "first_wall": 10000,
+      "second_wall": 10000,
+      "third_wall": 10000,
+      "fourth_wall": 10000
+    }
+  },
+  {
+    "model": "furniture.roomlayout",
+    "pk": 3,
+    "fields": {
+      "user": "224081a8-900d-4c80-bd73-4486791cf2e2",
+      "name": "План",
+      "created": "2024-11-09T11:03:52.770Z",
+      "first_wall": 8000,
+      "second_wall": 10000,
+      "third_wall": 8000,
+      "fourth_wall": 10000
+    }
+  },
+  {
+    "model": "furniture.roomlayout",
+    "pk": 4,
+    "fields": {
+      "user": "ac8cf8d2-a32d-41c0-9bc8-1a80260838cd",
+      "name": "Божественная планировка",
+      "created": "2024-11-09T11:06:07.453Z",
+      "first_wall": 7500,
+      "second_wall": 8000,
+      "third_wall": 7500,
+      "fourth_wall": 8000
+    }
+  },
+  {
+    "model": "furniture.roomlayout",
+    "pk": 5,
+    "fields": {
+      "user": "ed9a9fea-8ae5-4569-bd38-9fcbb106a333",
+      "name": "Планировочке",
+      "created": "2024-11-09T11:10:43.267Z",
+      "first_wall": 4500,
+      "second_wall": 6000,
+      "third_wall": 4500,
+      "fourth_wall": 6000
+    }
+  }
+]
