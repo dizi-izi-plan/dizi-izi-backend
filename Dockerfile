@@ -13,6 +13,7 @@ COPY requirements.txt .
 RUN apt-get update && \
     python -m pip install --upgrade pip && \
     pip install -r requirements.txt --no-cache-dir && \
+    apt-get install -y gettext && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -21,6 +22,9 @@ COPY . .
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
+
+# Compilation of translation binary file
+RUN python manage.py compilemessages
 
 RUN chmod +x docker-entrypoint.sh
 

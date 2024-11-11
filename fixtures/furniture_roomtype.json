@@ -1,0 +1,10 @@
+[
+  {
+    "model": "furniture.roomtype",
+    "pk": 1,
+    "fields": {
+      "name": "Спальня",
+      "slug": "bedroom"
+    }
+  }
+]

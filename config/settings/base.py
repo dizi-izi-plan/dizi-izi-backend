@@ -5,12 +5,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 FIXTURE_DIRS = [
-    os.path.join(BASE_DIR, 'fixtures'),
+    os.path.join(BASE_DIR, "fixtures"),
 ]
 
 SECRET_KEY = os.getenv("DJANGO_KEY", "some_key")
 
-DEBUG = os.getenv("DEBUG_KEY", False) in ('True', 'true', 'TRUE', '1')
+DEBUG = os.getenv("DEBUG_KEY", False) in ("True", "true", "TRUE", "1")
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split()
 DOCKER_CONTAINER_NAME = os.getenv("DOCKER_CONTAINER_NAME")
@@ -42,6 +42,8 @@ INSTALLED_APPS += [
     "drf_spectacular",
     "import_export",
     "corsheaders",
+    "oauth2_provider",
+    "drf_social_oauth2",
 ]
 
 """apps"""
@@ -55,6 +57,7 @@ INSTALLED_APPS += [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -102,19 +105,30 @@ DATABASES = {
     },
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "users.validators.password_validators.LengthValidator",
+        "OPTIONS": {
+            "max_length": 40,
+        },
+    },
+    {
+        "NAME": "users.validators.password_validators.SpecialCharsValidator",
+    },
+    {
+        "NAME": "users.validators.password_validators.AllowedCharsValidator",
+    },
+    {
+        "NAME": "users.validators.password_validators.HasUpperAndLowerCaseValidator",
+    },
+    {
+        "NAME": "users.validators.password_validators.HasDigitValidator",
     },
 ]
 
@@ -134,11 +148,17 @@ MEDIA_URL = "/media/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
+        "drf_social_oauth2.authentication.SocialAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -186,6 +206,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 AUTHENTICATION_BACKENDS = (
     "social_core.backends.vk.VKOAuth2",
     "social_core.backends.yandex.YandexOAuth2",
+    "drf_social_oauth2.backends.DjangoOAuth2",
     "django.contrib.auth.backends.ModelBackend",
 )
 

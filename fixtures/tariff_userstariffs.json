@@ -1,0 +1,47 @@
+[
+  {
+    "model": "tariff.userstariffs",
+    "pk": 1,
+    "fields": {
+      "user": "d810e52a-3761-4687-a0c5-49c762aafe4f",
+      "tariff": 1,
+      "start_date": "2024-11-09T08:59:49.176Z"
+    }
+  },
+  {
+    "model": "tariff.userstariffs",
+    "pk": 2,
+    "fields": {
+      "user": "ed9a9fea-8ae5-4569-bd38-9fcbb106a333",
+      "tariff": 2,
+      "start_date": "2024-11-09T09:00:13.966Z"
+    }
+  },
+  {
+    "model": "tariff.userstariffs",
+    "pk": 3,
+    "fields": {
+      "user": "6ce46b3c-4073-4905-86f7-8de07ff8df49",
+      "tariff": 2,
+      "start_date": "2024-11-09T09:00:46.244Z"
+    }
+  },
+  {
+    "model": "tariff.userstariffs",
+    "pk": 4,
+    "fields": {
+      "user": "224081a8-900d-4c80-bd73-4486791cf2e2",
+      "tariff": 1,
+      "start_date": "2024-11-09T09:00:52.761Z"
+    }
+  },
+  {
+    "model": "tariff.userstariffs",
+    "pk": 5,
+    "fields": {
+      "user": "ac8cf8d2-a32d-41c0-9bc8-1a80260838cd",
+      "tariff": 3,
+      "start_date": "2024-11-09T09:00:58.010Z"
+    }
+  }
+]
