@@ -81,7 +81,7 @@ class FurnitureArrangement(MiddlePointAndShift):
         figure: dict,
         walls: dict,
         object_attributes: dict,
-    ) -> bool:
+    ):
         """Проверка возможности резервирования места для мебели в комнате.
 
         Args:
@@ -99,47 +99,14 @@ class FurnitureArrangement(MiddlePointAndShift):
             "fourth_wall":0}
             length_and_width: ширина и длина располагаемого объекта
 
-        Returns:
-            bool: True, если место зарезервировано, иначе False
         """
 
-        def displacement():
-            nonlocal figure, data, objects_counter, cycle_counter, cycle_border, displacement_start
-            displacement_start += data["displacement_value"]
-
-            data["x"], data["y"] = self.offset(
-                data,
-                self.room.wall_perimetr,
-                self.room.walls_length,
-            ).values()
-            wall = self.room.wall_definition(data)
-            furniture_obj = Furniture(
-                length=object_attributes["length"],
-                width=object_attributes["width"],
-                center=data,
-                wall_number=wall,
-            )
-            figure = furniture_obj.corners_coordinates
-            objects_counter = 0
-            cycle_counter += 1
-
-        # Задаем переменные, чтобы определить случаи для выхода из цикла
-        # переменная необходимая для учета всех объектов, относительно которых
-        # делается проверка на пересечение
-        objects_counter = 0
-        # переменная для подсчета количества циклов, дабы они не были
-        # бесконечным
         cycle_counter = 0
-        # переменная, указывающая при каком значении будет критическая ошибка
-        # о невозможности размещения
-        cycle_border = self.room.wall_perimetr
-        # Переменная, выводящая из общего цикла при не пересечении объектов
-        breaker = 0
-
+        max_attempts = self.room.wall_perimetr
         # Задаем данные для дальнейшей их отправки в функцию переноса объекта
         # переменная необходима для обозначения стартовой точки, относительно
         # которой будет смещение
-        displacement_start = 0
+        data["displacement_start"] = 0
         # указываем сторону для начального смещения
         data["shift_method"] = "plus"
 
@@ -156,34 +123,42 @@ class FurnitureArrangement(MiddlePointAndShift):
 
         # сам цикл, в котором мы пытаемся разметить объект заданное количество
         # циклов и проверяем пересечения со всеми объектами
-        while cycle_counter < cycle_border and objects_counter < len(
-            self.room.room_objects_coordinates,
-        ):
-            figure_2 = self.room.room_objects_coordinates[objects_counter]
-            if checks(figure, figure_2, walls):
-                # добавляем единицу брейкеру за каждый прошедший проверки
-                # пересечения объект, чтобы организовать выход из цикла
-                breaker += 1
-                objects_counter += 1
-            else:
-                displacement()
-            # если пересечения со всеми объектами были проверены успешно, то
-            # выходим из цикла
-            if breaker >= len(self.room.room_objects_coordinates):
+        while cycle_counter < max_attempts:
+            if self._check_collisions(figure, walls):
                 break
-            if cycle_counter >= cycle_border:
-                raise Exception("Превышено число попыток на размещение")
+            else:
+                data, figure = self._displace_furniture(data, object_attributes)
+                cycle_counter += 1
+        else:
+            raise Exception("Превышено число попыток на размещение")
 
-            breaker = 1
-
-        # Если все проверки прошли, добавляем координаты мебели в словарь
-        # coordinates
         final_point = self.convert_coordinates_to_line(data, self.room.walls_length)
-        # Тут один сплошной вопрос, должно быть bool!!!
-        return (
-            self.convert_coordinates_to_line(data, self.room.walls_length),
-            figure,
+        return final_point, figure
+
+    def _check_collisions(self, figure, walls):
+        for existing_figure in self.room.room_objects_coordinates:
+            if not checks(figure, existing_figure, walls):
+                return False
+        return True
+
+    def _displace_furniture(self, data, object_attributes):
+        data["displacement_start"] += data["displacement_value"]
+
+        data["x"], data["y"] = self.offset(
+            data,
+            self.room.wall_perimetr,
+            self.room.walls_length,
+        ).values()
+        wall = self.room.wall_definition(data)
+        furniture_obj = Furniture(
+            length=object_attributes["length"],
+            width=object_attributes["width"],
+            center=data,
+            wall_number=wall,
         )
+        figure = furniture_obj.corners_coordinates
+
+        return data, figure
 
     def shuffle_furniture(self, furniture: list, mode: str) -> list:
         """Функция меняет позиции внутри списка мебели местами для
