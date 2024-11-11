@@ -24,48 +24,56 @@ class FurnitureArrangement(MiddlePointAndShift):
         "walls_length": {"first_wall": 1, "second_wall": 2, "third_wall": 1,
         "fourth_wall": 2}
         """
-        length = {}
-        counter = 1
+        distances = {}
 
-        def core_and_output(first_object, second_object):
+        for i in range(len(objects)):
+            first_object = objects[i]
+            second_object = objects[(i + 1) % len(objects)]  # Циклический переход к первому объекту
+            self._calculate_and_store_distance(first_object, second_object, distances)
 
-            first_right_corner = "north_east"
-            second_left_corner = "north_west"
+        return distances[max(distances)]
 
-            if first_object["north_east"] in self.room.room_coordinates_tuple:
-                first_right_corner = "south_east"
-            if (
-                second_object[counter]["north_west"]
-                in self.room.room_coordinates_tuple
-            ):
-                second_left_corner = "south_west"
+    def _calculate_and_store_distance(self, first_object, second_object, distances):
 
-            first_point = self.convert_coordinates_to_line(
-                first_object[first_right_corner], self.room.walls_length,
-            )
-            second_point = self.convert_coordinates_to_line(
-                second_object[counter][second_left_corner], self.room.walls_length,
-            )
-            distance = 0
-            if second_point >= first_point:
-                distance = second_point - first_point
-            elif second_point < first_point:
-                distance = second_point + (self.room.wall_perimetr - first_point)
+        first_right_corner = self._get_right_corner(first_object)
+        second_left_corner = self._get_left_corner(second_object)
 
-            length[distance] = {
-                "left_corner": first_object[first_right_corner],
-                "right_corner": second_object[counter][second_left_corner],
-            }
-            # расстояния могут быть одинаковые, но нам по сути неважно какой
-            # из вариантов брать, а значит мы можем просто перезаписать ключ
-            # словаря
+        first_point = self.convert_coordinates_to_line(
+            first_object[first_right_corner], self.room.walls_length,
+        )
+        second_point = self.convert_coordinates_to_line(
+            second_object[second_left_corner], self.room.walls_length,
+        )
 
-        for item in objects:
-            if counter == len(objects):
-                counter = 0
-            core_and_output(item, objects)
-            counter += 1
-        return length[max(length)]
+        distance = self._calculate_linear_distance(first_point, second_point)
+
+        distances[distance] = {
+            "left_corner": first_object[first_right_corner],
+            "right_corner": second_object[second_left_corner],
+        }
+        # расстояния могут быть одинаковые, но нам по сути неважно какой
+        # из вариантов брать, а значит мы можем просто перезаписать ключ
+        # словаря
+
+    def _get_right_corner(self, obj):
+        if obj["north_east"] in self.room.room_coordinates_tuple:
+            return "south_east"
+        else:
+            return "north_east"
+
+    def _get_left_corner(self, obj):
+        if obj["north_west"] in self.room.room_coordinates_tuple:
+            return "south_west"
+        else:
+            return "north_west"
+
+    def _calculate_linear_distance(self, first_point, second_point):
+        wall_perimeter = self.room.wall_perimetr
+        if second_point >= first_point:
+            distance = second_point - first_point
+        else:
+            distance = second_point + (wall_perimeter - first_point)
+        return distance
 
     def placing_in_coordinates(
         self,
