@@ -1,7 +1,11 @@
+from django.contrib.auth import get_user_model
+
 from furniture.models import (Coordinate, DoorPlacement, FurniturePlacement,
                               PowerSocketPlacement, RoomLayout,
                               WindowPlacement)
 from layout_algorithm import core
+
+User = get_user_model()
 
 
 def create_room_layout(validated_data):
@@ -118,3 +122,20 @@ def create_by_coordinate(placement):
             y=placement["south_east"]["y"],
         ),
     }
+
+
+def copy_room_layout(RoomLayout, User):
+    """Создает копию объекта комнаты (RoomLayout)
+    С новым первичным ключом, но теми же значениями атрибутов.
+    M2M отношения не копируются.
+    """
+    new_room_layout = RoomLayout.objects.create(
+        user=user,
+        name=get_name(user),
+        first_wall=room_layout.first_wall,
+        second_wall=room_layout.second_wall,
+        third_wall=room_layout.third_wall,
+        fourth_wall=room_layout.fourth_wall,
+    )
+
+    return new_room_layout
