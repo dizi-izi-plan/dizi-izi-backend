@@ -1,0 +1,35 @@
+[
+  {
+    "model": "furniture.powersocketposition",
+    "pk": 1,
+    "fields": {
+      "content_type": 1,
+      "object_id": 1,
+      "power_socket": 1,
+      "offset_width": 1200,
+      "offset_height": 600
+    }
+  },
+  {
+    "model": "furniture.powersocketposition",
+    "pk": 2,
+    "fields": {
+      "content_type": 2,
+      "object_id": 2,
+      "power_socket": 2,
+      "offset_width": 1100,
+      "offset_height": 600
+    }
+  },
+  {
+    "model": "furniture.powersocketposition",
+    "pk": 3,
+    "fields": {
+      "content_type": 3,
+      "object_id": 3,
+      "power_socket": 3,
+      "offset_width": 1000,
+      "offset_height": 600
+    }
+  }
+]

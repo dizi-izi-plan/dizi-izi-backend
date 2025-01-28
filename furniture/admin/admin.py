@@ -23,11 +23,6 @@ class FurnitureAdmin(ImportExportActionModelAdmin):
         "width",
         "take_image",
         "type_of_rooms",
-        "power_socket_type",
-        "first_power_socket_height",
-        "first_power_socket_width",
-        "second_power_socket_height",
-        "second_power_socket_width",
     )
     search_fields = ("type_of_rooms", "name")
     list_filter = ("type_of_rooms",)
