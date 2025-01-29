@@ -15,6 +15,7 @@ class FurnitureFilter(filters.FilterSet):
 
 class RoomTypeFilter(filters.FilterSet):
     name = filters.CharFilter(field_name='name')
+
     class Meta:
         model = RoomType
         fields = (
