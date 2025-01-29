@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from furniture.models import Furniture
+from furniture.models import Furniture, RoomType
 
 
 class FurnitureFilter(filters.FilterSet):
@@ -10,4 +10,13 @@ class FurnitureFilter(filters.FilterSet):
         model = Furniture
         fields = (
             'type_of_rooms',
+        )
+
+
+class RoomTypeFilter(filters.FilterSet):
+    name = filters.CharFilter(field_name='name')
+    class Meta:
+        model = RoomType
+        fields = (
+            'name',
         )

@@ -9,9 +9,11 @@ from rest_framework.views import APIView
 from api.permissions import IsTariffAccepted
 from furniture.filters import FurnitureFilter
 from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
-                              PowerSocketPlacement, RoomLayout,
+                              PowerSocketPlacement, RoomLayout, RoomType,
                               WindowPlacement)
-from furniture.serializers import FurnitureSerializer, RoomLayoutSerializer
+from furniture.serializers import (FurnitureSerializer,
+                                   RoomLayoutSerializer, 
+                                   RoomTypeSerializer)
 from furniture.utils import send_pdf_file
 
 
@@ -22,6 +24,14 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = FurnitureSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = FurnitureFilter
+
+
+class RoomTypeViewSet(viewsets.ReadOnlyModelViewSet):
+    """Получение данных о типах помещений."""
+    queryset = RoomType.objects.all()
+    serializer_class = RoomTypeSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ("name",)
 
 
 class RoomViewSet(viewsets.ModelViewSet):
