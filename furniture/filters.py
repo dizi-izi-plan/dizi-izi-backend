@@ -11,13 +11,3 @@ class FurnitureFilter(filters.FilterSet):
         fields = (
             'type_of_rooms',
         )
-
-
-class RoomTypeFilter(filters.FilterSet):
-    name = filters.CharFilter(field_name='name')
-
-    class Meta:
-        model = RoomType
-        fields = (
-            'name',
-        )

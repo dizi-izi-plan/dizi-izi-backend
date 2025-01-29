@@ -26,7 +26,7 @@ class FurnitureViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RoomTypeViewSet(viewsets.ReadOnlyModelViewSet):
-    """Получение данных о типах помещений."""
+    """Get types of rooms"""
     queryset = RoomType.objects.all()
     serializer_class = RoomTypeSerializer
     filter_backends = (DjangoFilterBackend,)
