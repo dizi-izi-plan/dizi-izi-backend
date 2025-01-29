@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from furniture.models import Furniture, RoomType
+from furniture.models import Furniture
 
 
 class FurnitureFilter(filters.FilterSet):
