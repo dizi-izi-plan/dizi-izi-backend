@@ -89,7 +89,7 @@ class GenerateSwaggerDocForRoomTypeViewSet(BaseExtension):
         "list": extend_schema(
             tags=["details_of_room"],
             summary="Получение списка типов комнат",
-            description="Получение списка типов комнат. Доступно авторизованным пользователям.",
+            description="Получение списка типов комнат. Доступно всем пользователям.",
             responses={
                 status.HTTP_200_OK: OpenApiResponse(
                     response=serializer,
@@ -101,7 +101,7 @@ class GenerateSwaggerDocForRoomTypeViewSet(BaseExtension):
         "retrieve": extend_schema(
             tags=["details_of_room"],
             summary="Получение типа комнаты по id",
-            description="Получение информации о типе комнаты по идентификатору.",
+            description="Получение информации о типе комнаты по идентификатору. Доступно всем пользователям.",
             responses={
                 status.HTTP_200_OK: OpenApiResponse(
                     response=serializer,
