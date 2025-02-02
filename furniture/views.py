@@ -1,4 +1,3 @@
-from api.permissions import IsTariffAccepted
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
@@ -7,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.permissions import IsTariffAccepted
 from furniture.filters import FurnitureFilter
 from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
                               PowerSocketPlacement, RoomLayout,
