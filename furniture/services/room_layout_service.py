@@ -1,9 +1,15 @@
 from django.contrib.auth import get_user_model
+
 from layout_algorithm import core
 
-from furniture.models import (Coordinate, DoorPlacement, FurniturePlacement,
-                              PowerSocketPlacement, RoomLayout,
-                              WindowPlacement)
+from furniture.models import (
+    Coordinate,
+    DoorPlacement,
+    FurniturePlacement,
+    PowerSocketPlacement,
+    RoomLayout,
+    WindowPlacement,
+)
 from furniture.utils import get_name
 
 User = get_user_model()
