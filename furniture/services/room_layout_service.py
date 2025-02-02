@@ -1,5 +1,5 @@
-from layout_algorithm import core
 from django.contrib.auth import get_user_model
+from layout_algorithm import core
 
 from furniture.models import (Coordinate, DoorPlacement, FurniturePlacement,
                               PowerSocketPlacement, RoomLayout,
