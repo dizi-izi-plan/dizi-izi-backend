@@ -4,13 +4,14 @@ from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
 from furniture.views import (FurnitureViewSet, RoomCopyView, RoomViewSet,
-                             SendPDFView)
+                             SendPDFView, RoomTypeViewSet)
 from tariff.views import APIChangeTariff, APITariff
 from users.views import UserViewSet
 
 router = DefaultRouter()
 router.register("furniture", FurnitureViewSet, basename="furniture")
 router.register("rooms", RoomViewSet, basename="room")
+router.register("rooms_type", RoomTypeViewSet, basename="room_type")
 
 users = DefaultRouter()
 users.register("users", UserViewSet, basename="customuser")

@@ -13,6 +13,7 @@ class GenerateSwaggerDocForFurnitureViewSet(BaseExtension):
     endpoints_doc = {
         # GET /url/
         "list": extend_schema(
+            tags=["details_of_room"],
             summary="Получение данных о мебели",
             description="Возвращает данные мебели. Для администратора возвращает список всех пользователей",
             responses={
@@ -25,6 +26,7 @@ class GenerateSwaggerDocForFurnitureViewSet(BaseExtension):
         ),
         # GET /url/{id}/
         "retrieve": extend_schema(
+            tags=["details_of_room"],
             summary="Получение данных о мебели по id",
             description="Возвращает данные мебели по её уникальному идентификатору. ",
             responses={
