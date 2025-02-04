@@ -61,14 +61,14 @@ class RoomLayoutSerializer(serializers.ModelSerializer):
 
 class RoomLayoutListSerializer(serializers.ModelSerializer):
     """Сериализатор для списка планировок с ограниченным набором полей."""
-    
+
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = RoomLayout
         fields = (
             'id',
-            'name', 
+            'name',
             'user',
             'first_wall',
             'second_wall',
