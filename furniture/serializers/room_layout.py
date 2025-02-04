@@ -60,7 +60,7 @@ class RoomLayoutSerializer(serializers.ModelSerializer):
 
 
 class RoomLayoutListSerializer(serializers.ModelSerializer):
-    """Сериализатор для списка планировок с ограниченным набором полей."""
+    """Serializer for list of room layouts."""
 
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
