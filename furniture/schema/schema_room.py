@@ -16,7 +16,7 @@ class GenerateSwaggerDocForRoomViewSet(BaseExtension):
             description="Получение списка комнат. Доступно всем пользователям.",
             responses={
                 status.HTTP_200_OK: OpenApiResponse(
-                    response=serializer,
+                    response=serializers.RoomLayoutListSerializer,
                     description="Данные комнаты"
                 ),
             }
