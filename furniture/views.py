@@ -11,8 +11,12 @@ from furniture.filters import FurnitureFilter
 from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
                               PowerSocketPlacement, RoomLayout, RoomType,
                               WindowPlacement)
-from furniture.serializers import (FurnitureSerializer, RoomLayoutListSerializer,
-                                   RoomLayoutSerializer, RoomTypeSerializer)
+from furniture.serializers import (
+    FurnitureSerializer,
+    RoomLayoutListSerializer,
+    RoomLayoutSerializer,
+    RoomTypeSerializer
+)
 from furniture.utils import send_pdf_file
 
 
