@@ -69,6 +69,7 @@ class RoomLayoutListSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
+            'created',
             'user',
             'first_wall',
             'second_wall',
