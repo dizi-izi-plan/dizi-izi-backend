@@ -12,7 +12,7 @@ from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
                               PowerSocketPlacement, RoomLayout, RoomType,
                               WindowPlacement)
 from furniture.serializers import (FurnitureSerializer, RoomLayoutSerializer,
-                                   RoomTypeSerializer)
+                                   RoomLayoutListSerializer, RoomTypeSerializer)
 from furniture.utils import send_pdf_file
 
 
@@ -34,9 +34,13 @@ class RoomTypeViewSet(viewsets.ReadOnlyModelViewSet):
 class RoomViewSet(viewsets.ModelViewSet):
     """Получение и изменение планировки."""
 
-    serializer_class = RoomLayoutSerializer
-
     permission_classes = (IsAuthenticated, IsTariffAccepted)
+
+    def get_serializer_class(self):
+        """Choose serializer for action."""
+        if self.action == 'list':
+            return RoomLayoutListSerializer
+        return RoomLayoutSerializer
 
     def get_queryset(self):
         """Получение данных о помещении только пользователя запроса."""

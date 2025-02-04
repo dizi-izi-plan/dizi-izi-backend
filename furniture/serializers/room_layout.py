@@ -59,6 +59,24 @@ class RoomLayoutSerializer(serializers.ModelSerializer):
         return create_room_layout(validated_data)
 
 
+class RoomLayoutListSerializer(serializers.ModelSerializer):
+    """Сериализатор для списка планировок с ограниченным набором полей."""
+    
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = RoomLayout
+        fields = (
+            'id',
+            'name', 
+            'user',
+            'first_wall',
+            'second_wall',
+            'third_wall',
+            'fourth_wall',
+        )
+
+
 class RoomLayoutCopySerializer(serializers.ModelSerializer):
     furniture_placement = FurniturePlacementSerializer(many=True, read_only=True)
 
