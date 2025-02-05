@@ -1,0 +1,42 @@
+[
+  {
+    "model": "furniture.powersocket",
+    "pk": 1,
+    "fields": {
+      "socket_type": "socket",
+      "height": 12,
+      "width": 83,
+      "power_socket_image": ""
+    }
+  },
+  {
+    "model": "furniture.powersocket",
+    "pk": 2,
+    "fields": {
+      "socket_type": "switch",
+      "height": 12,
+      "width": 154,
+      "power_socket_image": ""
+    }
+  },
+  {
+    "model": "furniture.powersocket",
+    "pk": 3,
+    "fields": {
+      "socket_type": "switch",
+      "height": 12,
+      "width": 225,
+      "power_socket_image": ""
+    }
+  },
+  {
+    "model": "furniture.powersocket",
+    "pk": 4,
+    "fields": {
+      "socket_type": "socket",
+      "height": 12,
+      "width": 296,
+      "power_socket_image": ""
+    }
+  }
+]

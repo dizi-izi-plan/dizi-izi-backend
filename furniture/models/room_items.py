@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from furniture.validators import minimum_len_width_validator
@@ -73,38 +75,6 @@ class Furniture(models.Model):
         blank=False,
         null=False,
     )
-    power_socket_type = models.CharField(
-        'Тип электроточки',
-        max_length=settings.MAX_LENGTH_FURNITURE_NAME,
-        unique=False,
-    )
-    first_power_socket_height = models.IntegerField(
-        'Высота первой электроточки',
-        default=0,
-        null=False,
-    )
-    first_power_socket_width = models.IntegerField(
-        'Расположение электроточки относительно середины ширины объекта',
-        default=0,
-        null=False,
-    )
-    second_power_socket_height = models.IntegerField(
-        'Высота первой электроточки',
-        default=0,
-        null=False,
-    )
-    second_power_socket_width = models.IntegerField(
-        'Расположение электроточки относительно середины ширины объекта',
-        default=0,
-        null=False,
-    )
-
-    power_socket_image = models.ImageField(
-        verbose_name='Изображение мебели',
-        upload_to='furniture/',
-        blank=True,
-        null=True,
-    )
 
     class Meta:
         verbose_name = 'Мебель'
@@ -112,3 +82,76 @@ class Furniture(models.Model):
 
     def __str__(self) -> str:
         return f'{self.name}'
+
+
+class PowerSocket(models.Model):
+    """Power socket model."""
+
+    socket_type = models.CharField(
+        verbose_name='Тип электроточки',
+        max_length=settings.MAX_LENGTH_FURNITURE_NAME,
+        unique=False,
+    )
+    height = models.IntegerField(
+        verbose_name='Высота электроточки',
+        default=0,
+        null=False,
+    )
+    width = models.IntegerField(
+        verbose_name='Ширина электроточки',
+        default=0,
+        null=False,
+    )
+    power_socket_image = models.ImageField(
+        verbose_name='Изображение электроточки',
+        upload_to='power_sockets/',
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = 'Электроточка'
+        verbose_name_plural = 'Электроточки'
+
+    def __str__(self):
+        return f"{self.socket_type} ({self.width}x{self.height})"
+
+
+class PowerSocketPosition(models.Model):
+    """Model of the relationship between room objects and the position of the socket."""
+
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        verbose_name='Тип объекта (мебель или дверь)',
+        related_name='socket_connections',
+    )
+    object_id = models.PositiveIntegerField(
+        verbose_name='ID объекта (мебель или дверь)',
+    )
+    connected_object = GenericForeignKey('content_type', 'object_id')
+
+    power_socket = models.ForeignKey(
+        'PowerSocket',
+        on_delete=models.CASCADE,
+        verbose_name='Электроточка',
+        related_name='object_connections',
+    )
+    offset_width = models.IntegerField(
+        verbose_name='Смещение электроточки по ширине относительно центра объекта',
+        default=0,
+        null=False,
+    )
+    offset_height = models.IntegerField(
+        verbose_name='Высота электроточки от пола',
+        default=0,
+        null=False,
+    )
+
+    class Meta:
+        verbose_name = 'Расположение электроточки'
+        verbose_name_plural = 'Расположения электроточек'
+        unique_together = ('content_type', 'object_id', 'power_socket')
+
+    def __str__(self):
+        return f'{self.power_socket} для {self.connected_object}'
