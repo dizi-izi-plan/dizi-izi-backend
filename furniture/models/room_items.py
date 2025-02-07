@@ -27,35 +27,33 @@ class RoomType(models.Model):
 
 
 class Furniture(models.Model):
-    """Модель мебели."""
+    """Furniture model."""
 
     name = models.CharField(
-        'Наименование мебели',
+        verbose_name='Наименование мебели',
         max_length=settings.MAX_LENGTH_FURNITURE_NAME,
-        unique=True,
     )
-    name_english = models.CharField(
-        'Наименование мебели на английском языке',
-        max_length=128,
-        unique=True,
+    name_eng = models.CharField(
+        verbose_name='Наименование мебели на английском языке',
+        max_length=settings.MAX_LENGTH_FURNITURE_NAME,
     )
     length = models.PositiveIntegerField(
-        'Длина мебели',
+        verbose_name='Длина мебели',
         help_text='Длина в мм',
         validators=(minimum_len_width_validator,),
     )
     width = models.PositiveIntegerField(
-        'Ширина мебели',
+        verbose_name='Ширина мебели',
         help_text='Ширина в мм',
         validators=(minimum_len_width_validator,),
     )
-    length_access = models.PositiveIntegerField(
-        'Длина мебели c зоной подхода',
+    length_with_access_zone = models.PositiveIntegerField(
+        verbose_name='Длина мебели c зоной подхода',
         help_text='Длина c зоной подхода в мм',
         validators=(minimum_len_width_validator,),
     )
-    width_access = models.PositiveIntegerField(
-        'Ширина мебели c зоной подхода',
+    width_with_access_zone = models.PositiveIntegerField(
+        verbose_name='Ширина мебели c зоной подхода',
         help_text='Ширина c зоной подхода в мм',
         validators=(minimum_len_width_validator,),
     )
@@ -65,50 +63,16 @@ class Furniture(models.Model):
         blank=True,
         null=True,
     )
-    type_of_rooms = models.ForeignKey(
+    type_of_rooms = models.ManyToManyField(
         "RoomType",
-        on_delete=models.CASCADE,
         related_name='furniture',
-        verbose_name='Комната',
-        blank=False,
-        null=False,
-    )
-    power_socket_type = models.CharField(
-        'Тип электроточки',
-        max_length=settings.MAX_LENGTH_FURNITURE_NAME,
-        unique=False,
-    )
-    first_power_socket_height = models.IntegerField(
-        'Высота первой электроточки',
-        default=0,
-        null=False,
-    )
-    first_power_socket_width = models.IntegerField(
-        'Расположение электроточки относительно середины ширины объекта',
-        default=0,
-        null=False,
-    )
-    second_power_socket_height = models.IntegerField(
-        'Высота первой электроточки',
-        default=0,
-        null=False,
-    )
-    second_power_socket_width = models.IntegerField(
-        'Расположение электроточки относительно середины ширины объекта',
-        default=0,
-        null=False,
-    )
-
-    power_socket_image = models.ImageField(
-        verbose_name='Изображение мебели',
-        upload_to='furniture/',
-        blank=True,
-        null=True,
+        verbose_name='Комнаты',
     )
 
     class Meta:
         verbose_name = 'Мебель'
         verbose_name_plural = 'Мебель'
+        unique_together = ('name', 'length', 'width')
 
     def __str__(self) -> str:
         return f'{self.name}'
