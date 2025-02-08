@@ -4,19 +4,13 @@
     "pk": 1,
     "fields": {
       "name": "кровать двуспальная",
-      "name_english": "double bed",
-      "length": 2000,
+      "name_eng": "double bed",
+      "depth": 2000,
       "width": 1800,
-      "length_access": 2600,
-      "width_access": 2400,
+      "depth_with_access_zone": 2600,
+      "width_with_access_zone": 2400,
       "image": "",
-      "type_of_rooms": 1,
-      "power_socket_type": "Выключатель",
-      "first_power_socket_height": 0,
-      "first_power_socket_width": 0,
-      "second_power_socket_height": 0,
-      "second_power_socket_width": 0,
-      "power_socket_image": ""
+      "type_of_rooms": 1
     }
   },
   {
@@ -24,19 +18,13 @@
     "pk": 2,
     "fields": {
       "name": "кровать односпальная",
-      "name_english": "bed",
-      "length": 2000,
+      "name_eng": "bed",
+      "depth": 2000,
       "width": 900,
-      "length_access": 2600,
-      "width_access": 1500,
+      "depth_with_access_zone": 2600,
+      "width_with_access_zone": 1500,
       "image": "",
-      "type_of_rooms": 1,
-      "power_socket_type": "Розетка",
-      "first_power_socket_height": 0,
-      "first_power_socket_width": 0,
-      "second_power_socket_height": 0,
-      "second_power_socket_width": 0,
-      "power_socket_image": ""
+      "type_of_rooms": 1
     }
   },
   {
@@ -44,19 +32,13 @@
     "pk": 3,
     "fields": {
       "name": "шкаф гардероб",
-      "name_english": "wardrobe",
-      "length": 600,
+      "name_eng": "wardrobe",
+      "depth": 600,
       "width": 600,
-      "length_access": 1200,
-      "width_access": 600,
+      "depth_with_access_zone": 1200,
+      "width_with_access_zone": 600,
       "image": "",
-      "type_of_rooms": 1,
-      "power_socket_type": "Выключатель",
-      "first_power_socket_height": 0,
-      "first_power_socket_width": 0,
-      "second_power_socket_height": 0,
-      "second_power_socket_width": 0,
-      "power_socket_image": ""
+      "type_of_rooms": 1
     }
   },
   {
@@ -64,19 +46,13 @@
     "pk": 4,
     "fields": {
       "name": "прикроватная тумба",
-      "name_english": "bedside tables",
-      "length": 600,
+      "name_eng": "bedside tables",
+      "depth": 600,
       "width": 600,
-      "length_access": 1200,
-      "width_access": 600,
+      "depth_with_access_zone": 1200,
+      "width_with_access_zone": 600,
       "image": "",
-      "type_of_rooms": 1,
-      "power_socket_type": "Розетка",
-      "first_power_socket_height": 0,
-      "first_power_socket_width": 0,
-      "second_power_socket_height": 0,
-      "second_power_socket_width": 0,
-      "power_socket_image": ""
+      "type_of_rooms": 1
     }
   },
   {
@@ -84,19 +60,13 @@
     "pk": 5,
     "fields": {
       "name": "комод",
-      "name_english": "chest of drawers",
-      "length": 500,
+      "name_eng": "chest of drawers",
+      "depth": 500,
       "width": 900,
-      "length_access": 1100,
-      "width_access": 1200,
+      "depth_with_access_zone": 1100,
+      "width_with_access_zone": 1200,
       "image": "",
-      "type_of_rooms": 1,
-      "power_socket_type": "Розетка",
-      "first_power_socket_height": 0,
-      "first_power_socket_width": 0,
-      "second_power_socket_height": 0,
-      "second_power_socket_width": 0,
-      "power_socket_image": ""
+      "type_of_rooms": 1
     }
   },
   {
@@ -104,19 +74,13 @@
     "pk": 6,
     "fields": {
       "name": "кресло",
-      "name_english": "armchair",
-      "length": 800,
+      "name_eng": "armchair",
+      "depth": 800,
       "width": 800,
-      "length_access": 1400,
-      "width_access": 800,
+      "depth_with_access_zone": 1400,
+      "width_with_access_zone": 800,
       "image": "",
-      "type_of_rooms": 1,
-      "power_socket_type": "Розетка",
-      "first_power_socket_height": 0,
-      "first_power_socket_width": 0,
-      "second_power_socket_height": 0,
-      "second_power_socket_width": 0,
-      "power_socket_image": ""
+      "type_of_rooms": 1
     }
   }
 ]
