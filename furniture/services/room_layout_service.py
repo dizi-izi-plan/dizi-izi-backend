@@ -10,6 +10,8 @@ def create_room_layout(validated_data):
     doors = validated_data.pop("doors")
     windows = validated_data.pop("windows")
     power_sockets = validated_data.pop("powersockets")
+    #m_r_add_01
+    # parse date to paste in two models?
     room = RoomLayout.objects.create(**validated_data)
 
     furniture_placement = []

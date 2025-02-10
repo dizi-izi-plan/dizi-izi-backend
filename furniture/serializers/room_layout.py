@@ -12,9 +12,14 @@ from furniture.services import create_room_layout
 
 User = get_user_model()
 
+#m_r_add_01
+# create room serializer for dep
+
 
 class RoomLayoutSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
+    #m_r_add_01
+    # add model room, define variables
 
     user = UserCreateSerializer(read_only=True)
     furniture_placement = FurniturePlacementSerializer(many=True, source="placements")
@@ -61,6 +66,8 @@ class RoomLayoutSerializer(serializers.ModelSerializer):
 
 class RoomLayoutListSerializer(serializers.ModelSerializer):
     """Serializer for list of room layouts."""
+    #m_r_add_01
+    #take room for this ser
 
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -79,6 +86,9 @@ class RoomLayoutListSerializer(serializers.ModelSerializer):
 
 
 class RoomLayoutCopySerializer(serializers.ModelSerializer):
+    #m_r_add_01
+    # add model room, define variables
+
     furniture_placement = FurniturePlacementSerializer(many=True, read_only=True)
 
     class Meta:

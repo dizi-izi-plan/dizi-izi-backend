@@ -34,6 +34,8 @@ class RoomTypeViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RoomViewSet(viewsets.ModelViewSet):
     """Получение и изменение планировки."""
+    # m_r_add_01
+    # add model room
 
     permission_classes = (IsAuthenticated, IsTariffAccepted)
 
@@ -60,6 +62,8 @@ class RoomCopyView(APIView):
 
     Выполняется по произвольному пост запросу на url /api/v1/rooms/pk/.
     """
+    # m_r_add_01
+    # add model room
 
     @staticmethod
     def _copy_object(

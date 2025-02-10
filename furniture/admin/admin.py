@@ -74,6 +74,9 @@ class CoordinateAdmin(admin.ModelAdmin):
 class RoomLayoutAdmin(admin.ModelAdmin):
     """Админка комнаты."""
 
+    #m_r_add_01
+    # add model room
+
     list_display = (
         "id",
         "name",
