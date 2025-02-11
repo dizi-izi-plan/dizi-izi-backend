@@ -9,7 +9,7 @@ User = get_user_model()
 
 
 class Room(models.Model):
-    """Модель комнаты."""
+    """Model of room."""
 
     user = models.ForeignKey(
         User,
@@ -46,9 +46,12 @@ class Room(models.Model):
         verbose_name = 'Комната'
         verbose_name_plural = 'Комнаты'
 
+    def __str__(self) -> str:
+        return f"Комната: {self.name}"
+
 
 class RoomLayout(models.Model):
-    """Модель планировки."""
+    """Model of room layout."""
 
     room = models.ForeignKey(
         Room,
