@@ -14,14 +14,27 @@ User = get_user_model()
 
 #m_r_add_01
 # create room serializer for dep
+class RoomSerializer(serializers.ModelSerializer):
+    """Serializer for room."""
 
+    user = UserCreateSerializer(read_only=True)
+    class Meta:
+        model = RoomLayout
+        fields = (
+            'id',
+            'name',
+            "first_wall",
+            "second_wall",
+            "third_wall",
+            "fourth_wall",
+            "user"
+            )
 
 class RoomLayoutSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
     #m_r_add_01
     # add model room, define variables
-
-    user = UserCreateSerializer(read_only=True)
+    room = RoomSerializer(read_only=True)
     furniture_placement = FurniturePlacementSerializer(many=True, source="placements")
     selected_furniture = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -42,17 +55,12 @@ class RoomLayoutSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
             "id",
-            "name",
-            "first_wall",
-            "second_wall",
-            "third_wall",
-            "fourth_wall",
+            "room",
             "furniture_placement",
             "selected_furniture",
             "doors",
             "power_sockets",
             "windows",
-            "user",
         )
         model = RoomLayout
         read_only = ("id",)
@@ -62,27 +70,6 @@ class RoomLayoutSerializer(serializers.ModelSerializer):
         """Создание помещения с расстановкой."""
 
         return create_room_layout(validated_data)
-
-
-class RoomLayoutListSerializer(serializers.ModelSerializer):
-    """Serializer for list of room layouts."""
-    #m_r_add_01
-    #take room for this ser
-
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = RoomLayout
-        fields = (
-            'id',
-            'name',
-            'created',
-            'user',
-            'first_wall',
-            'second_wall',
-            'third_wall',
-            'fourth_wall',
-        )
 
 
 class RoomLayoutCopySerializer(serializers.ModelSerializer):
