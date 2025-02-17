@@ -35,6 +35,8 @@ INSTALLED_APPS = [
 
 """packages"""
 INSTALLED_APPS += [
+    'rest_framework_gis',
+    'django.contrib.gis',
     "rest_framework",
     "rest_framework.authtoken",
     "social_django",
@@ -96,7 +98,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),

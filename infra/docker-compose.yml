@@ -2,9 +2,10 @@ services:
 
   database:
     container_name: dizi-database
-    image: postgres:15-alpine
+    image: postgis/postgis:17-3.5
     volumes:
       - dizi_postgres_data:/var/lib/postgresql/data/
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     env_file:
       - .env
     restart: always
