@@ -5,7 +5,6 @@ services:
     image: postgis/postgis:17-3.5
     volumes:
       - dizi_postgres_dev:/var/lib/postgresql/data/
-      - ./infra/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     env_file:
       - .env
     restart: always
@@ -16,6 +15,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    entrypoint: ["/bin/sh", "-c", "docker-entrypoint.sh postgres & sleep 10 && psql -U admin -d $POSTGRES_DB -c 'CREATE EXTENSION IF NOT EXISTS postgis;' && wait"]
 
   backend:
     container_name: dizi-izi-backend
