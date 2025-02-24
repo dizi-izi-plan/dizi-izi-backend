@@ -34,16 +34,29 @@ class PowerSocketPlacement(PlacementCoordinates):
 
 
 class DoorPlacement(PlacementCoordinates):
-    """Модель размещения двери в помещении."""
+    """Model of door placement in a room."""
+
+    DOOR_OPENING_CHOICES = [
+        ("inside_left", "Внутрь влево"),
+        ("inside_right", "Внутрь вправо"),
+        ("outside_left", "Наружу влево"),
+        ("outside_right", "Наружу вправо"),
+    ]
 
     width = models.PositiveIntegerField(
-        'Ширина двери',
+        verbose_name='Ширина двери',
         help_text='Ширина в мм',
         validators=(minimum_len_width_validator,),
     )
-    open_inside = models.BooleanField(
-        'Направление открытия двери внутрь помещения',
-        help_text='Открытие в помещении - 1, из помещения - 0',
+    height = models.PositiveIntegerField(
+        verbose_name='Высота двери',
+        help_text='Высота в мм',
+        validators=(minimum_len_width_validator,),
+    )
+    open_direction = models.CharField(
+        verbose_name='Направление открытия двери',
+        help_text='Как открывается дверь',
+        choices=DOOR_OPENING_CHOICES,
     )
 
     class Meta:
