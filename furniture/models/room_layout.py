@@ -1,6 +1,6 @@
-from django.contrib.gis.db import models as gis_models
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.geos import Polygon
 from django.db import models
 
@@ -60,8 +60,7 @@ class Room(models.Model):
     def compute_boundary(self):
         width = self.first_wall
         height = self.second_wall
-        polygon = Polygon(((0, 0), (width, 0), (width, height), (0, height), (0, 0)))
-        return polygon
+        return Polygon(((0, 0), (width, 0), (width, height), (0, height), (0, 0)))
 
     def save(self, *args, **kwargs):
         if not self.boundary:
