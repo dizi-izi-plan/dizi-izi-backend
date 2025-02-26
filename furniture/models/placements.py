@@ -5,13 +5,19 @@ from furniture.validators import minimum_len_width_validator
 
 
 class FurniturePlacement(PlacementCoordinates):
-    """Размещение мебели в помещении."""
+    """Furniture placement in a room."""
 
     furniture = models.ForeignKey(
         'Furniture',
         on_delete=models.CASCADE,
         verbose_name='Мебель',
         related_name='placements',
+    )
+    room_layout = models.ForeignKey(
+        'RoomLayout',
+        on_delete=models.CASCADE,
+        verbose_name='Планировка',
+        related_name='furniture_placements',
     )
 
     class Meta:
