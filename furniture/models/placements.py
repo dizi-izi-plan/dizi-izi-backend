@@ -4,7 +4,7 @@ from furniture.models.base import PlacementCoordinates
 from furniture.validators import minimum_len_width_validator
 
 
-class FurniturePlacement(PlacementCoordinates):
+class FurniturePlacement(models.Model):
     """Furniture placement in a room."""
 
     furniture = models.ForeignKey(

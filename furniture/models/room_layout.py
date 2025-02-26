@@ -86,10 +86,6 @@ class RoomLayout(models.Model):
         verbose_name='Дата и время создания',
         db_index=True,
     )
-    furniture_placement = models.ManyToManyField(
-        'Furniture',
-        through='FurniturePlacement',
-    )
 
     class Meta:
         verbose_name = 'Планировка'
