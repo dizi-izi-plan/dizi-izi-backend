@@ -74,15 +74,15 @@ class DoorPlacement(PlacementCoordinates):
 
 
 class WindowPlacement(PlacementCoordinates):
-    """Модель размещения окна в помещении."""
+    """Model of window placement in a room."""
 
-    length = models.PositiveIntegerField(
-        'Длина окна',
-        help_text='Длина в мм',
+    height = models.PositiveIntegerField(
+        verbose_name='Высота окна',
+        help_text='Высота в мм',
         validators=(minimum_len_width_validator,),
     )
     width = models.PositiveIntegerField(
-        'Ширина окна',
+        verbose_name='Ширина окна',
         help_text='Ширина в мм',
         validators=(minimum_len_width_validator,),
     )
