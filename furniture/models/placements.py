@@ -1,6 +1,6 @@
 from django.db import models
 
-from furniture.models.base import PlacementCoordinates, LayoutPlacement
+from furniture.models.base import LayoutPlacement, PlacementCoordinates
 from furniture.validators import minimum_len_width_validator
 
 
