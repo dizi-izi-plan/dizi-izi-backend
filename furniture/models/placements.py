@@ -1,10 +1,10 @@
 from django.db import models
 
-from furniture.models.base import PlacementCoordinates
+from furniture.models.base import LayoutPlacement, PlacementCoordinates
 from furniture.validators import minimum_len_width_validator
 
 
-class FurniturePlacement(models.Model):
+class FurniturePlacement(LayoutPlacement):
     """Furniture placement in a room."""
 
     furniture = models.ForeignKey(
@@ -12,12 +12,6 @@ class FurniturePlacement(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Мебель',
         related_name='placements',
-    )
-    room_layout = models.ForeignKey(
-        'RoomLayout',
-        on_delete=models.CASCADE,
-        verbose_name='Планировка',
-        related_name='furniture_placements',
     )
 
     class Meta:
@@ -28,8 +22,8 @@ class FurniturePlacement(models.Model):
         return f'{self.furniture.name} расположена в {self.room}'
 
 
-class PowerSocketPlacement(PlacementCoordinates):
-    """Модель размещения розетки в помещении."""
+class PowerSocketPlacement(LayoutPlacement):
+    """Socket placement in a room."""
 
     class Meta:
         verbose_name = 'Розетка в помещении'
