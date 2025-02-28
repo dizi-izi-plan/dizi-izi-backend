@@ -12,6 +12,7 @@ from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
                               PowerSocketPlacement, RoomLayout,
                               WindowPlacement)
 from furniture.serializers import FurnitureSerializer, RoomLayoutSerializer
+from furniture.services.room_layout_service import copy_room_layout
 from furniture.utils import send_pdf_file
 
 
@@ -70,8 +71,7 @@ class RoomCopyView(APIView):
     def post(self, request, pk):
         """Создаем копию планировки с заданным `pk`."""
         orig_room = get_object_or_404(RoomLayout, pk=pk)
-        new_room = orig_room.copy(request)
-        new_room.save()
+        new_room = copy_room_layout(orig_room, request.user)
         serializer = RoomLayoutSerializer(new_room)
         furniture = Furniture.objects.filter(room=orig_room)
 

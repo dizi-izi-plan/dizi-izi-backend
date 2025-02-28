@@ -126,9 +126,9 @@ def create_by_coordinate(placement):
 
 
 def copy_room_layout(room_layout, user):
-    """Создает копию объекта комнаты (RoomLayout)
-    С новым первичным ключом, но теми же значениями атрибутов.
-    M2M отношения не копируются.
+    """Creates a copy of the room object (RoomLayout)
+    With a new primary key, but the same attribute values.
+    M2M relationships are not copied.
     """
     return RoomLayout.objects.create(
         user=user,
