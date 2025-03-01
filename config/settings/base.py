@@ -217,6 +217,12 @@ SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_VK_OAUTH2_KEY")
 SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_VK_OAUTH2_SECRET")
 SOCIAL_AUTH_YANDEX_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_YANDEX_OAUTH2_KEY")
 SOCIAL_AUTH_YANDEX_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_YANDEX_OAUTH2_SECRET")
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = [
+    "email",
+    "first_name",
+    "last_name"
+]
+SOCIAL_AUTH_URL_NAMESPACE = "social"
 
 # константы проекта, если их будет много, то нужно будет их организовать в отдельном файле с разбивкой по тематике
 MAX_LENGTH_PROJECT_NAME = 128
