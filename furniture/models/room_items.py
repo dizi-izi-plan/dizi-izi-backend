@@ -74,7 +74,7 @@ class Furniture(models.Model):
     class Meta:
         verbose_name = 'Мебель'
         verbose_name_plural = 'Мебель'
-        unique_together = ('name', 'length', 'width')
+        unique_together = ('name', 'depth', 'width')
 
     def __str__(self) -> str:
         return f'{self.name}'
@@ -88,12 +88,12 @@ class PowerSocket(models.Model):
         max_length=settings.MAX_LENGTH_FURNITURE_NAME,
         unique=False,
     )
-    height = models.IntegerField(
+    height = models.PositiveIntegerField(
         verbose_name='Высота электроточки',
         default=0,
         null=False,
     )
-    width = models.IntegerField(
+    width = models.PositiveIntegerField(
         verbose_name='Ширина электроточки',
         default=0,
         null=False,
