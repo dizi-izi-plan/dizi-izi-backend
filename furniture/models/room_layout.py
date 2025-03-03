@@ -91,4 +91,4 @@ class RoomLayout(models.Model):
         verbose_name_plural = 'Планировки'
 
     def __str__(self) -> str:
-        return f"Проект {self.name} пользователя {self.user.email}"
+        return f"Проект {self.name} пользователя {self.room.user.email}"

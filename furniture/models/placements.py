@@ -19,7 +19,7 @@ class FurniturePlacement(LayoutPlacement):
         verbose_name_plural = 'Размещение мебели в помещении'
 
     def __str__(self):
-        return f'{self.furniture.name} расположена в {self.room}'
+        return f'{self.furniture.name} расположена в {self.room_layout}'
 
 
 class PowerSocketPlacement(LayoutPlacement):
