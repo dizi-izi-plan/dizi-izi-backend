@@ -1,4 +1,4 @@
-from .base import Coordinate, PlacementCoordinates
+from .base import PlacementCoordinates
 from .placements import (DoorPlacement, FurniturePlacement,
                          PowerSocketPlacement, WindowPlacement)
 from .room_items import Furniture, RoomType

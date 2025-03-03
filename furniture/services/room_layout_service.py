@@ -1,4 +1,4 @@
-from furniture.models import (Coordinate, DoorPlacement, FurniturePlacement,
+from furniture.models import (DoorPlacement, FurniturePlacement,
                               PowerSocketPlacement, RoomLayout,
                               WindowPlacement)
 from layout_algorithm import core
@@ -100,21 +100,4 @@ def create_room_layout(validated_data):
 
 def create_by_coordinate(placement):
     """Создать и вернуть координаты для элемента (мебель, окно, ...)"""
-    return {
-        "north_west": Coordinate.objects.create(
-            x=placement["north_west"]["x"],
-            y=placement["north_west"]["y"],
-        ),
-        "north_east": Coordinate.objects.create(
-            x=placement["north_east"]["x"],
-            y=placement["north_east"]["y"],
-        ),
-        "south_west": Coordinate.objects.create(
-            x=placement["south_west"]["x"],
-            y=placement["south_west"]["y"],
-        ),
-        "south_east": Coordinate.objects.create(
-            x=placement["south_east"]["x"],
-            y=placement["south_east"]["y"],
-        ),
-    }
+    return
