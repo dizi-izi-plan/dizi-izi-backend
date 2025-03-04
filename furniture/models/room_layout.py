@@ -19,7 +19,7 @@ class Room(gis_models.Model):
         verbose_name='Пользователь',
     )
     name = models.CharField(
-        'Название комнаты',
+        verbose_name='Название комнаты',
         max_length=settings.MAX_LENGTH_ROOM_NAME,
     )
     width = models.PositiveIntegerField(
@@ -28,7 +28,7 @@ class Room(gis_models.Model):
         validators=(minimum_len_width_validator,),
     )
     height = models.PositiveIntegerField(
-        'Длина комнаты',
+        verbose_name='Длина комнаты',
         help_text='Длина комнаты в мм',
         validators=(minimum_len_width_validator,),
     )
