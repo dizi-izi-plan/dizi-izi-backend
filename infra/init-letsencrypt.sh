@@ -9,7 +9,7 @@ if ! [ -x "$(command -v docker compose)" ]; then
   exit 1
 fi
 
-domains=(diziizi.ru www.diziizi.ru)
+domains=(diziizi.ru www.diziizi.ru s3.diziizi.ru ui.s3.diziizi.ru)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="dizi.izi.plan@gmail.com" # Adding a valid address is strongly recommended

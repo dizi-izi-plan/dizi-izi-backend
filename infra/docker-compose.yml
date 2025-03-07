@@ -52,9 +52,11 @@ services:
       - dizi_bk_static:/usr/share/nginx/html/bk_static/
       - dizi_bk_media:/usr/share/nginx/html/bk_media/
       - dizi_fr_static:/usr/share/nginx/html/fr_static/
+      - cache:/var/cache/nginx
     depends_on:
       - backend
       - frontend
+      - minio
     restart: unless-stopped
 #    reload Nginx configurations every 6 hours without interrupting ongoing connections
 #    keep the Nginx server running continuously in the container
@@ -74,9 +76,30 @@ services:
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 
+  minio:
+    container_name: dizi-izi-minio
+    image: minio/minio:RELEASE.2025-01-20T14-49-07Z
+    env_file:
+      - .env
+    volumes:
+      - dizi-minio-data:/data
+      - ./init_minio.sh:/init_minio.sh
+      - ./read-write-list-policy.json:/read-write-list-policy.json
+    entrypoint: ["/bin/sh", "/init_minio.sh"]
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+
+
 volumes:
   dizi_bk_static:
   dizi_bk_media:
   dizi_fr_static:
   dizi_postgres_data:
     external: true
+  dizi-minio-data:
+    external: true
+  cache:
