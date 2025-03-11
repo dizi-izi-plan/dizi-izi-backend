@@ -27,7 +27,7 @@ class Room(gis_models.Model):
         help_text='Ширина комнаты в мм',
         validators=(minimum_len_width_validator,),
     )
-    height = models.PositiveIntegerField(
+    length = models.PositiveIntegerField(
         verbose_name='Длина комнаты',
         help_text='Длина комнаты в мм',
         validators=(minimum_len_width_validator,),
