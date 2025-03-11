@@ -19,10 +19,10 @@ class FurnitureAdmin(ImportExportActionModelAdmin):
     list_display = (
         "id",
         "name",
-        "length",
+        "depth",
         "width",
         "take_image",
-        "type_of_rooms",
+        # "type_of_rooms",
     )
     search_fields = ("type_of_rooms", "name")
     list_filter = ("type_of_rooms",)
@@ -61,10 +61,10 @@ class RoomLayoutAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "name",
-        "first_wall",
-        "second_wall",
-        "third_wall",
-        "fourth_wall",
+        # "first_wall",
+        # "second_wall",
+        # "third_wall",
+        # "fourth_wall",
         "created",
     )
     list_display_links = ("name",)
