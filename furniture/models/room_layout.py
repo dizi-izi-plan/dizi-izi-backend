@@ -9,7 +9,7 @@ from furniture.validators import minimum_len_width_validator
 User = get_user_model()
 
 
-class Room(models.Model):
+class Room(gis_models.Model):
     """Model of room."""
 
     user = models.ForeignKey(
@@ -19,27 +19,17 @@ class Room(models.Model):
         verbose_name='Пользователь',
     )
     name = models.CharField(
-        'Название комнаты',
+        verbose_name='Название комнаты',
         max_length=settings.MAX_LENGTH_ROOM_NAME,
     )
-    first_wall = models.PositiveIntegerField(
-        'Длина 1 стены',
-        help_text='Длина стены в мм',
+    width = models.PositiveIntegerField(
+        verbose_name='Ширина комнаты',
+        help_text='Ширина комнаты в мм',
         validators=(minimum_len_width_validator,),
     )
-    second_wall = models.PositiveIntegerField(
-        'Длина 2 стены',
-        help_text='Длина стены в мм',
-        validators=(minimum_len_width_validator,),
-    )
-    third_wall = models.PositiveIntegerField(
-        'Длина 3 стены',
-        help_text='Длина стены в мм',
-        validators=(minimum_len_width_validator,),
-    )
-    fourth_wall = models.PositiveIntegerField(
-        'Длина 4 стены',
-        help_text='Длина стены в мм',
+    length = models.PositiveIntegerField(
+        verbose_name='Длина комнаты',
+        help_text='Длина комнаты в мм',
         validators=(minimum_len_width_validator,),
     )
     boundary = gis_models.PolygonField(
@@ -52,14 +42,13 @@ class Room(models.Model):
     class Meta:
         verbose_name = 'Комната'
         verbose_name_plural = 'Комнаты'
+        unique_together = ('user', 'name')
 
     def __str__(self) -> str:
         return f"Комната: {self.name}"
 
     def compute_boundary(self):
-        width = self.first_wall
-        height = self.second_wall
-        return Polygon(((0, 0), (width, 0), (width, height), (0, height), (0, 0)))
+        return Polygon(((0, 0), (self.width, 0), (self.width, self.length), (0, self.length), (0, 0)))
 
     def save(self, *args, **kwargs):
         if not self.boundary:
