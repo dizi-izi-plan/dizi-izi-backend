@@ -54,17 +54,6 @@ class WindowPlacementInline(admin.TabularInline):
     model = models.WindowPlacement
 
 
-@admin.register(models.Coordinate)
-class CoordinateAdmin(admin.ModelAdmin):
-    """Админка Coordinate."""
-
-    list_display = (
-        "id",
-        "x",
-        "y",
-    )
-
-
 @admin.register(models.RoomLayout)
 class RoomLayoutAdmin(admin.ModelAdmin):
     """Админка комнаты."""
@@ -82,8 +71,6 @@ class RoomLayoutAdmin(admin.ModelAdmin):
     inlines = (
         FurniturePlacementInline,
         PowerSocketPlacementInline,
-        DoorPlacementInline,
-        WindowPlacementInline,
     )
 
 
