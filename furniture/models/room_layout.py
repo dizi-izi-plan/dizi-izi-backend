@@ -48,7 +48,7 @@ class Room(gis_models.Model):
         return f"Комната: {self.name}"
 
     def compute_boundary(self):
-        return Polygon(((0, 0), (self.width, 0), (self.width, self.height), (0, self.height), (0, 0)))
+        return Polygon(((0, 0), (self.width, 0), (self.width, self.length), (0, self.length), (0, 0)))
 
     def save(self, *args, **kwargs):
         if not self.boundary:
