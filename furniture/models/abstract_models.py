@@ -2,7 +2,7 @@ from django.contrib.gis.db import models as gis_models
 from django.db import models
 
 
-class PlacementCoordinates(gis_models.Model):
+class AbstractRoomPlacement(gis_models.Model):
     """Abstract model with a pointer to a room and coordinates."""
 
     room = models.ForeignKey(
@@ -21,7 +21,7 @@ class PlacementCoordinates(gis_models.Model):
         abstract = True
 
 
-class LayoutPlacement(gis_models.Model):
+class AbstractLayoutPlacement(gis_models.Model):
     """Abstract model with a pointer to a layout and coordinates."""
 
     room_layout = models.ForeignKey(
