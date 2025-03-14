@@ -1,39 +1,10 @@
 from django.db import models
 
-from furniture.models.base import LayoutPlacement, PlacementCoordinates
+from furniture.models.abstract_models import AbstractRoomPlacement
 from furniture.validators import minimum_len_width_validator
 
 
-class FurniturePlacement(LayoutPlacement):
-    """Furniture placement in a room."""
-
-    furniture = models.ForeignKey(
-        'Furniture',
-        on_delete=models.CASCADE,
-        verbose_name='Мебель',
-        related_name='placements',
-    )
-
-    class Meta:
-        verbose_name = 'Размещение мебели в помещении'
-        verbose_name_plural = 'Размещение мебели в помещении'
-
-    def __str__(self):
-        return f'{self.furniture.name} расположена в {self.room_layout}'
-
-
-class PowerSocketPlacement(LayoutPlacement):
-    """Socket placement in a room."""
-
-    class Meta:
-        verbose_name = 'Розетка в помещении'
-        verbose_name_plural = 'Розетки в помещении'
-
-    def __str__(self) -> str:
-        return f'Розетка расположена в {self.room}'
-
-
-class DoorPlacement(PlacementCoordinates):
+class DoorPlacement(AbstractRoomPlacement):
     """Model of door placement in a room."""
 
     DOOR_OPENING_CHOICES = [
@@ -67,7 +38,7 @@ class DoorPlacement(PlacementCoordinates):
         return f'Дверь расположена в {self.room}'
 
 
-class WindowPlacement(PlacementCoordinates):
+class WindowPlacement(AbstractRoomPlacement):
     """Model of window placement in a room."""
 
     height = models.PositiveIntegerField(
