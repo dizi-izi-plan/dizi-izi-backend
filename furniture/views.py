@@ -9,10 +9,10 @@ from rest_framework.views import APIView
 from api.permissions import IsTariffAccepted
 from furniture.filters import FurnitureFilter
 from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
-                              PowerSocketPlacement, RoomLayout, RoomType,
+                              PowerSocketPlacement, Room, RoomLayout, RoomType,
                               WindowPlacement)
 from furniture.serializers import (FurnitureSerializer, RoomLayoutSerializer,
-                                   RoomTypeSerializer)
+                                   RoomSerializer, RoomTypeSerializer)
 from furniture.utils import send_pdf_file
 
 
@@ -29,6 +29,17 @@ class RoomTypeViewSet(viewsets.ReadOnlyModelViewSet):
     """Get types of rooms"""
     queryset = RoomType.objects.all()
     serializer_class = RoomTypeSerializer
+
+
+class RoomListViewSet(viewsets.ReadOnlyModelViewSet):
+    """Getting a list of user rooms."""
+
+    serializer_class = RoomSerializer
+    permission_classes = (IsAuthenticated, IsTariffAccepted)
+
+    def get_queryset(self):
+        """Returns a list of rooms owned by the current user."""
+        return Room.objects.filter(user=self.request.user)
 
 
 class RoomViewSet(viewsets.ModelViewSet):
