@@ -38,10 +38,6 @@ class RoomLayoutSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "first_wall",
-            "second_wall",
-            "third_wall",
-            "fourth_wall",
             "furniture_placement",
             "selected_furniture",
             "doors",

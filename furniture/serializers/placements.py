@@ -4,12 +4,7 @@ from furniture.models import (DoorPlacement, FurniturePlacement,
                               PowerSocketPlacement, WindowPlacement)
 from furniture.serializers import AbstractCoordinates
 
-FIELDS_COORDINATE = (
-    "north_west",
-    "north_east",
-    "south_west",
-    "south_east",
-)
+FIELDS_COORDINATE = ()
 
 
 class FurniturePlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
@@ -34,7 +29,7 @@ class DoorPlacementSerializer(serializers.ModelSerializer, AbstractCoordinates):
     class Meta:
         fields = (
             "width",
-            "open_inside",
+            "open_direction",
         ) + FIELDS_COORDINATE
         model = DoorPlacement
 
@@ -44,7 +39,7 @@ class WindowPlacementSerializer(serializers.ModelSerializer, AbstractCoordinates
 
     class Meta:
         fields = (
-            "length",
+            "height",
             "width",
         ) + FIELDS_COORDINATE
         model = WindowPlacement
