@@ -35,11 +35,12 @@ class RoomTypeViewSet(viewsets.ReadOnlyModelViewSet):
 @extend_schema_view(
     list=extend_schema(
         summary="List of user rooms",
-        description="Returns a read-only list of rooms owned by the currently authenticated user.",
         tags=["Rooms"]
     )
 )
 class RoomListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """Returns a read-only list of rooms owned by the currently authenticated user."""
+
     serializer_class = RoomSerializer
     permission_classes = (IsAuthenticated,)
 
