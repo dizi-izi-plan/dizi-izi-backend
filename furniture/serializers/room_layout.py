@@ -14,13 +14,10 @@ User = get_user_model()
 
 
 class RoomSerializer(serializers.ModelSerializer):
-    """Serializer for user's room list."""
-    user = serializers.CharField(source='user.username', read_only=True, help_text="Имя пользователя")
-    name = serializers.CharField(help_text="Название комнаты")
-
+    """Serializer for room list."""
     class Meta:
         model = Room
-        fields = ('user', 'name')
+        fields = ('id', 'name')
 
 
 class RoomLayoutSerializer(serializers.ModelSerializer):

@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from drf_spectacular.utils import extend_schema, extend_schema_view
+from rest_framework import mixins, viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -31,14 +32,18 @@ class RoomTypeViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = RoomTypeSerializer
 
 
-class RoomListViewSet(viewsets.ReadOnlyModelViewSet):
-    """Getting a list of user rooms."""
-
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of user rooms",
+        description="Returns a read-only list of rooms owned by the currently authenticated user.",
+        tags=["Rooms"]
+    )
+)
+class RoomListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = RoomSerializer
-    permission_classes = (IsAuthenticated, IsTariffAccepted)
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        """Returns a list of rooms owned by the current user."""
         return Room.objects.filter(user=self.request.user)
 
 
