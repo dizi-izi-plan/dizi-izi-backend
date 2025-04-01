@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from drf_spectacular.utils import extend_schema, extend_schema_view
+from rest_framework import mixins, viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,10 +10,10 @@ from rest_framework.views import APIView
 from api.permissions import IsTariffAccepted
 from furniture.filters import FurnitureFilter
 from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
-                              PowerSocketPlacement, RoomLayout, RoomType,
+                              PowerSocketPlacement, Room, RoomLayout, RoomType,
                               WindowPlacement)
 from furniture.serializers import (FurnitureSerializer, RoomLayoutSerializer,
-                                   RoomTypeSerializer)
+                                   RoomSerializer, RoomTypeSerializer)
 from furniture.utils import send_pdf_file
 
 
@@ -29,6 +30,22 @@ class RoomTypeViewSet(viewsets.ReadOnlyModelViewSet):
     """Get types of rooms"""
     queryset = RoomType.objects.all()
     serializer_class = RoomTypeSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of user rooms",
+        tags=["Rooms"]
+    )
+)
+class RoomListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """Returns a read-only list of rooms owned by the currently authenticated user."""
+
+    serializer_class = RoomSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Room.objects.filter(user=self.request.user)
 
 
 class RoomViewSet(viewsets.ModelViewSet):
