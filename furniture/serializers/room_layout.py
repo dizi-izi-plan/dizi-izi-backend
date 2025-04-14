@@ -20,6 +20,18 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
+class RoomDetailSerializer(serializers.ModelSerializer):
+    """Serializer for creating/updating room details."""
+    class Meta:
+        model = Room
+        fields = ('id', 'user', 'name', 'width', 'length')
+        read_only_fields = ('id', 'user')
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+
+
 class RoomLayoutSerializer(serializers.ModelSerializer):
     """Сериализатор для мебели."""
 
