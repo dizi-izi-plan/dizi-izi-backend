@@ -561,12 +561,10 @@
     "pk": 1,
     "fields": {
       "room": 1,
-      "north_west": 2,
-      "north_east": 2,
-      "south_west": 2,
-      "south_east": 2,
-      "width": 900,
-      "open_inside": false
+      "shape": "POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))",
+      "width": 700,
+      "height": 700,
+      "open_direction": "inside_left"
     }
   },
   {
@@ -574,12 +572,10 @@
     "pk": 2,
     "fields": {
       "room": 2,
-      "north_west": 14,
-      "north_east": 14,
-      "south_west": 14,
-      "south_east": 14,
-      "width": 900,
-      "open_inside": false
+      "shape": "POLYGON((5 5, 5 10, 10 10, 10 5, 5 5))",
+      "width": 700,
+      "height": 700,
+      "open_direction": "inside_right"
     }
   },
   {
@@ -587,12 +583,10 @@
     "pk": 3,
     "fields": {
       "room": 3,
-      "north_west": 21,
-      "north_east": 21,
-      "south_west": 21,
-      "south_east": 21,
-      "width": 900,
-      "open_inside": false
+      "shape": "POLYGON((0 0, 0 6, 6 6, 6 0, 0 0))",
+      "width": 700,
+      "height": 700,
+      "open_direction": "inside_left"
     }
   },
   {
@@ -600,12 +594,10 @@
     "pk": 4,
     "fields": {
       "room": 5,
-      "north_west": 33,
-      "north_east": 33,
-      "south_west": 33,
-      "south_east": 33,
-      "width": 900,
-      "open_inside": false
+      "shape": "POLYGON((10 10, 10 15, 15 15, 15 10, 10 10))",
+      "width": 700,
+      "height": 700,
+      "open_direction": "outside_left"
     }
   },
   {
@@ -613,12 +605,10 @@
     "pk": 5,
     "fields": {
       "room": 5,
-      "north_west": 34,
-      "north_east": 34,
-      "south_west": 34,
-      "south_east": 34,
-      "width": 900,
-      "open_inside": false
+      "shape": "POLYGON((15 15, 15 20, 20 20, 20 15, 15 15))",
+      "width": 700,
+      "height": 700,
+      "open_direction": "outside_right"
     }
   },
   {
@@ -626,11 +616,8 @@
     "pk": 1,
     "fields": {
       "room": 1,
-      "north_west": 5,
-      "north_east": 5,
-      "south_west": 5,
-      "south_east": 5,
-      "length": 2400,
+      "shape": "POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))",
+      "height": 2400,
       "width": 2100
     }
   },
@@ -639,11 +626,8 @@
     "pk": 2,
     "fields": {
       "room": 2,
-      "north_west": 15,
-      "north_east": 15,
-      "south_west": 15,
-      "south_east": 15,
-      "length": 2400,
+      "shape": "POLYGON((5 5, 5 10, 10 10, 10 5, 5 5))",
+      "height": 2400,
       "width": 2100
     }
   },
@@ -652,11 +636,8 @@
     "pk": 3,
     "fields": {
       "room": 3,
-      "north_west": 22,
-      "north_east": 22,
-      "south_west": 22,
-      "south_east": 22,
-      "length": 2400,
+      "shape": "POLYGON((0 0, 0 8, 8 8, 8 0, 0 0))",
+      "height": 2400,
       "width": 2100
     }
   },
@@ -665,11 +646,8 @@
     "pk": 4,
     "fields": {
       "room": 5,
-      "north_west": 35,
-      "north_east": 35,
-      "south_west": 35,
-      "south_east": 35,
-      "length": 2100,
+      "shape": "POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))",
+      "height": 2100,
       "width": 2400
     }
   },
@@ -678,11 +656,8 @@
     "pk": 5,
     "fields": {
       "room": 5,
-      "north_west": 36,
-      "north_east": 36,
-      "south_west": 36,
-      "south_east": 36,
-      "length": 1150,
+      "shape": "POLYGON((10 10, 10 15, 15 15, 15 10, 10 10))",
+      "height": 1150,
       "width": 1500
     }
   },

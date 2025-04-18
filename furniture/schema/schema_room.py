@@ -78,3 +78,35 @@ class GenerateSwaggerDocForRoomViewSet(BaseExtension):
             }
         ),
     }
+
+
+class GenerateSwaggerDocForRoomTypeViewSet(BaseExtension):
+    """Этот класс предназначен для генерации документации Swagger для эндпоинтов RoomTypeViewSet."""
+    serializer = serializers.RoomTypeSerializer
+    target_class = views.RoomTypeViewSet
+    endpoints_doc = {
+        # GET /room_type/
+        "list": extend_schema(
+            tags=["details_of_room"],
+            summary="Получение списка типов комнат",
+            description="Получение списка типов комнат. Доступно всем пользователям.",
+            responses={
+                status.HTTP_200_OK: OpenApiResponse(
+                    response=serializer,
+                    description="Данные типов комнат"
+                ),
+            }
+        ),
+        # GET /room_type/{id}/
+        "retrieve": extend_schema(
+            tags=["details_of_room"],
+            summary="Получение типа комнаты по id",
+            description="Получение информации о типе комнаты по идентификатору. Доступно всем пользователям.",
+            responses={
+                status.HTTP_200_OK: OpenApiResponse(
+                    response=serializer,
+                    description="Данные типа комнаты"
+                ),
+            }
+        )
+    }

@@ -35,6 +35,8 @@ INSTALLED_APPS = [
 
 """packages"""
 INSTALLED_APPS += [
+    'rest_framework_gis',
+    'django.contrib.gis',
     "rest_framework",
     "rest_framework.authtoken",
     "social_django",
@@ -96,7 +98,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
@@ -215,6 +217,22 @@ SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_VK_OAUTH2_KEY")
 SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_VK_OAUTH2_SECRET")
 SOCIAL_AUTH_YANDEX_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_YANDEX_OAUTH2_KEY")
 SOCIAL_AUTH_YANDEX_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_YANDEX_OAUTH2_SECRET")
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = [
+    "email",
+    "first_name",
+    "last_name"
+]
+SOCIAL_AUTH_URL_NAMESPACE = "social"
+
+# Settings MinIO S3
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_ACCESS_KEY_ID = os.getenv("S3_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("S3_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.getenv("S3_STORAGE_BUCKET_NAME")
+AWS_S3_ENDPOINT_URL = os.getenv("S3_ENDPOINT_URL")
+AWS_S3_FILE_OVERWRITE = os.getenv("S3_FILE_OVERWRITE", False) in ("True", "true", "TRUE", "1")
+AWS_QUERYSTRING_AUTH = os.getenv("S3_QUERYSTRING_AUTH", False) in ("True", "true", "TRUE", "1")
 
 # константы проекта, если их будет много, то нужно будет их организовать в отдельном файле с разбивкой по тематике
 MAX_LENGTH_PROJECT_NAME = 128

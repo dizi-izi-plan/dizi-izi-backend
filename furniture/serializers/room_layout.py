@@ -3,7 +3,7 @@ from django.db import transaction
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
-from furniture.models import Furniture, RoomLayout
+from furniture.models import Furniture, Room, RoomLayout
 from furniture.serializers import (DoorPlacementSerializer,
                                    FurniturePlacementSerializer,
                                    PowerSocketPlacementSerializer,
@@ -11,6 +11,13 @@ from furniture.serializers import (DoorPlacementSerializer,
 from furniture.services import create_room_layout
 
 User = get_user_model()
+
+
+class RoomSerializer(serializers.ModelSerializer):
+    """Serializer for room list."""
+    class Meta:
+        model = Room
+        fields = ('id', 'name')
 
 
 class RoomLayoutSerializer(serializers.ModelSerializer):
@@ -38,10 +45,6 @@ class RoomLayoutSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "first_wall",
-            "second_wall",
-            "third_wall",
-            "fourth_wall",
             "furniture_placement",
             "selected_furniture",
             "doors",

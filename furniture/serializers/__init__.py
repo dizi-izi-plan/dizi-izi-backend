@@ -1,6 +1,7 @@
-from .base import AbstractCoordinates, CoordinateSerializer
+from .base import AbstractCoordinates
 from .placements import (DoorPlacementSerializer, FurniturePlacementSerializer,
                          PowerSocketPlacementSerializer,
                          WindowPlacementSerializer)
 from .room_items import FurnitureSerializer, RoomTypeSerializer
-from .room_layout import RoomLayoutCopySerializer, RoomLayoutSerializer
+from .room_layout import (RoomLayoutCopySerializer, RoomLayoutSerializer,
+                          RoomSerializer)

@@ -1,5 +1,6 @@
 Django==5.0.7
 djangorestframework==3.15.2
+djangorestframework-gis==1.1
 djoser==2.2.2
 drf-spectacular==0.27.1
 python-dotenv==1.0.1
@@ -10,3 +11,5 @@ Pillow==10.3.0
 django-import-export==4.0.3
 django-cors-headers==4.4.0
 drf-social-oauth2==3.1.0
+django-storages==1.14.4
+boto3==1.36.7

@@ -18,11 +18,12 @@ class FurnitureSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "name_english",
-            "length",
+            "name_eng",
+            "depth",
             "width",
-            "length_access",
-            "width_access",
+            "depth_with_access_zone",
+            "width_with_access_zone",
             "type_of_rooms",
+            "image"
         )
         model = Furniture

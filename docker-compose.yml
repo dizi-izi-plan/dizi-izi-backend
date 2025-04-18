@@ -2,9 +2,10 @@ services:
 
   database:
     container_name: dizi-izi-database
-    image: postgres:15-alpine
+    image: postgis/postgis:17-3.5
     volumes:
       - dizi_postgres_dev:/var/lib/postgresql/data/
+      - ./infra/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     env_file:
       - .env
     restart: always
@@ -32,5 +33,27 @@ services:
 #    volumes:
 #      - ./:/app
 
+  minio:
+    container_name: dizi-izi-minio
+    image: minio/minio:RELEASE.2025-01-20T14-49-07Z
+    ports:
+      - "9000:9000" # API port
+      - "9001:9001" # Console
+    env_file:
+      - .env
+    volumes:
+      - dizi-minio-data:/data
+      - ./infra/init_minio.sh:/init_minio.sh
+      - ./infra/read-write-list-policy.json:/read-write-list-policy.json
+    entrypoint: ["/bin/sh", "/init_minio.sh"]
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+
+
 volumes:
   dizi_postgres_dev:
+  dizi-minio-data:

@@ -19,15 +19,10 @@ class FurnitureAdmin(ImportExportActionModelAdmin):
     list_display = (
         "id",
         "name",
-        "length",
+        "depth",
         "width",
         "take_image",
-        "type_of_rooms",
-        "power_socket_type",
-        "first_power_socket_height",
-        "first_power_socket_width",
-        "second_power_socket_height",
-        "second_power_socket_width",
+        # "type_of_rooms",
     )
     search_fields = ("type_of_rooms", "name")
     list_filter = ("type_of_rooms",)
@@ -59,17 +54,6 @@ class WindowPlacementInline(admin.TabularInline):
     model = models.WindowPlacement
 
 
-@admin.register(models.Coordinate)
-class CoordinateAdmin(admin.ModelAdmin):
-    """Админка Coordinate."""
-
-    list_display = (
-        "id",
-        "x",
-        "y",
-    )
-
-
 @admin.register(models.RoomLayout)
 class RoomLayoutAdmin(admin.ModelAdmin):
     """Админка комнаты."""
@@ -77,18 +61,16 @@ class RoomLayoutAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "name",
-        "first_wall",
-        "second_wall",
-        "third_wall",
-        "fourth_wall",
+        # "first_wall",
+        # "second_wall",
+        # "third_wall",
+        # "fourth_wall",
         "created",
     )
     list_display_links = ("name",)
     inlines = (
         FurniturePlacementInline,
         PowerSocketPlacementInline,
-        DoorPlacementInline,
-        WindowPlacementInline,
     )
 
 
