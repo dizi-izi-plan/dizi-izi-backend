@@ -26,7 +26,7 @@ class SpecialCharsValidator:
         String containing special characters to be checked.
         Default value = DEFAULT_SPECIAL_CHARS
     """
-    DEFAULT_SPECIAL_CHARS = '!#$%&‘*+-/=?^_`{|}~,.;:'
+    DEFAULT_SPECIAL_CHARS = '!#$%&*+-/=?^_{|}~,.;:'
 
     def __init__(self, special_chars=DEFAULT_SPECIAL_CHARS):
         self.special_chars = set(special_chars)
