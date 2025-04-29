@@ -14,6 +14,7 @@ from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
                               WindowPlacement)
 from furniture.serializers import (FurnitureSerializer, RoomLayoutSerializer,
                                    RoomSerializer, RoomTypeSerializer)
+from furniture.serializers.room_layout import RoomDetailSerializer
 from furniture.utils import send_pdf_file
 
 
@@ -46,6 +47,46 @@ class RoomListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def get_queryset(self):
         return Room.objects.filter(user=self.request.user)
+
+
+@extend_schema(tags=["Room Management"])
+@extend_schema_view(
+    list=extend_schema(
+        summary="List all rooms",
+        description="Returns a list of all rooms owned by the current user."
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve room by ID",
+        description="Returns detailed information about a specific room."
+    ),
+    create=extend_schema(
+        summary="Create a new room",
+        description="Creates a new room for the current authenticated user."
+    ),
+    update=extend_schema(
+        summary="Update a room",
+        description="Fully updates a room's data."
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a room",
+        description="Partially updates the specified fields of a room."
+    ),
+    destroy=extend_schema(
+        summary="Delete a room",
+        description="Deletes the specified room."
+    ),
+)
+class RoomManagementViewSet(viewsets.ModelViewSet):
+    """View and manage user rooms."""
+
+    serializer_class = RoomDetailSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Room.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class RoomViewSet(viewsets.ModelViewSet):
