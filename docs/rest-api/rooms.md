@@ -58,4 +58,12 @@ Base URI: `/api/v1/rooms/`
   }
   ```
   
+
+- **GET** `/api/v1/rooms/{id}/`
+- **PATCH** `/api/v1/rooms/{id}/`
+- **DELETE** `/api/v1/rooms/{id}/`
+- **GET** `/api/v1/rooms/types/`
+- **GET** `/api/v1/rooms/{id}/types/`
+- **POST** `/api/v1/rooms/{id}/share/emails/`
+  
   
