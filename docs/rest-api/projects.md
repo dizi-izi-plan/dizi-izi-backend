@@ -50,7 +50,7 @@ Base URI: `/api/v1/projects/`
   ```
     Responses:
     
-    Status Code `200 OK`
+    Status Code `201 Created`
   ```json
   {
     "id": 0,
@@ -143,7 +143,7 @@ Base URI: `/api/v1/projects/`
     
     Description: Дублирование проекта в месте со связанными комнатами
     
-    Status Code `200 OK`
+    Status Code `201 Created`
   ```json
   {
     "id": 0,
