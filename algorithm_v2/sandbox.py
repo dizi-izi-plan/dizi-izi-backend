@@ -60,18 +60,18 @@ def intersects_check(obj, other_obj) -> bool:
 
 def distance_check(obj1, obj2, distance):
     """Вычисляет минимальное расстояние между прямоугольниками"""
-        
+
     # Находим ближайшие точки между прямоугольниками
     corners1 = obj1.get_corners()
     corners2 = obj2.get_corners()
-    
+
     min_distance = float('inf')
     for p1 in corners1:
         for p2 in corners2:
             dist = math.sqrt((p2.x - p1.x)**2 + (p2.y - p1.y)**2)
             min_distance = min(min_distance, dist)
-    
-    return min_distance - distance 
+
+    return min_distance - distance
 
 
 def openings_intersects_check(obj, openings):

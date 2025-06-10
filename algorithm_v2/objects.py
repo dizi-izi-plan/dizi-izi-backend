@@ -3,7 +3,7 @@ import random
 from dataclasses import dataclass
 from typing import List, Optional
 
-from sandbox import *
+from sandbox import distance_check, openings_intersects_check, intersects_check, room_crossover_check
 
 
 @dataclass
@@ -30,7 +30,7 @@ class Rectangle:
 
 @dataclass
 class BuildingObject:
-    """ Общий класс для объекта комнаты и манипуляции с ним """
+    """Общий класс для объекта комнаты и манипуляции с ним"""
 
     id: Optional[str] = None
     name: Optional[str] = None
@@ -85,7 +85,7 @@ class BuildingObject:
             return corners
 
     def get_distance(self, obj) -> float:
-        """ Получаем дистанцию между двумя объектами """
+        """Получаем дистанцию между двумя объектами"""
 
         corners1 = self.get_corners()
         corners2 = obj.get_corners()
@@ -100,10 +100,10 @@ class BuildingObject:
 
 
 class OpeningObject(BuildingObject):
-    """ Класс проёма """
+    """Класс проёма"""
 
     def generate_door_random_placement(self, room: Room, other_obj):
-        """ Генерирует случайное расположение проемов """
+        """Генерирует случайное расположение проемов"""
         # Сделать проще
 
         other_side = list(map(lambda x: x.rotation, other_obj))
@@ -152,10 +152,10 @@ class OpeningObject(BuildingObject):
 
 
 class FloorObject(BuildingObject):
-    """ Класс объекта на полу """
+    """Класс объекта на полу"""
 
     def generate_random_placement(self, other_obj, room):
-        """ Генерирует случайное расположение объектов на полу """
+        """Генерирует случайное расположение объектов на полу"""
 
         self.x = random.uniform(0, room.width - self.width)
         self.y = random.uniform(0, room.length - self.length)
@@ -180,7 +180,7 @@ class FloorObject(BuildingObject):
 
 
 class WallObject(BuildingObject):
-    """ Класс объекта на стене """
+    """Класс объекта на стене"""
 
     # временные заглушки
 

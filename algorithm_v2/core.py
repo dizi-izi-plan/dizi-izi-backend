@@ -1,17 +1,16 @@
+import random
 from copy import deepcopy
 from dataclasses import dataclass
-import random
-from typing import List, Dict, Tuple, Any
+from typing import List
 
-from sandbox import *
-from objects import Room, FloorObject, WallObject, OpeningObject, Point
+from sandbox import openings_intersects_check, intersects_check, room_crossover_check
+from objects import Room, FloorObject, WallObject, OpeningObject
 
 
 class Core:
-    """ Основной алгоритм """
+    """Основной алгоритм"""
 
     def __init__(self, room_data, openings_data, floor_objects_data, wall_objects_data):
-
         self.room_data = room_data
         self.openings_data = openings_data
         self.floor_objects_data = floor_objects_data
@@ -30,38 +29,35 @@ class Core:
         self.get_floor_objects = self.run_genetic_algorithm()
 
     def get_room(self):
-        """ Создаем объект комнаты"""
-
+        """Создаем объект комнаты"""
         room = Room(
             self.room_data['width'],
             self.room_data['length'],
             self.room_data['height'],
         )
         self.room = room
-
         return room
 
     def get_openings(self) -> List[OpeningObject]:
-        """ Создаем список объектов (проёмов) """
-
+        """Создаем список объектов (проёмов)"""
         openings = []
 
         names_list = list(map(lambda x: x['name'], self.openings_data))
 
-        # Создаем объекты переданных проёмов если они есть
+        # Создаем объекты переданных проёмов, если они есть
         for obj in self.openings_data:
             new_obj = OpeningObject(**obj)
             new_obj.uturn()
             openings.append(new_obj)
 
-        # Создаем дверь если её не передали
+        # Создаем дверь, если её не передали
         if 'дверь' not in names_list:
             random_door = OpeningObject(name='дверь')
             random_door.generate_door_random_placement(self.room, openings)
             random_door.uturn()
             openings.append(random_door)
 
-        # Создаем окно если ее не передали
+        # Создаем окно, если его не передали
         if 'окно' not in names_list:
             random_window = OpeningObject(name='окно')
             random_window.generate_door_random_placement(self.room, openings)
@@ -71,13 +67,13 @@ class Core:
         return openings
 
     def get_floor_objects(self) -> List[FloorObject]:
-        """ Создаем объекты на полу """
+        """Создаем объекты на полу"""
         floor_objects = []
 
         for obj in self.floor_objects_data:
             for _ in range(self.max_attemps):
                 new_obj = FloorObject(**obj)
-                new_obj_placement = new_obj.generate_random_placement(self.get_openings + floor_objects, self.room)
+                new_obj_placement = new_obj.generate_random_placement(self.get_openings() + floor_objects, self.room)
                 if new_obj_placement:
                     floor_objects.append(new_obj_placement)
                     break
@@ -85,32 +81,30 @@ class Core:
         return floor_objects
 
     def get_wall_objects(self) -> List[WallObject]:
-        """ создаем объекты на стене """
-
+        """Создаем объекты на стене"""
         wall_objects = []
-        for obj in wall_objects_data:
+        for obj in self.wall_objects_data:
             new_obj = WallObject(**obj)
-            new_obj_placement = new_obj.run_random_placement(self.get_openings, room)
-            wall_objects.append(new_obj)
+            new_obj_placement = new_obj.run_random_placement(self.get_openings(), self.room)
+            wall_objects.append(new_obj_placement)
 
         return wall_objects
 
     def evaluate_placement(self, placement) -> float:
         """Оценивает качество размещения мебели"""
-
         if len(placement) < len(self.floor_objects_data):
-            # Штраф за неразмещенные предметы
+            # Штраф за неразмещённые предметы
             return -1000 * (len(self.floor_objects_data) - len(placement))
 
         score = 0
-        # Оцениваем расстояние между предметами (больше - лучше, но не слишком)
+        # Оцениваем расстояние между предметами (больше — лучше, но не слишком)
         for i in range(len(placement)):
             for j in range(i + 1, len(placement)):
                 distance = placement[i].get_distance(placement[j])
                 if distance < 60:
                     score -= 100  # Штраф за слишком близкое расположение
                 else:
-                    # Оптимальное расстояние - около 80-100 см
+                    # Оптимальное расстояние — около 80-100 см
                     optimal_distance = 90
                     score -= abs(distance - optimal_distance) * 0.5
 
@@ -118,7 +112,6 @@ class Core:
 
     def crossover(self, parent1, parent2):
         """Скрещивает два размещения мебели для создания нового"""
-
         # Создаем словарь для быстрого доступа к предметам по ID
         parent1_dict = {item.id: item for item in parent1}
         parent2_dict = {item.id: item for item in parent2}
@@ -153,7 +146,6 @@ class Core:
 
     def mutate(self, placement):
         """Мутирует размещение мебели"""
-
         if not placement:
             return placement
         # Создаем копию размещения
@@ -212,7 +204,6 @@ class Core:
 
     def greedy_placement(self, placement):
         """Жадный алгоритм размещения мебели (запасной вариант)"""
-
         items_id = map(lambda x: x.id, placement)  # Получаем id объектов в популяции
         missing_objects = []
 
@@ -231,7 +222,6 @@ class Core:
 
         # Для каждого отсутствующего предмета мебели
         for obj in missing_objects:
-
             # Перебираем все возможные позиции и повороты
             for x, y in possible_positions:
                 for rotation in [0, 90, 180, 270]:
@@ -258,12 +248,10 @@ class Core:
         return placement
 
     def run_genetic_algorithm(self):
-
         population = []
 
         for _ in range(self.population_size):
             floor_obj_placement = self.get_floor_objects()
-
             population.append(floor_obj_placement)
 
         best_placement = None
@@ -278,21 +266,25 @@ class Core:
             max_score_index = scores.index(max(scores))
             current_best = population[max_score_index]
             current_best_score = scores[max_score_index]
+
             if current_best_score > best_score:
                 best_placement = current_best
                 best_score = current_best_score
 
             # Выбираем родителей для следующего поколения (турнирный отбор)
-            new_population = [current_best]  # Элитизм - сохраняем лучшее решение
+            new_population = [current_best]  # Элитизм — сохраняем лучшее решение
 
             while len(new_population) < self.population_size:
-
                 # Выбираем двух родителей
                 tournament_size = 3
-                parent1_idx = max(random.sample(range(len(population)), tournament_size),
-                                  key=lambda i: scores[i])
-                parent2_idx = max(random.sample(range(len(population)), tournament_size),
-                                  key=lambda i: scores[i])
+                parent1_idx = max(
+                    random.sample(range(len(population)), tournament_size),
+                    key=lambda i: scores[i]
+                )
+                parent2_idx = max(
+                    random.sample(range(len(population)), tournament_size),
+                    key=lambda i: scores[i]
+                )
 
                 parent1 = population[parent1_idx]
                 parent2 = population[parent2_idx]

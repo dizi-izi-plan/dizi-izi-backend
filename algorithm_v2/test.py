@@ -111,22 +111,22 @@ def draw_room(room):
 # Функция для отрисовки проема
 def draw_opening(opening, room):
     # Размеры
-    w = opening.width
-    l = opening.length
+    width = opening.width
+    length = opening.length
     # Координаты проема относительно левого верхнего угла комнаты
     x_rel = opening.x
     y_rel = opening.y
 
     # Отрисовка относительно левого верхнего угла комнаты
     # Координаты центра проема внутри комнаты
-    x_center = center_x - room.width / 2 + x_rel + w / 2
-    y_center = center_y - room.length / 2 + y_rel + l / 2
+    x_center = center_x - room.width / 2 + x_rel + width / 2
+    y_center = center_y - room.length / 2 + y_rel + length / 2
 
     # Вычисление углов
-    x0 = x_center - w / 2
-    y0 = y_center - l / 2
-    x1 = x_center + w / 2
-    y1 = y_center + l / 2
+    x0 = x_center - width / 2
+    y0 = y_center - length / 2
+    x1 = x_center + width / 2
+    y1 = y_center + length / 2
 
     color = 'brown' if opening.name == 'дверь' else 'blue'
     canvas.create_rectangle(x0, y0, x1, y1, fill=color, outline='black')
@@ -136,16 +136,16 @@ def draw_opening(opening, room):
 
 def draw_object(obj, room):
     # Размеры объекта
-    w = obj.width
-    l = obj.length
+    width = obj.width
+    length = obj.length
     corners = obj.get_corners()
     x0 = corners[3].x + center_x - room.width / 2
     y0 = corners[3].y + center_y - room.length / 2
     x1 = corners[1].x + center_x - room.width / 2
     y1 = corners[1].y + center_y - room.length / 2
     # Координаты центра объекта внутри комнаты
-    x_center = center_x - room.width / 2 + obj.x + w / 2
-    y_center = center_y - room.length / 2 + obj.y + l / 2
+    x_center = center_x - room.width / 2 + obj.x + width / 2
+    y_center = center_y - room.length / 2 + obj.y + length / 2
 
     # Цвет
     color = 'green' if obj.name == 'Кровать' else 'orange'
