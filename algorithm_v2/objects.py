@@ -3,7 +3,8 @@ import random
 from dataclasses import dataclass
 from typing import List, Optional
 
-from sandbox import distance_check, openings_intersects_check, intersects_check, room_crossover_check
+from sandbox import (distance_check, intersects_check,
+                     openings_intersects_check, room_crossover_check)
 
 
 @dataclass

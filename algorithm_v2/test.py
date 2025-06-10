@@ -1,6 +1,7 @@
-from core import Core
-import tkinter as tk
 import time
+import tkinter as tk
+
+from core import Core
 
 room_data = {
     'width': 400,

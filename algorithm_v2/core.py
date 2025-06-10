@@ -3,8 +3,9 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import List
 
-from sandbox import openings_intersects_check, intersects_check, room_crossover_check
-from objects import Room, FloorObject, WallObject, OpeningObject
+from objects import FloorObject, OpeningObject, Room, WallObject
+from sandbox import (intersects_check, openings_intersects_check,
+                     room_crossover_check)
 
 
 class Core:
