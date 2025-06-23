@@ -1,4 +1,3 @@
-import math
 from dataclasses import dataclass
 
 
@@ -11,7 +10,12 @@ class Point:
 def room_crossover_check(obj, room) -> bool:
     corners = obj.get_corners()
     for corner in corners:
-        if corner.x < 0 or corner.x > room.width or corner.y < 0 or corner.y > room.length:
+        if (
+            corner.x < 0
+            or corner.x > room.width
+            or corner.y < 0
+            or corner.y > room.length
+        ):
             return False
     return True
 
@@ -20,7 +24,6 @@ def intersects_check(obj, other_obj) -> bool:
     """Проверяет пересечение с другим прямоугольником"""
     # Используем алгоритм разделяющей оси (Separating Axis Theorem)
     # для проверки пересечения двух произвольно повернутых прямоугольников
-
     corners1 = obj.get_corners()
     corners2 = other_obj.get_corners()
     # Проверяем все возможные оси проекции
@@ -56,27 +59,3 @@ def intersects_check(obj, other_obj) -> bool:
             return True
 
     return False
-
-
-def distance_check(obj1, obj2, distance):
-    """Вычисляет минимальное расстояние между прямоугольниками"""
-
-    # Находим ближайшие точки между прямоугольниками
-    corners1 = obj1.get_corners()
-    corners2 = obj2.get_corners()
-
-    min_distance = float('inf')
-    for p1 in corners1:
-        for p2 in corners2:
-            dist = math.sqrt((p2.x - p1.x)**2 + (p2.y - p1.y)**2)
-            min_distance = min(min_distance, dist)
-
-    return min_distance - distance
-
-
-def openings_intersects_check(obj, openings):
-    min_distance = 60
-    for opening in openings:
-        if not intersects_check(obj, opening) or distance_check(obj, opening, min_distance) < 0:
-            return False
-    return True
