@@ -23,7 +23,7 @@ urlpatterns = [
     path(r"rooms/copy/<int:pk>/", RoomCopyView.as_view()),
     path("tariffs/", APITariff.as_view()),
     path("tariffs/<slug:name_english>/", APIChangeTariff.as_view()),
-    path("auth/", include(users.urls)),
+    path("", include(users.urls)),
     path("auth/", include("djoser.urls.authtoken")),
     path("", include(router.urls)),
     path("", include("social_django.urls", namespace="social")),
