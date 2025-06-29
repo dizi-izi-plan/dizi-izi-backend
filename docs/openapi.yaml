@@ -1,0 +1,1664 @@
+openapi: 3.0.3
+info:
+  title: Dizi-izi API
+  version: 0.1.0
+  description: Документация для проекта Dizi-izi-backend
+  contact:
+    email: dizi.izi.plan@gmail.com
+  license:
+    name: MIT License
+paths:
+  /api/v1/auth/token/login/:
+    post:
+      operationId: auth_token_login_create
+      description: Принимает учетные данные пользователя и возвращает токен аутентификации,
+        если данные верны.
+      summary: Аутентификация пользователя
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: ''
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+  /api/v1/auth/token/logout/:
+    post:
+      operationId: auth_token_logout_create
+      description: Удаляет токен аутентификации пользователя из системы, осуществляя
+        выход.
+      summary: Выход пользователя
+      tags:
+      - auth
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: 'No response body'
+        '401':
+          description: 'Error: Unauthorized'
+        '500':
+          description: 'Server error'
+  /api/v1/social_auth/convert-token/:
+    post:
+      operationId: social_auth_convert_token_create
+      description: 'Implements an endpoint to convert a provider token to an access
+        token
+
+
+        The endpoint is used in the following flows:
+
+
+        * Authorization code
+
+        * Client credentials'
+      tags:
+      - social_auth
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+        '500':
+          description: 'Server error'
+  /api/v1/social_auth/disconnect-backend/:
+    post:
+      operationId: social_auth_disconnect_backend_create
+      description: An endpoint for disconnect social auth backend providers such as
+        Facebook.
+      tags:
+      - social_auth
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+        '500':
+          description: 'Server error'
+  /api/v1/social_auth/invalidate-refresh-tokens/:
+    post:
+      operationId: social_auth_invalidate_refresh_tokens_create
+      description: Invalidate all refresh tokens associated with a client id.
+      tags:
+      - social_auth
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+        '500':
+          description: 'Server error'
+  /api/v1/social_auth/invalidate-sessions/:
+    post:
+      operationId: social_auth_invalidate_sessions_create
+      description: Delete all access tokens associated with a client id.
+      tags:
+      - social_auth
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+        '500':
+          description: 'Server error'
+  /api/v1/social_auth/revoke-token/:
+    post:
+      operationId: social_auth_revoke_token_create
+      description: Implements an endpoint to revoke access or refresh tokens
+      tags:
+      - social_auth
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+        '500':
+          description: 'Server error'
+  /api/v1/social_auth/token/:
+    post:
+      operationId: social_auth_token_create
+      description: 'Implements an endpoint to provide access tokens
+
+
+        The endpoint is used in the following flows:
+
+
+        * Authorization code
+
+        * Password
+
+        * Client credentials'
+      tags:
+      - social_auth
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+        '500':
+          description: 'Server error'
+  /api/v1/tariffs/:
+    get:
+      operationId: tariffs_list
+      description: 'Список тарифов.
+
+
+        Просмотр доступен для всех. Редактирование только для суперпользователя.'
+      tags:
+      - tariffs
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tariff'
+          description: ''
+        '500':
+          description: 'Server error'
+    post:
+      operationId: tariffs_create
+      description: 'Список тарифов.
+
+
+        Просмотр доступен для всех. Редактирование только для суперпользователя.'
+      tags:
+      - tariffs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tariff'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Tariff'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Tariff'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tariff'
+          description: ''
+        '500':
+          description: 'Server error'
+  /api/v1/tariffs/{name_english}/:
+    patch:
+      operationId: tariffs_partial_update
+      description: Добавляем тариф пользователю.
+      parameters:
+      - in: path
+        name: name_english
+        schema:
+          type: string
+        required: true
+      tags:
+      - tariffs
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+        '500':
+          description: 'Server error'
+  /api/v1/users/:
+    get:
+      operationId: users_list
+      description: Возвращает данные пользователя. Для администратора возвращает список
+        всех пользователей
+      summary: Получение данных пользователя
+      tags:
+      - users
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: Данные пользователя
+        '401':
+          description: 'Error: Unauthorized'
+        '500':
+          description: 'Server error'
+    post:
+      operationId: users_create
+      description: Создает нового пользователя с предоставленными данными.
+      summary: Создание нового пользователя
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreatePasswordRetype'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserCreatePasswordRetype'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserCreatePasswordRetype'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Данные созданного пользователя
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+  /api/v1/users/{id}/:
+    get:
+      operationId: users_retrieve
+      description: Возвращает информацию о пользователе по его уникальному идентификатору.
+        Требуются права администратора или собственные данные пользователя.
+      summary: Получение информации о пользователе
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - users
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Данные пользователя
+        '401':
+          description: 'Error: Unauthorized'
+        '500':
+          description: 'Server error'
+    put:
+      operationId: users_update
+      description: Обновляет информацию о пользователе с использованием полного набора
+        данных. Требуются права администратора или собственные данные пользователя.
+      summary: Обновление информации пользователя
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomUser'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Данные пользователя
+        '401':
+          description: 'Error: Unauthorized'
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+    patch:
+      operationId: users_partial_update
+      description: Обновляет информацию о пользователе, используя только предоставленные
+        поля. Требуются права администратора или собственные данные пользователя.
+      summary: Частичное обновление информации пользователя
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomUser'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Данные пользователя
+        '401':
+          description: 'Error: Unauthorized'
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+    delete:
+      operationId: users_destroy
+      description: Удаляет пользователя. Требуется права администратора.
+      summary: Удаление пользователя
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - users
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+        '401':
+          description: 'Error: Unauthorized'
+        '403':
+          description: 'Error: Forbidden'
+        '500':
+          description: 'Server error'
+  /api/v1/users/activation/:
+    post:
+      operationId: users_activation_create
+      description: Активирует пользователя после регистрации. Требуется отправка кода
+        активации, полученного пользователем.
+      summary: Активация пользователя
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Activation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Activation'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '403':
+          description: 'Error: Forbidden'
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+  /api/v1/users/me/:
+    get:
+      operationId: users_me_retrieve
+      description: Возвращает информацию о текущем пользователе.
+      summary: Получение информации о текущем пользователе
+      tags:
+      - users
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Данные пользователя
+        '401':
+          description: 'Error: Unauthorized'
+        '500':
+          description: 'Server error'
+    put:
+      operationId: users_me_update
+      description: Позволяет полностью обновить информацию о текущем пользователе.
+      summary: Обновление информации текущего пользователя
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomUser'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Данные пользователя
+        '401':
+          description: 'Error: Unauthorized'
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+    patch:
+      operationId: users_me_partial_update
+      description: Позволяет частично обновить информацию о текущем пользователе.
+      summary: Частичное обновление информации текущего пользователя
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomUser'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Данные пользователя
+        '401':
+          description: 'Error: Unauthorized'
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+    delete:
+      operationId: users_me_destroy
+      description: Удаляет текущего пользователя. Требуется права администратора.
+      summary: Удаление текущего пользователя
+      tags:
+      - users
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+        '401':
+          description: 'Error: Unauthorized'
+        '403':
+          description: 'Error: Forbidden'
+        '500':
+          description: 'Server error'
+  /api/v1/users/resend_activation/:
+    post:
+      operationId: users_resend_activation_create
+      description: Повторно отправляет письмо активации пользователю, который не активировал
+        свой аккаунт.
+      summary: Повторная отправка письма активации
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+  /api/v1/users/reset_email/:
+    post:
+      operationId: users_reset_email_create
+      description: Инициирует процесс сброса адреса почты пользователя, отправляя
+        инструкции на электронную почту пользователя. Требуется предоставление электронной
+        почты, ассоциированной с аккаунтом.
+      summary: Сброс адреса почты пользователя
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+  /api/v1/users/reset_email_confirm/:
+    post:
+      operationId: users_reset_email_confirm_create
+      description: Позволяет пользователю подтвердить сброс и установить новый адрес
+        почты пользователя, используя код подтверждения, отправленный на его электронную
+        почту. Этот процесс завершает смену адреса почты пользователя.
+      summary: Подтверждение сброса адреса почты пользователя
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+  /api/v1/users/reset_password/:
+    post:
+      operationId: users_reset_password_create
+      description: Инициирует процесс сброса пароля, отправляя письмо для сброса на
+        электронную почту пользователя.
+      summary: Сброс пароля
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+  /api/v1/users/reset_password_confirm/:
+    post:
+      operationId: users_reset_password_confirm_create
+      description: Завершает процесс сброса пароля, устанавливая новый пароль для
+        пользователя.
+      summary: Подтверждение сброса пароля
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: 'Error: Bad Request'
+        '500':
+          description: 'Server error'
+  /api/v1/users/set_email/:
+    post:
+      operationId: users_set_email_create
+      description: Позволяет текущему пользователю изменить свой адрес почты на новый.
+      summary: Установка нового адреса почты пользователя
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: 'Error: Bad Request'
+        '401':
+          description: 'Error: Unauthorized'
+        '500':
+          description: 'Server error'
+  /api/v1/users/set_password/:
+    post:
+      operationId: users_set_password_create
+      description: Позволяет пользователю установить новый пароль.
+      summary: Установка нового пароля
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: 'Error: Bad Request'
+        '401':
+          description: 'Error: Unauthorized'
+        '500':
+          description: 'Server error'
+  /api/v1/furniture/:
+    get:
+      operationId: furniture_list
+      description: Возвращает список всех предметов мебели
+      summary: Список всех предметов мебели
+      parameters:
+      - in: query
+        name: type_of_rooms
+        schema:
+          type: string
+      tags:
+      - furniture
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Furniture'
+          description: Данные мебели
+        '401':
+          description: Unauthorized
+        '500':
+          description: 'Server error'
+  /api/v1/furniture/{id}/:
+    get:
+      operationId: furniture_retrieve
+      description: Возвращает данные мебели по её уникальному идентификатору.
+      summary: Описание отдельного предмета мебели
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - furniture
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Furniture'
+          description: Данные мебели
+        '401':
+          description: Unauthorized
+        '404':
+          description: Furniture item not found
+        '500':
+          description: 'Server error'
+  /api/v1/projects/:
+    get:
+      tags:
+      - projects
+      summary: List all projects
+      description: Returns a list of all projects
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: A list of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        '401':
+          description: Unauthorized
+        '500':
+          description: 'Server error'
+    post:
+      tags:
+      - projects
+      summary: Create a new project as a draft
+      description: Creates a new project as a draft
+      security:
+      - tokenAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+      responses:
+        '201':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '500':
+          description: 'Server error'
+  /api/v1/projects/{project_id}/:
+    get:
+      tags:
+      - projects
+      summary: Get project by id
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: Project and associated layouts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project:
+                    allOf:
+                    - $ref: '#/components/schemas/Project'
+                    - type: object
+                      properties:
+                        layout_requests_left:
+                          type: integer
+                        preferred_layout_id:
+                          type: string
+                  room_description:
+                    $ref: '#/components/schemas/RoomDescription'
+                  layouts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Layout'
+              examples:
+                draft:
+                  summary: Черновик
+                  value:
+                    project:
+                      id: '123'
+                      name: Проект 1
+                      is_draft: true
+                      created_at: '2025-06-19T18:34:21.266Z'
+                      layout_requests_left: 3
+                with_layouts:
+                  summary: Готовый проект
+                  value:
+                    project:
+                      id: '123'
+                      name: Проект 1
+                      is_draft: false
+                      created_at: '2025-06-19T18:34:21.266Z'
+                      layout_requests_left: 1
+                      preferred_layout_id: '123'
+                    room_description:
+                      type_id: '123'
+                      length: 5000
+                      width: 4000
+                      doors:
+                      - width: 900
+                        wall: 0
+                        x_center: 2000
+                        open_direction: inside_left
+                      windows:
+                      - width: 1200
+                        height: 1400
+                        wall: 1
+                        x_center: 1000
+                      balconies:
+                      - width: 1500
+                        wall: 2
+                        x_center: 2500
+                    layouts:
+                    - id: '123'
+                      furniture_placements:
+                      - furniture_item_id: sofa-123
+                        x_center: 1200
+                        y_center: 800
+                        rotation_degree: 0
+                    - id: '124'
+                      furniture_placements:
+                      - furniture_item_id: wardrobe-xyz
+                        x_center: 1200
+                        y_center: 800
+                        rotation_degree: 0
+                      - furniture_item_id: bed-2
+                        x_center: 300
+                        y_center: 600
+                        rotation_degree: 90
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Project not found
+        '500':
+          description: 'Server error'
+    patch:
+      tags:
+      - projects
+      summary: Update project name
+      description: Updates the name of a project by its ID
+      security:
+      - tokenAuth: []
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+      responses:
+        '200':
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Project not found
+        '500':
+          description: 'Server error'
+    delete:
+      tags:
+      - projects
+      summary: Delete project
+      description: Deletes a project by its ID
+      security:
+      - tokenAuth: []
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Project deleted successfully (No Content)
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Project not found
+        '500':
+          description: 'Server error'
+  /api/v1/projects/{project_id}/generate_layout/:
+    post:
+      tags:
+      - projects
+      summary: Init layout generation job, save project if needed
+      description: 'Если проект в статусе черновика, сохраняет проект. Запускает процесс
+        генерации планировки, возвращает id планировки и сколько еще планировок можно
+        сгенерировать в этом проекте. Принимает ключ идемпотентности: в ответ на повторный
+        запрос с тем же самым сочетанием project_id + idempotency_key сервер вернёт
+        layout_id, который был возвращён при первом запросе'
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - tokenAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                room_description:
+                  $ref: '#/components/schemas/RoomDescription'
+                furniture_item_ids:
+                  type: array
+                  items:
+                    type: string
+                idempotency_key:
+                  type: string
+              required:
+              - room_description
+              - furniture_item_ids
+              - idempotency_key
+      responses:
+        '201':
+          description: Layout generation started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  layout_id:
+                    type: string
+                  layout_requests_left:
+                    type: integer
+                required:
+                - layout_id
+                - layout_requests_left
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Project not found
+        '500':
+          description: 'Server error'
+  /api/v1/projects{project_id}/layouts/:
+    get:
+      tags:
+      - projects
+      summary: Get all layouts for the project
+      description: Возвращает все сгенерированные планировки в проекте
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  layouts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Layout'
+                required:
+                - job_status
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Project not found
+        '500':
+          description: 'Server error'
+  /api/v1/projects{project_id}/layouts/{layout_id}/:
+    get:
+      tags:
+      - projects
+      summary: Get layout by id
+      description: Если планировка успешно сгенерирована, job_status = "COMPLETE",
+        и эндпоинт возвращает планировку.
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: layout_id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_status:
+                    type: string
+                    enum:
+                    - PENDING
+                    - IN_PROGRESS
+                    - COMPLETE
+                    - FAILED
+                  layout:
+                    $ref: '#/components/schemas/Layout'
+                required:
+                - job_status
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Project or layout not found
+        '500':
+          description: 'Server error'
+  /api/v1/room_types/:
+    get:
+      operationId: rooms_type_list
+      description: Получение списка типов комнат. Доступно всем пользователям.
+      summary: Получение списка типов комнат
+      tags:
+      - room_types
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomType'
+          description: Данные типов комнат
+        '401':
+          description: Unauthorized
+        '500':
+          description: 'Server error'
+components:
+  schemas:
+    Activation:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - token
+      - uid
+    CustomUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        city:
+          type: string
+          nullable: true
+          title: Город
+          maxLength: 50
+        birthday:
+          type: string
+          format: date
+          nullable: true
+          title: Дата рождения
+          description: Введите дату в прошлом. Будущие даты не допустимы.
+        is_designer:
+          type: boolean
+          title: Дизайнер
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - date_joined
+      - email
+      - id
+      - last_login
+    Furniture:
+      type: object
+      description: Сериализатор для мебели.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Наименование мебели
+          maxLength: 128
+        name_eng:
+          type: string
+          title: Наименование мебели на английском языке
+          maxLength: 128
+        depth:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Глубина мебели
+          description: Глубина в мм
+        width:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Ширина мебели
+          description: Ширина в мм
+        depth_with_access_zone:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Глубина мебели c зоной подхода
+          description: Глубина c зоной подхода в мм
+        width_with_access_zone:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Ширина мебели c зоной подхода
+          description: Ширина c зоной подхода в мм
+        type_of_rooms:
+          $ref: '#/components/schemas/RoomType'
+        image:
+          type: string
+          format: uri
+          nullable: true
+          title: Изображение мебели
+      required:
+      - depth
+      - depth_with_access_zone
+      - id
+      - name
+      - name_eng
+      - type_of_rooms
+      - width
+      - width_with_access_zone
+    PasswordResetConfirm:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+        new_password:
+          type: string
+      required:
+      - new_password
+      - token
+      - uid
+    PatchedCustomUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        city:
+          type: string
+          nullable: true
+          title: Город
+          maxLength: 50
+        birthday:
+          type: string
+          format: date
+          nullable: true
+          title: Дата рождения
+          description: Введите дату в прошлом. Будущие даты не допустимы.
+        is_designer:
+          type: boolean
+          title: Дизайнер
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+    RoomType:
+      type: object
+      properties:
+        name:
+          type: string
+          title: Наименование комнаты
+          maxLength: 128
+          enum:
+          - bedroom
+        slug:
+          type: string
+          title: Слаг
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        id:
+          type: string
+      required:
+      - name
+      - slug
+    SendEmailReset:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    SetPassword:
+      type: object
+      properties:
+        new_password:
+          type: string
+        current_password:
+          type: string
+      required:
+      - current_password
+      - new_password
+    SetUsername:
+      type: object
+      properties:
+        current_password:
+          type: string
+        new_email:
+          type: string
+          format: email
+          title: Email
+          maxLength: 256
+      required:
+      - current_password
+      - new_email
+    Tariff:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        is_active:
+          type: string
+          readOnly: true
+        start_day:
+          type: string
+          readOnly: true
+        period:
+          type: string
+          readOnly: true
+        next_day_of_payment:
+          type: string
+          readOnly: true
+        project_limit:
+          type: integer
+          default: 0
+        rooms_limit:
+          type: integer
+          default: 0
+        name:
+          type: string
+          title: Наименование тарифа
+          maxLength: 256
+        name_english:
+          type: string
+          title: Наименование тарифа на английском языке
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          title: Описание тарифа
+        cost:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          title: Стоимость
+        is_default:
+          type: boolean
+          title: По умолчанию
+      required:
+      - cost
+      - description
+      - id
+      - is_active
+      - name
+      - name_english
+      - next_day_of_payment
+      - period
+      - start_day
+    Token:
+      type: object
+      properties:
+        auth_token:
+          type: string
+      required:
+      - auth_token
+    TokenCreate:
+      type: object
+      properties:
+        password:
+          type: string
+        email:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+      required:
+      - email
+      - id
+    UserCreatePasswordRetype:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 256
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        password:
+          type: string
+          writeOnly: true
+        re_password:
+          type: string
+      required:
+      - email
+      - id
+      - password
+      - re_password
+    UsernameResetConfirm:
+      type: object
+      properties:
+        new_email:
+          type: string
+          format: email
+          title: Email
+          maxLength: 256
+      required:
+      - new_email
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          maxLength: 64
+        is_draft:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - is_draft
+      - created_at
+    Wall:
+      type: integer
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+    Door:
+      type: object
+      properties:
+        width:
+          type: integer
+        wall:
+          $ref: '#/components/schemas/Wall'
+        x_center:
+          type: integer
+        open_direction:
+          type: string
+          enum:
+          - inside_left
+          - inside_right
+          - outside_left
+          - outside_right
+      required:
+      - width
+      - wall
+      - open_direction
+    Window:
+      type: object
+      properties:
+        width:
+          type: integer
+        height:
+          type: integer
+        wall:
+          $ref: '#/components/schemas/Wall'
+        x_center:
+          type: integer
+      required:
+      - width
+      - wall
+    Balcony:
+      type: object
+      properties:
+        width:
+          type: integer
+        wall:
+          $ref: '#/components/schemas/Wall'
+        x_center:
+          type: integer
+      required:
+      - width
+      - wall
+    RoomDescription:
+      type: object
+      properties:
+        type_id:
+          type: string
+        length:
+          type: integer
+        width:
+          type: integer
+        doors:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Door'
+        windows:
+          type: array
+          items:
+            $ref: '#/components/schemas/Window'
+        balconies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Balcony'
+      required:
+      - length
+      - width
+      - doors
+      - windows
+      - balconies
+    FurniturePlacement:
+      type: object
+      properties:
+        furniture_item_id:
+          type: string
+        x_center:
+          type: integer
+        y_center:
+          type: integer
+        rotation_degree:
+          type: integer
+          enum:
+          - 0
+          - 90
+          - 180
+          - 270
+      required:
+      - furniture_item_id
+      - x_center
+      - y_center
+      - rotation_degree
+    Layout:
+      type: object
+      properties:
+        id:
+          type: string
+        furniture_placements:
+          type: array
+          items:
+            $ref: '#/components/schemas/FurniturePlacement'
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows: {}
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
