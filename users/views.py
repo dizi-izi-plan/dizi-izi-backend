@@ -2,7 +2,7 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status
 from rest_framework.response import Response
 
-from users.serializers import CustomUserCreateSerializer
+from users.serializers import CustomUserCreateSerializer, CustomUserSerializer
 from users.services.logout_user import logout_user
 
 
@@ -24,6 +24,11 @@ class UserViewSet(DjoserUserViewSet):
     #     if self.action == "create":
     #         self.throttle_classes = [AnonRateThrottle, UserRateThrottle]
     #     return super().get_throttles()
+
+    def get_serializer_class(self):
+        if self.action in ["retrieve", "update", "partial_update", "me"]:
+            return CustomUserSerializer
+        return super().get_serializer_class()
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
