@@ -59,3 +59,4 @@ def intersects_check(obj, other_obj) -> bool:
             return True
 
     return False
+

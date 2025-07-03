@@ -122,27 +122,31 @@ def draw_zones(canvas, zones, canvas_width, canvas_height, margin):
         
         canvas.create_text(t_x, t_y, text = zone.name, fill = 'black')
 
-def draw_objects(canvas, zones, canvas_width, canvas_height):
+def draw_objects(canvas, objects, canvas_width, canvas_height):
     
-    for zone in zones:
-        for obj in zone.objects_list:
+    for obj in objects:
         
-
-            if obj.tag != None:
-                color = 'green'
-            else:
-                color = 'yellow'
-                
-            if obj.name == 'розетка':
-                color = 'red'
-                
-            obj_r = obj.create_rectangle()
-            obj_x0 = obj_r.x + margin
-            obj_y0 = obj_r.y + margin
-            obj_x1 = obj_r.x + obj_r.width + margin
-            obj_y1 = obj_r.y + obj_r.length + margin
+        if obj.tag != None:
+            color = 'lightgreen'
+        else:
+            color = 'lightyellow'
             
-            canvas.create_rectangle(obj_x0, obj_y0, obj_x1, obj_y1, outline='black', fill=color, width=1)
+        if obj.name == 'розетка':
+            color = 'red'
+            
+        obj_r = obj.create_rectangle()
+        obj_x0 = obj_r.x + margin
+        obj_y0 = obj_r.y + margin
+        obj_x1 = obj_r.x + obj_r.width + margin
+        obj_y1 = obj_r.y + obj_r.length + margin
+        
+        canvas.create_rectangle(obj_x0, obj_y0, obj_x1, obj_y1, outline='black', fill=color, width=1)
+        
+        center = obj.center
+        x = center.x + margin
+        y = center.y + margin
+        r = 2
+        canvas.create_oval(x - r, y - r, x + r, y + r, fill='blue')
 
 # Создаем окно и холст
 room = alg.room
@@ -160,10 +164,9 @@ zones = alg.run_algorithm()
 
 # Отрисовка комнаты
 draw_room(canvas, room, canvas_width, canvas_height, margin)
-
-
+objects = room.furnitures + room.electricity_points
 # Отрисовка зон
-# draw_zones(canvas, zones, canvas_width, canvas_height, margin)
-draw_objects(canvas, zones, canvas_width, canvas_height)
+draw_zones(canvas, zones, canvas_width, canvas_height, margin)
+draw_objects(canvas, objects, canvas_width, canvas_height)
 draw_openings(canvas, openings, canvas_width, canvas_height, margin)
 root.mainloop()
