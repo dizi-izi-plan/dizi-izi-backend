@@ -60,3 +60,20 @@ def intersects_check(obj, other_obj) -> bool:
 
     return False
 
+def intersects_checks(obj, other_objects, openings):
+
+    valid_placement = True
+    
+    for other_object in other_objects:
+        if not intersects_check(obj, other_object):
+            valid_placement = False
+            break
+
+    for opening in openings:
+        if not intersects_check(obj, opening):
+            valid_placement = False
+            break
+
+    if valid_placement:
+        
+        return True
