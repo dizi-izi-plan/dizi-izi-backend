@@ -5,7 +5,7 @@ import random
 from typing import List
 
 from constants import ROTATIONS
-from sandbox import intersects_check
+from sandbox import intersects_checks
 from objects import (
     Room,
     FloorObject,
@@ -81,12 +81,14 @@ class Core:
             random_window.generate_door_random_placement(self.room, openings)
             random_window.uturn()
             openings.append(random_window)
-        
+
         for opening in openings:
-            wall = list(filter(lambda x: x.rotation == opening.rotation, self.get_walls))[0]
+            wall = list(
+                filter(lambda x: x.rotation == opening.rotation, self.get_walls)
+            )[0]
             wall.add_divide(opening)
             wall.openings.append(opening)
-            
+
         return openings
 
     def get_floor_objects(self) -> List[FloorObject]:
@@ -97,7 +99,7 @@ class Core:
             floor_objects.append(FloorObject(**obj))
 
         return floor_objects
-        
+
     def get_walls(self):
         """Создаем стены"""
         walls = []
@@ -109,15 +111,74 @@ class Core:
                 wall = Wall(self.room.length, rotation)
             walls.append(wall)
         return walls
-        
+
+    def forced_insertion(self, zone, zone_list):
+        """Принудительно размещает зоны"""
+        for wall in self.get_walls:
+            # Получаем зоны у выбранной стены
+            zones_at_wall = list(
+                filter(lambda x: x.rotation == wall.rotation, zone_list)
+            ) + [zone]
+            other_wall_zones = list(
+                filter(lambda x: x.rotation != wall.rotation, zone_list)
+            )
+            free_lines = wall.wall_divide
+            place_combines = self.generate_distributions(len(free_lines), zones_at_wall)
+            correct_placements_list = []
+
+            for comb in place_combines:
+
+                flag = True
+                correct_placement = []
+
+                for i in range(len(free_lines)):
+                    all_width = sum(map(lambda x: x.width, comb[i]))
+                    line_width = max(free_lines[i]) - min(free_lines[i])
+                    if all_width >= line_width:
+                        flag = False
+                        break
+                    # Задать положение зон и провести чек на пересечение
+                    indent = min(free_lines[i])
+                    for zone in comb[i]:
+
+                        if wall.rotation == 0:
+                            zone.x = indent
+                            zone.y = 0
+                        elif wall.rotation == 90:
+                            zone.x = self.room.width - zone.length
+                            zone.y = indent
+                        elif wall.rotation == 180:
+                            zone.x = indent
+                            zone.y = self.room.length - zone.length
+                        elif wall.rotation == 270:
+                            zone.x = 0
+                            zone.y = indent
+
+                        indent += zone.width
+                        zone.rotation = wall.rotation
+
+                        # Проверка пересечений
+                        if not intersects_checks(zone, other_wall_zones, self.get_openings):
+                            flag = False
+                            break
+                        else:
+                            correct_placement.append(zone)
+
+                if flag:
+                    # В correct_placement Лучше добавлять проверенные списки расположения зон
+                    correct_placements_list.append(correct_placement)
+
+            if correct_placements_list:
+                return random.choice(correct_placements_list), wall.rotation
+            else:
+                return False, wall.rotation
+
     def free_space_search(self, zone, added_zones):
         """Ищет свободное место"""
-        valid_placement = True
-        
+
         for wall in self.get_walls:
-            lines_count = len(wall.wall_divide)
             free_line = wall.insert_check(zone.width)
-            
+
             if free_line:
                 indent = min(free_line)
                 if wall.rotation == 0:
@@ -132,25 +193,16 @@ class Core:
                 elif wall.rotation == 270:
                     zone.x = 0
                     zone.y = indent
-                    
-                zone.rotation = wall.rotation
-                
-                # Проверяем новое положение на пересечение с другими зонами и проемами
-                for added_zone in added_zones:
-                    if not intersects_check(zone, added_zone):
-                        valid_placement = False
-                        break
 
-                for opening in self.get_openings:
-                    if not intersects_check(zone, opening):
-                        valid_placement = False
-                        break
-        
-                if valid_placement:
+                zone.rotation = wall.rotation
+
+                # Проверяем новое положение на пересечение с другими зонами и проемами
+                if intersects_checks(zone, added_zones, self.get_openings):
+
                     return zone
-        
+
         return False
-    
+
     def get_zones(self):
         """Создаем зоны комнаты"""
 
@@ -159,8 +211,7 @@ class Core:
         lvl_2 = list(filter(lambda x: x.lvl == "2", self.get_floor_objects))
         # получаем варианты распределения объектов 2 уровня по зонам
         distribution_variants = self.generate_distributions(len(lvl_1), lvl_2)
-        # Выбираем случайное распределение
-        random_comb = random.choice(distribution_variants)
+        random.shuffle(distribution_variants)
 
         zones = []
 
@@ -173,58 +224,70 @@ class Core:
 
             elif obj.tag == "wz":
                 zones.append(WardrobeZone(name="гардеробная", main_object=obj))
-                
-        placement_zones = []
 
-        for i in range(len(zones)):
-            zones[i].second_objects = random_comb[i]
-            attempts = 0
-            while attempts < 100:
+        for variant in distribution_variants:
+            placement_zones = []
 
-                zone_copy = deepcopy(zones[i])
-                zone_copy.generate_zone()
-                zone_copy.placement_zone(self.get_room)
+            for i in range(len(zones)):
+                zones[i].second_objects = variant[i]
+                attempts = 0
 
-                valid_zone = True
-                for obj in placement_zones:
-                    if not intersects_check(obj, zone_copy):
-                        valid_zone = False
+                while attempts < 1000:
+
+                    zone_copy = deepcopy(zones[i])
+                    zone_copy.generate_zone()
+                    zone_copy.placement_zone(self.get_room)
+
+                    if not intersects_checks(
+                        zone_copy, placement_zones, self.get_openings
+                    ):
+
+                        # Если случайное расположение не подошло, ищем свободное место
+                        new_zone = self.free_space_search(zone_copy, placement_zones)
+                        if new_zone:
+                            zone_copy = new_zone
+
+                        # Если не нашли свободное место, пытаемся сдвинуть другие области и вставить область
+                        else:
+                            new_zones, rotation = self.forced_insertion(
+                                zone_copy, placement_zones
+                            )
+                            if new_zones:
+                                oth_zones = list(
+                                    filter(
+                                        lambda x: x.rotation != rotation,
+                                        placement_zones,
+                                    )
+                                )
+                                placement_zones = oth_zones + new_zones
+
                         attempts += 1
+
+                    else:
+                        for obj in zone_copy.objects_list:
+                            zone_copy.update_object_coords(obj)
+                        placement_zones.append(zone_copy)
+                        wall = list(
+                            filter(
+                                lambda x: x.rotation == zone_copy.rotation,
+                                self.get_walls,
+                            )
+                        )[0]
+                        wall.add_divide(zone_copy)
                         break
 
-                for opening in self.get_openings:
-                    if not intersects_check(opening, zone_copy):
-                        valid_zone = False
-                        attempts += 1
-                        break
-                        
-                # Если случайное расположение не подошло, ищем свободное место
-                if not valid_zone:
-                    new_zone = self.free_space_search(zone_copy, placement_zones)
-                    if new_zone:
-                        valid_zone = True
-                        zone_copy = new_zone
-                        
-                if valid_zone:
-                    for obj in zone_copy.objects_list:
-                        zone_copy.update_object_coords(obj)
-                    placement_zones.append(zone_copy)
-                    wall = list(filter(lambda x: x.rotation == zone_copy.rotation, self.get_walls))[0]
-                    wall.add_divide(zone_copy)
-                    break
-                    
-        return placement_zones
+            if len(zones) > len(placement_zones):
+                print("Не удалось расположить все объекты!!!")
+
+            else:
+                return placement_zones
 
     def generate_distributions(self, part_count, objects):
         """Комбинирует варианты распределения
         второстепенных объектов по количеству зон"""
         results = []
 
-        def recursive_distribute(
-            remaining_objects,
-            zones_left,
-            current_distribution
-        ):
+        def recursive_distribute(remaining_objects, zones_left, current_distribution):
             if zones_left == 1:
                 # Остальные объекты идут в последнюю зону,
                 # если не превышают лимит
@@ -237,10 +300,7 @@ class Core:
                 # Для первой зоны выбираем возможные количества объектов
                 for count in range(1, max_objects_in_zone + 1):
                     # Генерируем все комбинации из remaining_objects по count
-                    for combo in itertools.combinations(
-                        remaining_objects,
-                        count
-                    ):
+                    for combo in itertools.combinations(remaining_objects, count):
                         remaining = list(remaining_objects)
                         for obj in combo:
                             remaining.remove(obj)
@@ -262,16 +322,19 @@ class Core:
         """Основной алгоритм"""
 
         zones = self.get_zones
-        doors = list(filter(lambda obj: obj.name == 'дверь', self.get_openings))
-        windows = list(filter(lambda obj: obj.name == 'окно', self.get_openings))
-        furnitures = [obj for zone in zones for obj in zone.objects_list if obj.name != 'розетка']
-        electricity_points = [obj for zone in zones for obj in zone.objects_list if obj.name == 'розетка']
-        
+        doors = list(filter(lambda obj: obj.name == "дверь", self.get_openings))
+        windows = list(filter(lambda obj: obj.name == "окно", self.get_openings))
+        furnitures = [
+            obj for zone in zones for obj in zone.objects_list if obj.name != "розетка"
+        ]
+        electricity_points = [
+            obj for zone in zones for obj in zone.objects_list if obj.name == "розетка"
+        ]
+
         self.room.doors = doors
         self.room.walls = self.get_walls
         self.room.windows = windows
         self.room.furnitures = furnitures
         self.room.electricity_points = electricity_points
 
-        
         return zones
