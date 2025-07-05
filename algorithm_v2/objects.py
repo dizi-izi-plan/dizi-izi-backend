@@ -20,7 +20,7 @@ class Room:
     furnitures: List = field(default_factory=list)
     electricity_points: List = field(default_factory=list)
     walls: List = field(default_factory=list)
-
+    
 
 @dataclass
 class Rectangle:
@@ -48,10 +48,10 @@ class BuildingObject:
     @property
     def center(self):
         rect = self.create_rectangle()
-
+        
         half_width = rect.width / 2
         half_length = rect.length / 2
-
+        
         x = rect.x + half_width
         y = rect.y + half_length
 
@@ -69,7 +69,11 @@ class BuildingObject:
         rect_width = cor_x_max - cor_x_min
         rect_length = cor_y_max - cor_y_min
 
-        return Rectangle(cor_x_min, cor_y_min, rect_width, rect_length, self.rotation)
+        return Rectangle(
+            cor_x_min, cor_y_min,
+            rect_width, rect_length,
+            self.rotation
+            )
 
     def get_corners(self) -> List[Point]:
         """Возвращает координаты углов прямоугольника с учетом поворота"""
@@ -201,19 +205,19 @@ class FloorObject(BuildingObject):
 
 
 class ElectricPoint(BuildingObject):
-    """Класс электроточки"""
     ...
 
 
 class Wall:
-    """Класс стены"""
+    
     def __init__(self, width, rotation):
         self.width: float = width
         self.rotation: float = rotation
         self.openings: list = []
         self.wall_divide: list = [(0, self.width)]
         self.free_lines: list = [(0, self.width)]
-
+        
+        
     def add_divide(self, obj):
         """Сокращает свободное пространство у стены при добавлении проема"""
         if self.rotation in [0, 180]:
@@ -222,29 +226,29 @@ class Wall:
         else:
             x1 = obj.y
             x2 = obj.y + obj.width
-
+        
         lines = []
         if isinstance(obj, OpeningObject):
             for index, line in enumerate(self.wall_divide):
                 if x1 > line[0] and x2 < line[1]:
-                    lines.extend(((line[0], x1), (x2, line[1])))
-                    del self.wall_divide[index]
-                    del self.free_lines[index]
-                    self.wall_divide.extend(lines)
-                    self.free_lines.extend(lines)
+                   lines.extend(((line[0], x1), (x2, line[1]))) 
+                   del(self.wall_divide[index])
+                   del(self.free_lines[index])
+                   self.wall_divide.extend(lines)
+                   self.free_lines.extend(lines)
         else:
             for index, line in enumerate(self.free_lines):
                 if x1 > line[0] and x2 < line[1]:
-                    lines.extend(((line[0], x1), (x2, line[1])))
-                    del self.free_lines[index]
-                    self.free_lines.extend(lines)
-
+                   lines.extend(((line[0], x1), (x2, line[1]))) 
+                   del(self.free_lines[index])
+                   self.free_lines.extend(lines)            
+        
     def update_divide(self, objects):
         """Обновляет свободные места у стены, при изменении положения зон"""
         self.free_lines: list = self.wall_divide
         for obj in objects:
             self.add_divide(obj)
-
+        
     def insert_check(self, width):
         """Проверяет можно ли вставить объект в свободное пространство"""
         for line in self.free_lines:
