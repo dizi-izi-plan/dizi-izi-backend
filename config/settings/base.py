@@ -241,7 +241,25 @@ AWS_QUERYSTRING_AUTH = os.getenv("S3_QUERYSTRING_AUTH", False) in (
 )
 
 # константы проекта, если их будет много, то нужно будет их организовать в отдельном файле с разбивкой по тематике
-MAX_LENGTH_PROJECT_NAME = 128
+MAX_LENGTH_PROJECT_NAME = 64
 MAX_LENGTH_ROOM_NAME = 128
 MAX_LENGTH_FURNITURE_NAME = 128
+
 PROJECT_NAME_BY_DEFAULT = "Проект"
+PROJECTS_VERBOSE_NAME_PLURAL = "Проекты"
+PROJECT_NAME_VERBOSE_NAME = "Название проекта"
+PROJECT_DRAFT_VERBOSE_NAME = "Черновик"
+PROJECT_UPDATED_AT_VERBOSE_NAME = "Дата обновления"
+PROJECT_CREATED_AT_VERBOSE_NAME = "Дата создания"
+PROJECT_LAYOUT_REQUESTS_LEFT_VERBOSE_NAME = "Количество запросов на макет"
+PROJECT_LAYOUT_REQUESTS_LEFT_MAX_VALUE = 4
+PROJECT_LAYOUT_REQUESTS_LEFT_MIN_VALUE = 0
+PROJECT_LAYOUT_REQUESTS_LEFT_MIN_VALUE_MESSAGE = (
+    "Количество запросов на макет не может быть меньше "
+    f"{PROJECT_LAYOUT_REQUESTS_LEFT_MIN_VALUE}"
+)
+PROJECT_LAYOUT_REQUESTS_LEFT_MAX_VALUE_MESSAGE = (
+    "Количество запросов на макет не может быть больше "
+    f"{PROJECT_LAYOUT_REQUESTS_LEFT_MAX_VALUE}"
+)
+PROJECT_PREFERRED_LAYOUT_VERBOSE_NAME = "Предпочитаемый макет"
