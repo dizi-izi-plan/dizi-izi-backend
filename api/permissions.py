@@ -8,6 +8,13 @@ from users.models import CustomUser
 User = get_user_model()
 
 
+class IsAuthor(permissions.BasePermission):
+    """Разрешает доступ только для автора."""
+
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user
+
+
 class CustumPer(permissions.BasePermission):
     """Разрешает доступ только с правами администратора или для чтения."""
 
@@ -43,8 +50,7 @@ class ReviewCommentPermission(permissions.BasePermission):
         view,
     ):
         return (
-            request.method in permissions.SAFE_METHODS
-            or request.user.is_authenticated
+            request.method in permissions.SAFE_METHODS or request.user.is_authenticated
         )
 
     def has_object_permission(
@@ -72,9 +78,7 @@ class IsSuperUserOrReadOnly(permissions.BasePermission):
         request,
         view,
     ):
-        return (
-            request.method in permissions.SAFE_METHODS or request.user.is_staff
-        )
+        return request.method in permissions.SAFE_METHODS or request.user.is_staff
 
 
 class IsTariffAccepted(permissions.BasePermission):
@@ -88,8 +92,7 @@ class IsTariffAccepted(permissions.BasePermission):
     ):
         """Проверка на `просроченность` тарифа по времени."""
         return user.user_tariff.tariff.period < (
-            datetime.datetime.now(datetime.timezone.utc)
-            - user.user_tariff.start_date
+            datetime.datetime.now(datetime.timezone.utc) - user.user_tariff.start_date
         )
 
     @staticmethod
