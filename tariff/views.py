@@ -1,15 +1,15 @@
-from django.db.models import QuerySet, Exists, OuterRef
+from django.db.models import Exists, OuterRef, QuerySet
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.permissions import IsSuperUserOrReadOnly
 from tariff.models import Tariff, UsersTariffs
-from tariff.serializers import TariffSerializer, ChangeTariffSerializer
+from tariff.serializers import ChangeTariffSerializer, TariffSerializer
 
 
 class APITariff(ListAPIView, CreateAPIView):

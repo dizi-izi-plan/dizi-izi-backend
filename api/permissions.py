@@ -2,8 +2,8 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from rest_framework import permissions
-from users.models import CustomUser
 
+from users.models import CustomUser
 
 User = get_user_model()
 
@@ -88,7 +88,7 @@ class IsTariffAccepted(permissions.BasePermission):
     ):
         """Проверка на `просроченность` тарифа по времени."""
         return user.user_tariff.tariff.period < (
-            datetime.datetime.now(datetime.timezone.utc)
+            datetime.datetime.now(datetime.UTC)
             - user.user_tariff.start_date
         )
 

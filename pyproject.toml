@@ -1,7 +1,7 @@
 [tool.ruff]
 line-length = 120
 target-version = "py312"
-
+[tool.ruff.lint]
 select = [
     "E",
     "F",
@@ -9,6 +9,13 @@ select = [
     "DJ",
     "UP",
 ]
+exclude = [
+    "**/migrations/**",
+    "**/layout_algorithm/**",
+    "__init__.py",
+]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["config"]
+[tool.ruff.lint.per-file-ignores]
+"admin.py" = ["F401"]
