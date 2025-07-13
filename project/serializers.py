@@ -1,4 +1,8 @@
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, CurrentUserDefault
+from rest_framework.serializers import (
+    ModelSerializer,
+    PrimaryKeyRelatedField,
+    CurrentUserDefault,
+)
 
 from project.models import Project
 
@@ -9,3 +13,10 @@ class ProjectSerializer(ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
+
+
+class ProjectUpdateSerializer(ProjectSerializer):
+    class Meta:
+        model = Project
+        fields = ["name"]
+        extra_kwargs = {"name": {"required": True}}
