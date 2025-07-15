@@ -12,13 +12,6 @@ on:
       - develop
 
 jobs:
-  flake8:
-    name: flake8 check
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Flake8 Code Check
-        uses: dizi-izi-plan/dizi-izi-backend/.github/actions/flake8@main
-
   pre-commit:
     runs-on: ubuntu-latest
     steps:
