@@ -1,17 +1,13 @@
 import bisect
-
 from .corner_markings import corner_markings
-from .create_picture import create_rectangles
 from .main_functions import FurnitureArrangement
+from .create_picture import create_rectangles
 from .offset_finder_convert import MiddlePointAndShift
 
 
 class Core(FurnitureArrangement, MiddlePointAndShift):
     def algorithm_activation(
-        self,
-        doors_and_windows: list,
-        furniture: list,
-        room_size: dict,
+        self, doors_and_windows: list, furniture: list, room_size: dict,
     ):
         """Основная функция алгоритма, проходящаяся по всему заданному списку
         мебели и расставляющая каждую единицу внутри помещения
@@ -29,17 +25,13 @@ class Core(FurnitureArrangement, MiddlePointAndShift):
         for item, item2 in enumerate(furniture):
             result_free_space = self.free_space_algorithm(self.coordinates)
             result_middle_distance = self.middle_point_finder(
-                result_free_space,
-                self.wall_perimetr,
-                self.walls_length,
+                result_free_space, self.wall_perimetr, self.walls_length,
             )
             result_wall_definition = self.wall_definition(
                 result_middle_distance,
             )
             result_corner_markings = corner_markings(
-                item2,
-                result_middle_distance,
-                result_wall_definition,
+                item2, result_middle_distance, result_wall_definition,
             )
             final_point, figure = self.placing_in_coordinates(
                 result_middle_distance,
@@ -52,15 +44,17 @@ class Core(FurnitureArrangement, MiddlePointAndShift):
             furniture[item]["adjacent_center_point"] = final_point
             bisect.insort(self.sorted_points, final_point)
             self.coordinates.insert(
-                self.sorted_points.index(final_point),
-                figure,
+                self.sorted_points.index(final_point), figure,
             )
 
         powersocets = []
         # добавление разеток к каждой мебели
         for item in furniture:
             if item["first_power_socket_width"] != 0:
-                item["first_power_socket_placement"] = item["adjacent_center_point"] + item["first_power_socket_width"]
+                item["first_power_socket_placement"] = (
+                    item["adjacent_center_point"]
+                    + item["first_power_socket_width"]
+                )
                 powersocets.append(
                     self.convert_line_to_coordinates(
                         item["first_power_socket_placement"],
@@ -70,7 +64,8 @@ class Core(FurnitureArrangement, MiddlePointAndShift):
                 )
             if item["second_power_socket_width"] != 0:
                 item["second_power_socket_placement"] = (
-                    item["adjacent_center_point"] + item["second_power_socket_width"]
+                    item["adjacent_center_point"]
+                    + item["second_power_socket_width"]
                 )
                 powersocets.append(
                     self.convert_line_to_coordinates(
