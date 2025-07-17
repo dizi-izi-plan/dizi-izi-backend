@@ -1,0 +1,14 @@
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+select = [
+    "E",
+    "F",
+    "I",
+    "DJ",
+    "UP",
+]
+
+[tool.ruff.isort]
+known-first-party = ["config"]
