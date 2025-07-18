@@ -1,19 +1,23 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from rest_framework import mixins, viewsets
+from rest_framework import generics, mixins, status, viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.permissions import IsTariffAccepted
+from api.openapi_error_responses import (ForbiddenErrorResponse,
+                                         UnauthorizedErrorResponse)
+from api.permissions import IsRoomLayoutOwner, IsTariffAccepted
 from furniture.filters import FurnitureFilter
 from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
                               PowerSocketPlacement, Room, RoomLayout, RoomType,
                               WindowPlacement)
-from furniture.serializers import (FurnitureSerializer, RoomLayoutSerializer,
-                                   RoomSerializer, RoomTypeSerializer)
+from furniture.serializers import (FurnitureSerializer,
+                                   RoomLayoutListSerializer,
+                                   RoomLayoutSerializer, RoomSerializer,
+                                   RoomTypeSerializer)
 from furniture.utils import send_pdf_file
 
 
@@ -147,3 +151,22 @@ class SendPDFView(APIView):
         text = "В приложении подготовленный план размещения мебели"
         email = request.user.email
         return send_pdf_file(subj, email, up_file, text)
+
+
+@extend_schema(
+    tags=["Room Layouts"],
+    summary="List of layouts, rooms for user",
+    responses={
+        status.HTTP_200_OK: RoomLayoutListSerializer(many=True),
+        status.HTTP_401_UNAUTHORIZED: UnauthorizedErrorResponse,
+        status.HTTP_403_FORBIDDEN: ForbiddenErrorResponse
+    }
+)
+class RoomLayoutListView(generics.ListAPIView):
+    """ Viewing the list of layouts, rooms for the user """
+    serializer_class = RoomLayoutListSerializer
+    permission_classes = [IsAuthenticated, IsRoomLayoutOwner]
+
+    def get_queryset(self):
+        """ Get a list of layouts by room_id """
+        return RoomLayout.objects.filter(room_id=self.kwargs.get("room_id"))

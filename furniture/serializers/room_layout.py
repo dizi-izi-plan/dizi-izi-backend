@@ -78,3 +78,10 @@ class RoomLayoutCopySerializer(serializers.ModelSerializer):
             "fourth_wall",
             "furniture_placement",
         ]
+
+
+class RoomLayoutListSerializer(serializers.ModelSerializer):
+    """Serializer for room-layout list """
+    class Meta:
+        model = RoomLayout
+        fields = ('id', 'name', 'created')

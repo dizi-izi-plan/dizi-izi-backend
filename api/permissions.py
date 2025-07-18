@@ -2,6 +2,8 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from rest_framework import permissions
+
+from furniture.models import Room
 from users.models import CustomUser
 
 
@@ -111,3 +113,21 @@ class IsTariffAccepted(permissions.BasePermission):
             if self.is_outdated(user) or self.is_rooms_limit_exceeded(user):
                 return False
             return True
+
+
+class IsRoomLayoutOwner(permissions.BasePermission):
+    """ Allows access to layouts only to the room owner """
+
+    def has_permission(self, request, view):
+        """
+        Checks if the requesting user is the owner of the room with the given room_id
+
+        :returns:
+            True if the room belongs to the user, otherwise False.
+        """
+        room_id = view.kwargs.get("room_id")
+
+        if room_id is None:
+            return False
+
+        return Room.objects.filter(id=room_id, user_id=request.user.id).exists()
