@@ -9,11 +9,17 @@ from rest_framework.views import APIView
 
 from api.permissions import IsTariffAccepted
 from furniture.filters import FurnitureFilter
-from furniture.models import (DoorPlacement, Furniture, FurniturePlacement,
-                              PowerSocketPlacement, Room, RoomLayout, RoomType,
-                              WindowPlacement)
-from furniture.serializers import (FurnitureSerializer, RoomLayoutSerializer,
-                                   RoomSerializer, RoomTypeSerializer)
+from furniture.models import (
+    DoorPlacement,
+    Furniture,
+    FurniturePlacement,
+    PowerSocketPlacement,
+    Room,
+    RoomLayout,
+    RoomType,
+    WindowPlacement,
+)
+from furniture.serializers import FurnitureSerializer, RoomLayoutSerializer, RoomSerializer, RoomTypeSerializer
 from furniture.utils import send_pdf_file
 
 

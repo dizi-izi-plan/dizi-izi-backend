@@ -1,10 +1,10 @@
 from django.contrib import admin
 
 from tariff.models import (
+    PossibleActions,
+    PossibleActionsTariff,
     Tariff,
     UsersTariffs,
-    PossibleActionsTariff,
-    PossibleActions,
 )
 
 

@@ -5,8 +5,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import models
 from rest_framework.exceptions import ValidationError as DRFValidationError
 
-from users.validators.field_validators import (CustomEmailValidator,
-                                               PastDateValidator)
+from users.validators.field_validators import CustomEmailValidator, PastDateValidator
 
 # TODO: раскомментировать после создания моделей тарифов
 # from users.services import initialize_basic_user_tariff
@@ -59,12 +58,7 @@ class CustomUser(AbstractUser):
             "unique": "Данный пользователь уже зарегистрирован",
         },
     )
-    city = models.CharField(
-        verbose_name="Город",
-        max_length=50,
-        null=True,
-        blank=True
-    )
+    city = models.CharField(verbose_name="Город", max_length=50, null=True, blank=True)  # noqa
     birthday = models.DateField(
         blank=True,
         null=True,
@@ -72,10 +66,7 @@ class CustomUser(AbstractUser):
         help_text="Введите дату в прошлом. Будущие даты не допустимы.",
         verbose_name="дата рождения",
     )
-    is_designer = models.BooleanField(
-        default=False,
-        verbose_name="дизайнер"
-    )
+    is_designer = models.BooleanField(default=False, verbose_name="дизайнер")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

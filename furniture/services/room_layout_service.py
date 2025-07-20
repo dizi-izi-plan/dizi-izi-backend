@@ -1,6 +1,4 @@
-from furniture.models import (DoorPlacement, FurniturePlacement,
-                              PowerSocketPlacement, RoomLayout,
-                              WindowPlacement)
+from furniture.models import DoorPlacement, FurniturePlacement, PowerSocketPlacement, RoomLayout, WindowPlacement
 from layout_algorithm import core
 
 
