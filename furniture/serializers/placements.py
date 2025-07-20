@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from furniture.models import (DoorPlacement, FurniturePlacement,
-                              PowerSocketPlacement, WindowPlacement)
+from furniture.models import DoorPlacement, FurniturePlacement, PowerSocketPlacement, WindowPlacement
 from furniture.serializers import AbstractCoordinates
 
 FIELDS_COORDINATE = ()

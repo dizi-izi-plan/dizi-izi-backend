@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from rest_framework import serializers
 
@@ -36,7 +36,7 @@ class TariffSerializer(serializers.ModelSerializer):
             user_tariff = obj.user_tariff.get(user=request.user)
             return (
                 f'{user_tariff.start_date.strftime("%d")}.'
-                f'{datetime.now(timezone.utc).strftime("%m")}'
+                f'{datetime.now(UTC).strftime("%m")}'
             )
 
     def get_period(self, obj):

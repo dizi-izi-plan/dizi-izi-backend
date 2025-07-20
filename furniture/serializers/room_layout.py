@@ -4,10 +4,12 @@ from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
 from furniture.models import Furniture, Room, RoomLayout
-from furniture.serializers import (DoorPlacementSerializer,
-                                   FurniturePlacementSerializer,
-                                   PowerSocketPlacementSerializer,
-                                   WindowPlacementSerializer)
+from furniture.serializers import (
+    DoorPlacementSerializer,
+    FurniturePlacementSerializer,
+    PowerSocketPlacementSerializer,
+    WindowPlacementSerializer,
+)
 from furniture.services import create_room_layout
 
 User = get_user_model()

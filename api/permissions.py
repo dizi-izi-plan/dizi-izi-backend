@@ -2,8 +2,8 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from rest_framework import permissions
-from users.models import CustomUser
 
+from users.models import CustomUser
 
 User = get_user_model()
 
@@ -49,9 +49,7 @@ class ReviewCommentPermission(permissions.BasePermission):
         request,
         view,
     ):
-        return (
-            request.method in permissions.SAFE_METHODS or request.user.is_authenticated
-        )
+        return request.method in permissions.SAFE_METHODS or request.user.is_authenticated
 
     def has_object_permission(
         self,
@@ -91,9 +89,7 @@ class IsTariffAccepted(permissions.BasePermission):
         user: CustomUser,
     ):
         """Проверка на `просроченность` тарифа по времени."""
-        return user.user_tariff.tariff.period < (
-            datetime.datetime.now(datetime.timezone.utc) - user.user_tariff.start_date
-        )
+        return user.user_tariff.tariff.period < (datetime.datetime.now(datetime.UTC) - user.user_tariff.start_date)
 
     @staticmethod
     def is_rooms_limit_exceeded(

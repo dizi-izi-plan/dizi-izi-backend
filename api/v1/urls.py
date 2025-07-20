@@ -11,9 +11,9 @@ from furniture.views import (
     RoomViewSet,
     SendPDFView,
 )
+from project.views import ProjectViewSet
 from tariff.views import APIChangeTariff, APITariff
 from users.views import UserViewSet
-from project.views import ProjectViewSet
 
 router = DefaultRouter()
 router.register("furniture", FurnitureViewSet, basename="furniture")
@@ -35,7 +35,5 @@ urlpatterns = [
     path("auth/", include("djoser.urls.authtoken")),
     path("", include(router.urls)),
     path("", include("social_django.urls", namespace="social")),
-    re_path(
-        r"^social_auth/", include("drf_social_oauth2.urls", namespace="social_auth")
-    ),
+    re_path(r"^social_auth/", include("drf_social_oauth2.urls", namespace="social_auth")),
 ]

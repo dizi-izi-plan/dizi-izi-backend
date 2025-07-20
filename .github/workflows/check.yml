@@ -12,9 +12,9 @@ on:
       - develop
 
 jobs:
-  flake8:
-    name: flake8 check
-    runs-on: ubuntu-22.04
+  pre-commit:
+    runs-on: ubuntu-latest
     steps:
-      - name: Flake8 Code Check
-        uses: dizi-izi-plan/dizi-izi-backend/.github/actions/flake8@main
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+      - uses: pre-commit/action@v3.0.1
