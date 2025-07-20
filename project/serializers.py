@@ -1,7 +1,7 @@
 from rest_framework.serializers import (
+    CurrentUserDefault,
     ModelSerializer,
     PrimaryKeyRelatedField,
-    CurrentUserDefault,
 )
 
 from project.models import Project
