@@ -3,7 +3,15 @@
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
-from furniture.views import FurnitureViewSet, RoomCopyView, RoomListViewSet, RoomTypeViewSet, RoomViewSet, SendPDFView
+from furniture.views import (
+    FurnitureViewSet,
+    RoomCopyView,
+    RoomListViewSet,
+    RoomTypeViewSet,
+    RoomViewSet,
+    SendPDFView,
+)
+from project.views import ProjectViewSet
 from tariff.views import APIChangeTariff, APITariff
 from users.views import UserViewSet
 
@@ -12,6 +20,7 @@ router.register("furniture", FurnitureViewSet, basename="furniture")
 router.register("rooms", RoomViewSet, basename="room")
 router.register("rooms_type", RoomTypeViewSet, basename="room_type")
 router.register("rooms_list", RoomListViewSet, basename="room_list")
+router.register("projects", ProjectViewSet, basename="projects")
 
 users = DefaultRouter()
 users.register("users", UserViewSet, basename="customuser")
@@ -27,5 +36,4 @@ urlpatterns = [
     path("", include(router.urls)),
     path("", include("social_django.urls", namespace="social")),
     re_path(r"^social_auth/", include("drf_social_oauth2.urls", namespace="social_auth")),
-
 ]
