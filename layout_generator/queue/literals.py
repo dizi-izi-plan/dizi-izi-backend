@@ -1,0 +1,5 @@
+NATS_STREAM_NAME = "layouts"
+NATS_SUBJECT_LAYOUT_TASKS = "layouts.tasks"
+NATS_SUBJECT_LAYOUT_RESULTS = "layouts.results"
+
+ENV_KEY_NATS_URL = "NATS_URL"
