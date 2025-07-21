@@ -1,0 +1,19 @@
+# -------------------------------------------------------------------
+# A small demo compose file to run nats with jetstream and 
+# localhost port bindings. 
+#
+# Usage:
+#   docker compose -f nats-demo.compose.yaml up
+# -------------------------------------------------------------------
+
+
+
+version: "3.5"
+services:
+  nats:
+    image: nats
+    ports:
+      - "8222:8222"
+      - "4222:4222"
+      - "6222:6222"
+    command: "--jetstream --http_port 8222"
