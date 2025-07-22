@@ -4,45 +4,47 @@ from copy import deepcopy
 import random
 from typing import List
 
+from validators import validate_constructor
 from constants import ROTATIONS
 from sandbox import intersects_checks
 from objects import (
     Room,
     FloorObject,
     OpeningObject,
-    PierGlassZone,
-    SleepZone,
+    ZoneGenerator,
     Wall,
-    WardrobeZone,
 )
 
 
 class Core:
     """Основной алгоритм"""
 
-    def __init__(self, room_data, openings_data, floor_objects_data):
-
+    def __init__(self, room_data, doors_data, windows_data, floor_objects_data):
+        
         self.room_data = room_data
-        self.openings_data = openings_data
+        self.doors_data = doors_data
+        self.windows_data = windows_data
         self.floor_objects_data = floor_objects_data
+        
+        val = validate_constructor({
+            'room': self.room_data,
+            'doors': self.doors_data,
+            'windows': self.windows_data,
+            'floor_objects': self.floor_objects_data
+        })
+        if not val:
+            self.floor_objects_data.sort(
+                key=lambda x: x["width"] * x["length"], reverse=True
+            )
 
-        self.min_passage = 60
-        self.population_size = 50
-        self.generations = 50
-        self.mutation_rate = 0.1
-        self.max_attemps = 100
+            self.get_room = self.get_room()
+            self.get_walls = self.get_walls()
 
-        self.floor_objects_data.sort(
-            key=lambda x: x["width"] * x["length"], reverse=True
-        )
-
-        self.get_room = self.get_room()
-        self.get_walls = self.get_walls()
-
-        self.get_openings = self.get_openings()
-        self.get_floor_objects = self.get_floor_objects()
-        self.get_zones = self.get_zones()
-
+            self.get_openings = self.get_openings()
+            self.get_floor_objects = self.get_floor_objects()
+            self.get_zones = self.get_zones()
+        else:
+            print(*val)
     def get_room(self):
         """Создаем объект комнаты"""
 
@@ -60,10 +62,10 @@ class Core:
 
         openings = []
 
-        names_list = list(map(lambda x: x["name"], self.openings_data))
+        names_list = list(map(lambda x: x["name"], self.doors_data + self.windows_data))
 
         # Создаем объекты переданных проёмов если они есть
-        for obj in self.openings_data:
+        for obj in self.doors_data + self.windows_data:
             new_obj = OpeningObject(**obj)
             new_obj.get_rotation(self.room)
             openings.append(new_obj)
@@ -93,13 +95,11 @@ class Core:
 
     def get_floor_objects(self) -> List[FloorObject]:
         """Создаем объекты на полу"""
-        floor_objects = []
-
+        objects = []
         for obj in self.floor_objects_data:
-            floor_objects.append(FloorObject(**obj))
-
-        return floor_objects
-
+            objects.append(FloorObject(**obj))
+        return objects
+        
     def get_walls(self):
         """Создаем стены"""
         walls = []
@@ -205,25 +205,17 @@ class Core:
 
     def get_zones(self):
         """Создаем зоны комнаты"""
-
         # создаем списки элементов по уровню
-        lvl_1 = list(filter(lambda x: x.lvl == "1", self.get_floor_objects))
-        lvl_2 = list(filter(lambda x: x.lvl == "2", self.get_floor_objects))
-        # получаем варианты распределения объектов 2 уровня по зонам
-        distribution_variants = self.generate_distributions(len(lvl_1), lvl_2)
-        random.shuffle(distribution_variants)
+        large_furniture = list(filter(lambda x: x.dimension == "large_furniture", self.get_floor_objects))
+        medium_furniture = list(filter(lambda x: x.dimension == "medium_furniture", self.get_floor_objects))
+        # получаем варианты распределения средних объектов по зонам
 
+        distribution_variants = self.generate_distributions(len(large_furniture), medium_furniture)
+        random.shuffle(distribution_variants)
         zones = []
 
-        for obj in lvl_1:
-            if obj.tag == "pz":
-                zones.append(PierGlassZone(name="трюмо", main_object=obj))
-
-            elif obj.tag == "sz":
-                zones.append(SleepZone(name="спальное место", main_object=obj))
-
-            elif obj.tag == "wz":
-                zones.append(WardrobeZone(name="гардеробная", main_object=obj))
+        for obj in large_furniture:
+            zones.append(ZoneGenerator(main_object=obj))
 
         for variant in distribution_variants:
             placement_zones = []
@@ -232,7 +224,7 @@ class Core:
                 zones[i].second_objects = variant[i]
                 attempts = 0
 
-                while attempts < 1000:
+                while attempts < 50:
 
                     zone_copy = deepcopy(zones[i])
                     zone_copy.generate_zone()
@@ -320,10 +312,13 @@ class Core:
 
     def run_algorithm(self):
         """Основной алгоритм"""
-
-        zones = self.get_zones
+        
         doors = list(filter(lambda obj: obj.name == "дверь", self.get_openings))
         windows = list(filter(lambda obj: obj.name == "окно", self.get_openings))
+        
+
+        zones = self.get_zones
+        
         furnitures = [
             obj for zone in zones for obj in zone.objects_list if obj.name != "розетка"
         ]

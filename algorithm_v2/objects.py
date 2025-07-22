@@ -37,10 +37,11 @@ class BuildingObject:
 
     id: Optional[str] = None
     name: Optional[str] = None
-    lvl: Optional[str] = None
     tag: Optional[str] = None
+    dimension: Optional[str] = None
     width: Optional[float] = None
     length: Optional[float] = None
+    height: Optional[float] = None
     x: Optional[float] = 0
     y: Optional[float] = 0
     rotation: Optional[int] = 0
@@ -131,7 +132,6 @@ class BuildingObject:
                 min_distance = min(min_distance, dist)
 
         return min_distance
-
 
 class OpeningObject(BuildingObject):
     """Класс проёма"""

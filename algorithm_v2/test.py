@@ -9,7 +9,7 @@ room_data = {
     'min_passage': 70  # Минимальный проход 70 см
 }
 
-openings_data = [
+doors_data = [
         {
             'id': '1',
             'name': 'дверь',
@@ -17,7 +17,10 @@ openings_data = [
             'y': 250,
             'width': 60,
             'length': 5,
-        },
+            'height': 200,
+        }
+]
+windows_data = [
         {
             'id': '3',
             'name': 'окно',
@@ -25,6 +28,7 @@ openings_data = [
             'y': 0,
             'width': 180,
             'length': 10,
+            'height': 120,
         }
 ]
 
@@ -32,54 +36,62 @@ floor_objects_data = [
     {
         'id': '1',
         'name': 'Кровать',
-        'lvl': '1',
         'tag': 'sz', # sleep zone
+        'dimension': 'large_furniture',
         'width': 180,
         'length': 200,
-
+        'height': 40,
     },
     {
         'id': '2',
         'name': 'Шкаф',
-        'lvl': '1',
         'tag': 'wz', # wardrobe zone
+        'dimension': 'large_furniture',
         'width': 120,
         'length': 60,
+        'height': 200,
     },
     {
         'id': '3',
         'name': 'Стол',
-        'lvl': '1',
         'tag': 'pz', # pier glass zone
+        'dimension': 'large_furniture',
         'width': 90,
         'length': 60,
+        'height': 60,
     },
     {
         'id': '4',
         'name': 'Стул',
-        'lvl': '2',
+        'tag': 'sz', # sleep zone
+        'dimension': 'medium_furniture',
         'width': 60,
         'length': 40,
+        'height': 30,
     },
     {
         'id': '5',
         'name': 'Тумба',
-        'lvl': '2',
+        'tag': 'sz', # sleep zone
+        'dimension': 'medium_furniture',
         'width': 100,
         'length': 50,
+        'height': 40,
     },
     {
         'id': '6',
         'name': 'Тумба',
-        'lvl': '2',
+        'tag': 'sz', # sleep zone
+        'dimension': 'medium_furniture',
         'width': 100,
         'length': 50,
+        'height': 40,
     }
 ]
 
 start = time.perf_counter()
 
-alg = Core(room_data, openings_data, floor_objects_data)
+alg = Core(room_data, doors_data, windows_data, floor_objects_data)
 
 end = time.perf_counter()
 print(f"Время выполнения: {end - start:.6f} секунд")
@@ -126,7 +138,7 @@ def draw_objects(canvas, objects, canvas_width, canvas_height):
     
     for obj in objects:
         
-        if obj.tag != None:
+        if obj.dimension == 'large_furniture':
             color = 'lightgreen'
         else:
             color = 'lightyellow'
