@@ -1,0 +1,21 @@
+{
+    "general": {
+        "checkpointing": {
+            "enabled": true
+        },
+        "preferredEditor": "vscode",
+        "previewFeatures": true
+    },
+    "hasSeenIdeIntegrationNudge": true,
+    "ide": {
+        "enabled": true
+    },
+    "security": {
+        "auth": {
+            "selectedType": "gemini-api-key"
+        }
+    },
+    "ui": {
+        "hideBanner": true
+    }
+}
